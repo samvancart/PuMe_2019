@@ -187,17 +187,13 @@ public class pumeUi extends Application {
         };
         yearsSpin.getEditor().addEventHandler(KeyEvent.KEY_PRESSED, enterKeyEventHandler);
 
+        yearsSpin.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
+            if (!yearsSpin.getEditor().textProperty().get().matches("[0-9]*")) {
+                yearsSpin.getEditor().textProperty().set(INITIAL_VALUE);
+                infoVb.requestFocus();
+            }
+        });
 
-//        yearsSpin.focusedProperty().addListener((observable, oldValue, newValue) -> {
-//            if (!newValue) {
-//                yearsSpin.increment(0);
-//            }
-//        });
-//        yearsSpin.focusedProperty().addListener((observable, oldValue, newValue) -> {
-//            if (!newValue.toString().matches("\\d*")) {
-//            infoVb.requestFocus();
-//        }
-//        });
         scene = new Scene(ap, 1600, 800);
 
         primaryStage.setTitle("PuMe 2019");
