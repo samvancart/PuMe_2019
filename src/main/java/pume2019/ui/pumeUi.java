@@ -2,10 +2,14 @@ package pume2019.ui;
 
 import javafx.application.Application;
 import static javafx.application.Application.launch;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -17,11 +21,11 @@ import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraintsBuilder;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -64,6 +68,7 @@ public class pumeUi extends Application {
         bp.setLeft(bpLeftVb);
         bpLeftVb.setPadding(new Insets(5, 5, 5, 5));
         bpLeftVb.setSpacing(20);
+//        bpLeftVb.setPrefWidth(150);
         Button tscBtn = new Button("Traditional \n"
                 + "stand \n"
                 + "characteristics");
@@ -71,6 +76,13 @@ public class pumeUi extends Application {
         Button cbwBtn = new Button("Carbon \n"
                 + "balance and \n"
                 + "water use");
+        tscBtn.setMaxWidth(Double.MAX_VALUE);
+        bioBtn.setMaxWidth(Double.MAX_VALUE);
+        cbwBtn.setMaxWidth(Double.MAX_VALUE);
+        tscBtn.prefHeightProperty().bind(bpLeftVb.heightProperty().divide(3));
+        bioBtn.prefHeightProperty().bind(bpLeftVb.heightProperty().divide(3));
+        cbwBtn.prefHeightProperty().bind(bpLeftVb.heightProperty().divide(3));
+
         bpLeftVb.getChildren().addAll(tscBtn, bioBtn, cbwBtn);
 
         BorderPane nestedBp = new BorderPane();
@@ -82,14 +94,49 @@ public class pumeUi extends Application {
                 + "-fx-border-color: red;");
         bp.setCenter(nestedBp);
 
-        StackPane sp = new StackPane();
-        sp.setStyle("-fx-padding: 10;"
+        GridPane bpTopGp = new GridPane();
+        bpTopGp.setHgap(10);
+        bpTopGp.setVgap(10);
+//        bpTopGp.getColumnConstraints().setAll(
+//                ColumnConstraintsBuilder.create().percentWidth(100/10).build(),
+//                ColumnConstraintsBuilder.create().percentWidth(100/10).build()
+//        );
+
+        bpTopGp.setStyle("-fx-padding: 10;"
                 + "-fx-border-style: solid inside;"
                 + "-fx-border-width: 2;"
                 + "-fx-border-insets: 5;"
                 + "-fx-border-radius: 5;"
                 + "-fx-border-color: blue;");
-        nestedBp.setTop(sp);
+        Button treeCrownBtn = new Button("Tree Height, Crown base");
+        Button diaBtn = new Button("Diameter");
+        Button volBtn = new Button("Volume");
+        Button basBtn = new Button("Basal area");
+        Button stockBtn = new Button("Stocking density");
+        Button remBtn = new Button("Removals");
+        ObservableList<Button> tscBtns;
+        tscBtns = FXCollections.observableArrayList();
+        tscBtns.addAll(treeCrownBtn, diaBtn, volBtn, basBtn, stockBtn, remBtn);
+
+        for (int i = 0; i < tscBtns.size(); i++) {
+            Button btn = tscBtns.get(i);
+            btn.prefWidthProperty().bind(bpTopGp.widthProperty().divide(tscBtns.size()));
+            bpTopGp.add(btn, i, 0);
+        }
+
+        ObservableList<RadioButton> tscRbs;
+        tscRbs = FXCollections.observableArrayList();
+        RadioButton pineRb = new RadioButton("Pine");
+        RadioButton spruceRb = new RadioButton("Spruce");
+        RadioButton birchRb = new RadioButton("Birch");
+        tscRbs.addAll(pineRb, spruceRb, birchRb);
+        for (int i = 0; i < tscRbs.size(); i++) {
+            RadioButton rb = tscRbs.get(i);
+            rb.prefWidthProperty().bind(bpTopGp.widthProperty().divide(tscRbs.size()));
+            bpTopGp.add(rb, i, 1, 2, 2);
+        }
+
+        nestedBp.setTop(bpTopGp);
 
         Label initSitLbl = new Label("Initial situation:");
         Label siteLbl = new Label("Site type:");
@@ -189,7 +236,13 @@ public class pumeUi extends Application {
 
         yearsSpin.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
             if (!yearsSpin.getEditor().textProperty().get().matches("[0-9]*")) {
-                yearsSpin.getEditor().textProperty().set(INITIAL_VALUE);
+                if (!oldValue.matches("[0-9]*")) {
+                    yearsSpin.getEditor().textProperty().set(INITIAL_VALUE);
+                }
+                Platform.runLater(() -> {
+                    yearsSpin.getEditor().textProperty().set("100");
+                });
+
                 infoVb.requestFocus();
             }
         });
