@@ -1,5 +1,7 @@
 package pume2019.ui;
 
+import java.io.File;
+import java.util.Arrays;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.application.Platform;
@@ -7,6 +9,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -24,11 +27,16 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import pume2019.domain.InitStand;
+import pume2019.domain.SiteInfo;
 
-public class pumeUi extends Application {
+public class PumeUi extends Application {
 
     private Scene scene;
+    private InitStand initStand;
+    private SiteInfo siteInfo;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -143,14 +151,14 @@ public class pumeUi extends Application {
                 + "-fx-border-color: blue;");
 
         Button totalBioBtn = new Button("Total biomass");
-        Button needlesBtn = new Button("Needles");
-        Button branchesBtn = new Button("Branches");
-        Button stemBtn = new Button("Stem");
-        Button fineRBtn = new Button("Fine roots");
-        Button coarseRBtn = new Button("Coarse roots");
+        Button foliageBtn = new Button("Foliage mass");
+        Button branchesBtn = new Button("Branch mass");
+        Button stemBtn = new Button("Stem mass");
+        Button fineRBtn = new Button("Fine root mass");
+        Button coarseRBtn = new Button("Coarse root mass");
         ObservableList<Button> bioBtns;
         bioBtns = FXCollections.observableArrayList();
-        bioBtns.addAll(totalBioBtn, needlesBtn, branchesBtn, stemBtn, fineRBtn, coarseRBtn);
+        bioBtns.addAll(totalBioBtn, foliageBtn, branchesBtn, stemBtn, fineRBtn, coarseRBtn);
         for (int i = 0; i < bioBtns.size(); i++) {
             Button btn = bioBtns.get(i);
             btn.prefWidthProperty().bind(bioGp.widthProperty().divide(bioBtns.size()));
@@ -159,16 +167,16 @@ public class pumeUi extends Application {
 
         ObservableList<RadioButton> bioRbs;
         bioRbs = FXCollections.observableArrayList();
-        RadioButton needlesRb = new RadioButton("Needles");
-        RadioButton branchesRb = new RadioButton("Branches");
-        RadioButton stemRb = new RadioButton("Stem");
-        RadioButton fineRb = new RadioButton("Fine roots");
-        RadioButton coarseRb = new RadioButton("Coarse roots");
-        bioRbs.addAll(needlesRb, branchesRb, stemRb, fineRb, coarseRb);
+        RadioButton foliageRb = new RadioButton("Foliage mass");
+        RadioButton branchesRb = new RadioButton("Branch mass");
+        RadioButton stemRb = new RadioButton("Stem mass");
+        RadioButton fineRb = new RadioButton("Fine root mass");
+        RadioButton coarseRb = new RadioButton("Coarse root mass");
+        bioRbs.addAll(foliageRb, branchesRb, stemRb, fineRb, coarseRb);
         for (int i = 0; i < bioRbs.size(); i++) {
             RadioButton rb = bioRbs.get(i);
             rb.prefWidthProperty().bind(bioGp.widthProperty().divide(bioRbs.size()));
-            bioGp.add(rb, i+1, 1, 2, 2);
+            bioGp.add(rb, i + 1, 1, 2, 2);
         }
 
         nestedBp.setTop(tscGp);
@@ -193,8 +201,12 @@ public class pumeUi extends Application {
         Label siteLbl = new Label("Site type:");
         Label weatherLbl = new Label("Weather:");
         Label managLbl = new Label("Management:");
-        ComboBox treesCb = new ComboBox();
-        ComboBox siteCb = new ComboBox();
+        initStand = new InitStand();
+        ComboBox treesCb = new ComboBox(initStand.getTrees());
+        treesCb.getSelectionModel().selectFirst();
+        siteInfo = new SiteInfo();
+        ComboBox siteCb = new ComboBox(siteInfo.getHeaths());
+        siteCb.getSelectionModel().selectFirst();
 
         ToggleGroup weatherTg = new ToggleGroup();
         RadioButton weatherRbDef = new RadioButton("Default .csv");
@@ -213,9 +225,10 @@ public class pumeUi extends Application {
         RadioButton managRbCus = new RadioButton("Custom .csv");
         managRbCus.setToggleGroup(managTg);
         Button managBtn = new Button("Choose file");
+        managBtn.setMaxSize(80, 20);
         managBtn.setDisable(true);
 
-        Label yearsLbl = new Label("Years");
+        Label yearsLbl = new Label("Years:");
         final Spinner yearsSpin = new Spinner();
         String INITIAL_VALUE = "100";
         yearsSpin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100,
@@ -246,6 +259,36 @@ public class pumeUi extends Application {
         AnchorPane.setLeftAnchor(infoVb, 10d);
         AnchorPane.setRightAnchor(bp, 10d);
 
+        weatherBtn.setOnAction(
+                new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                FileChooser fileChooser = new FileChooser();
+                File file = fileChooser.showOpenDialog(primaryStage);
+                if (file != null) {
+                    String path[] = file.getPath().split("\\\\");
+                    if (!path[0].equals("")) {
+                        weatherBtn.setText(path[path.length - 1]);
+                    }
+                }
+            }
+        });
+
+        managBtn.setOnAction(
+                new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                FileChooser fileChooser = new FileChooser();
+                File file = fileChooser.showOpenDialog(primaryStage);
+                if (file != null) {
+                    String path[] = file.getPath().split("\\\\");
+                    if (!path[0].equals("")) {
+                        managBtn.setText(path[path.length - 1]);
+                    }
+                }
+            }
+        });
+
         weatherTg.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
             @Override
             public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
@@ -253,6 +296,7 @@ public class pumeUi extends Application {
                     weatherBtn.setDisable(false);
                 } else {
                     weatherBtn.setDisable(true);
+                    weatherBtn.setText("Choose File");
                 }
             }
         });
@@ -264,6 +308,7 @@ public class pumeUi extends Application {
                     managBtn.setDisable(false);
                 } else {
                     managBtn.setDisable(true);
+                    managBtn.setText("Choose File");
                 }
             }
         });
