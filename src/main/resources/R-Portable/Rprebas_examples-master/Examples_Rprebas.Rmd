@@ -1,0 +1,133 @@
+---
+title: "Examples Rprebas"
+author: "francesco minunno"
+date: "13 March 2018"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Rprebas package examples
+
+This documents provides guidelines on Rprebas package installation and it shows some examples on how to run PREBAS forest model. 
+
+
+
+## Install the package
+
+Go to the folder were the package is and install the package and load the library
+
+Install the package
+```{r}
+# library(devtools)
+# install_github("MikkoPeltoniemi/Rpreles")
+# install_github("checcomi/Rprebas")
+```
+
+Load the packageg
+```{r}
+library(Rprebasso)
+```
+
+
+## Function prebas
+
+The function that calls the model is prebas(). See the help for a description of the input argumens and the outputs.
+
+
+```{r}
+?prebas
+```
+
+## Example 1
+
+This first example uses the minimal inputs for the prebas function: the number of years of the simulations (nYears) and the weather inputs (PAR,TAir,VPD,Precip,CO2).
+In this example weather inputs are read from a .csv file
+
+
+Read the weather input from an .csv file. To extract weather inputs from the LUKE database see "extractWeather" document.
+
+```{r}
+weather <- read.csv("inputs/weather.csv",header = T)
+PAR = c(weather$PAR,weather$PAR,weather$PAR)
+TAir = c(weather$TAir,weather$TAir,weather$TAir)
+Precip = c(weather$Precip,weather$Precip,weather$Precip)
+VPD = c(weather$VPD,weather$VPD,weather$VPD)
+CO2 = c(weather$CO2,weather$CO2,weather$CO2)
+DOY = c(weather$DOY,weather$DOY,weather$DOY)
+```
+
+Run the model
+```{r}
+PREBASout <- prebas(nYears = 100, PAR=PAR,TAir=TAir,VPD=VPD,Precip=Precip,CO2=CO2)
+```
+
+Plot model outputs
+```{r}
+# plot.prebas(PREBASout,layerNam = c("pine","spruce","birch"))
+```
+
+
+
+## Example 2
+
+In this example PREBAS inputs are read from .csv files located in the "inputs" folder
+
+Read the initial state of the stand (initVar), weather, site information (sietInfo), thinning and observed data (obsData).
+
+```{r}
+nYears = 100
+siteInfo <- read.csv("inputs/siteInfo.csv",header = T)
+thinning <- read.csv("inputs/Thinning.csv",header = T)
+initVar <- read.csv("inputs/initVar.csv",header = T, row.names = 1)
+obsData <- read.csv("inputs/obsData.csv",header = T)
+
+weather <- read.csv("inputs/weather.csv",header = T)
+PAR = c(weather$PAR,weather$PAR,weather$PAR)
+TAir = c(weather$TAir,weather$TAir,weather$TAir)
+Precip = c(weather$Precip,weather$Precip,weather$Precip)
+VPD = c(weather$VPD,weather$VPD,weather$VPD)
+CO2 = c(weather$CO2,weather$CO2,weather$CO2)
+DOY = c(weather$DOY,weather$DOY,weather$DOY)
+```
+
+
+Run the model
+```{r}
+PREBASout <- prebas(
+                   nYears=nYears,
+                   pCROBAS = pCROB,
+                   pPRELES = pPREL,
+                   siteInfo = siteInfo,
+                   thinning = thinning,
+                   PAR=PAR,TAir=TAir,VPD=VPD,Precip=Precip,CO2=CO2,
+                   P0=NA,
+                   initVar = as.matrix(initVar),
+                   defaultThin = 0.,
+                   ClCut = 1.,
+                   inDclct = NA,
+                   inAclct = NA)
+```
+
+
+##Plot model outputs
+The function to plot the prebas objects is plot.prebas
+```{r}
+?plot.prebas
+```
+
+
+Select some variables to plot 
+
+```{r}
+variableIDs=c(11:14,30,44);siteIDs=NA;leg=T;layerNam = c("pine","spruce","birch")
+
+plot.prebas(PREBASout,variableIDs,siteIDs,leg = F,layerNam =layerNam,obsData = obsData)
+```
+
+

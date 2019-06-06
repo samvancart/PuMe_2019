@@ -1,0 +1,27 @@
+Package: Rprebas
+Type: Package
+Title: What the Package Does (Title Case)
+Version: 0.1.0
+Author: Who wrote it
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+Depends: Rpreles, sm
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
+RemoteType: github
+RemoteHost: api.github.com
+RemoteRepo: Rprebas
+RemoteUsername: checcomi
+RemoteRef: master
+RemoteSha: af6848d78449d780876cbf357165156f7f70a0d6
+GithubRepo: Rprebas
+GithubUsername: checcomi
+GithubRef: master
+GithubSHA1: af6848d78449d780876cbf357165156f7f70a0d6
+NeedsCompilation: yes
+Packaged: 2019-05-14 10:18:45 UTC; Sam
+Built: R 3.5.3; x86_64-w64-mingw32; 2019-05-14 10:18:45 UTC; windows
+Archs: i386, x64

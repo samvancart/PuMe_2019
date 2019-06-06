@@ -1,0 +1,381 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: PREBAS forest model</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for prebas {Rprebas}"><tr><td>prebas {Rprebas}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>PREBAS forest model
+
+</h2>
+
+<h3>Description</h3>
+
+<p>This function runs PREBAS model.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+prebas(nYears, pCROBAS = pCROB, pPRELES = pPREL, etmodel = 0, pYASSO = pYAS, pAWEN = parsAWEN, siteInfo = NA, initVar = NA,
+  thinning=NA,initClearcut = c(1.5,0.5,0.0431969,0.,0.),PAR,TAir,VPD,Precip,CO2, P0=NA,  soilC = NA,
+  weatherYasso = NA, litterSize = NA, soilCtot = numeric(nYears), defaultThin = 1.,
+  ClCut = 1., inDclct = NA, inAclct = NA, yassoRun = 0)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>nYears</code></td>
+<td>
+
+<p>Number of years to run the model
+
+</p>
+</td></tr>
+<tr valign="top"><td><code>pCROBAS</code></td>
+<td>
+
+<p>Matrix of parameter sets, each column corresponds to a species. Default values pCROBAS = pCROB are the parameter sets for Scots pine, Norway spruce and Silver birch. print(pCROB) to see the parameter values and names.
+
+</p>
+</td></tr>
+<tr valign="top"><td><code>pPRELES</code></td>
+<td>
+
+<p>Parameter vector for PRELES model. Default values (pPRELES = pPREL) is the calibration for European Boreal forests (Minunno et al. 2016)
+
+</p>
+</td></tr>
+<tr valign="top"><td><code>etmodel</code></td>
+<td>
+
+<p>Evapotranspiration model for PRELES. Default etmodel = 0. Possible values -1, 0, 1, 2
+
+</p>
+</td></tr>
+<tr valign="top"><td><code>pYASSO</code></td>
+<td>
+
+<p>Parameter vector for YASSO model. Default pYASSO = pYAS (Liski et al., 2017)
+
+</p>
+</td></tr>
+<tr valign="top"><td><code>pAWEN</code></td>
+<td>
+
+<p>Matrix of parameter sets for partitioning tree organs (foliage, branch and woody) in AWEN pools. Columns referes to different species. Note that the columns of pAWEN must correspond to the species of pPRELES. Default pAWEN = parsAWEN are for Scots pine, Norway spruce and Silver birch.
+
+</p>
+</td></tr>
+<tr valign="top"><td><code>siteInfo</code></td>
+<td>
+
+<p>Vector of site info SiteID, climID, siteType. Default = c(1,1,3), i.e. siteType = 3.
+
+</p>
+</td></tr>
+<tr valign="top"><td><code>initVar</code></td>
+<td>
+
+<p>Matrix with initial stand values for all the tree strata. Columns correspond to the layers in the stand. Initial information needed are: SpeciesID (a number corresponding to the species parameter values of pPRELES columns), Age (years), average height of the layer (H, m), average diameter at breast height of the layer (D, cm), basal area of the layer (BA, m2 ha-1), average height of the crown base of the layer (Hc, m). If initVar is not provided the model is initialized from plantation using default planting parameters (see initClearcut) and assuming that Pine, Spruce and Birch are equally present at plantation.
+
+</p>
+</td></tr>
+<tr valign="top"><td><code>thinning</code></td>
+<td>
+
+<p>A matrix with thinnig inputs. Rows correspond to a thinning event. Column 1 year from the start of the simulation; column 2 is siteID; column 3 layer where thinnings are carried out; column 4 to 7 stand variables (H, D, B, Hc); column 8 parameter that indicates if the stand variables (column 4:7) are provided as fraction of the actual model outputs. (see examples)
+
+</p>
+</td></tr>
+<tr valign="top"><td><code>initClearcut</code></td>
+<td>
+
+<p>A numeric vector with initial stand variables after clearcut: H, D, BA, Hc, Ainit. Ainit is the year when the stand reaches the default values = c(1.5,0.5,0.0431969,0.,0.) and is automatically computed using air temperature.
+
+</p>
+</td></tr>
+<tr valign="top"><td><code>PAR</code></td>
+<td>
+
+<p>A numeric vector of daily sums of photosynthetically active radiation, mmol/m2.
+
+</p>
+</td></tr>
+<tr valign="top"><td><code>TAir</code></td>
+<td>
+
+<p>A numeric vector of daily mean temperature, degrees C.
+
+</p>
+</td></tr>
+<tr valign="top"><td><code>VPD</code></td>
+<td>
+
+<p>A numeric vector of daily mean vapour pressure deficits, kPa.
+
+</p>
+</td></tr>
+<tr valign="top"><td><code>Precip</code></td>
+<td>
+
+<p>A numeric vector of daily rainfall, mm
+
+</p>
+</td></tr>
+<tr valign="top"><td><code>CO2</code></td>
+<td>
+
+<p>A numeric vector of air CO2, ppm
+
+</p>
+</td></tr>
+<tr valign="top"><td><code>P0</code></td>
+<td>
+
+<p>A numeric vector with the annual potential photosynthesis (gC m-2 y-1). If P0 is not provided PRELES is used to compute P0 using fAPAR = 1.
+
+</p>
+</td></tr>
+<tr valign="top"><td><code>soilC</code></td>
+<td>
+
+<p>Initial soil carbon compartments for each layer. Array with dimentions = c(nYears,5,3,nLayers). The second dimention (5) corresponds to the AWENH pools; the third dimention (3) corresponds to the tree organs (foliage, branch and stem).
+
+</p>
+</td></tr>
+<tr valign="top"><td><code>weatherYasso</code></td>
+<td>
+
+<p>Annual weather inputs for Yasso.
+
+</p>
+</td></tr>
+<tr valign="top"><td><code>litterSize</code></td>
+<td>
+
+<p>Marix with litter inputs for YASSO. Rows are tree organs, columns correspond to the layers.
+
+</p>
+</td></tr>
+<tr valign="top"><td><code>soilCtot</code></td>
+<td>
+
+<p>Vector with total initial soil carbon
+
+</p>
+</td></tr>
+<tr valign="top"><td><code>defaultThin</code></td>
+<td>
+
+<p>If defaultThin = 1 (default) Finnish standard managment practices are applied (ref).
+
+</p>
+</td></tr>
+<tr valign="top"><td><code>ClCut</code></td>
+<td>
+
+<p>If ClCut = 1 clearcuts are applied. If inDclct = NA and inAclct = NA Finnish standard clearcut practices are applied (ref).
+
+</p>
+</td></tr>
+<tr valign="top"><td><code>inDclct</code></td>
+<td>
+
+<p>Vector of Diameter (cm) threshold for clearcut. Each element correspond to a layer of the stand, if only one value is provided the same value is applied to all the layers. The different elements of the vector are for the different layers. The dominant species (highest basal area) is considered for clearcut.
+
+</p>
+</td></tr>
+<tr valign="top"><td><code>inAclct</code></td>
+<td>
+
+<p>Vector of Age (year) threshold for clearcut.  Each element correspond to a layer of the stand, if only one value is provided the same value is applied to all the layers. The different elements of the vector are for the different layers. The dominant species (highest basal area) is considered for clearcut.
+
+</p>
+</td></tr>
+<tr valign="top"><td><code>yassoRun</code></td>
+<td>
+
+<p>If yassoRun=1 the YASSO model is run to compute the carbon balance of the soil.
+
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<table summary="R valueblock">
+<tr valign="top"><td><code>output</code></td>
+<td>
+
+<p>An array with annual model outputs. 1st dimension corresponds to the number of years of the simulation (nYears); 2nd dimension corresponds to the output variables (see list below); 3rd dimension corresponds to the number of layers in the stand (nLayers); 4th dimensions reports the state of the stand (1) and (2) the variables of the harvested trees (2).
+</p>
+<p>Output variables:
+1.&quot;siteID&quot; <br />
+2.&quot;climID&quot; <br />
+3.&quot;sitetype&quot; <br />
+4.&quot;species&quot; <br />
+5.&quot;ETS&quot; effective temperature sums <br />
+6.&quot;P0&quot; Potential annual gross primary production (gC m-2 y-1) <br />
+7.&quot;age&quot; Age of the layer (years) <br />
+8.&quot;Respi_m /10000.&quot; (kgC m-2 y-1) <br />
+9.&quot;Respi_tot&quot; Autotrophic respiration (gC m-2 y-1) <br />
+10.&quot;GPP/1000&quot; Total GPP  (kgC ha-1 y-1) <br />
+11.&quot;H&quot; Layer average height (m) <br />
+12.&quot;D&quot; Layer average diameter at breast height (cm) <br />
+13.&quot;BA&quot; Layer basal area (m-2 ha-1) <br />
+14.&quot;Hc_base&quot; Base of crown height (m) <br />
+15.&quot;Cw&quot; Crorn width (m) <br />
+16.&quot;Lc&quot; Length of the crown (m) <br />
+17.&quot;N&quot; Layer density <br />
+18.&quot;npp&quot; net primary production (gC m-2 y-1) <br />
+19.&quot;leff&quot; Effective leaf area <br />
+20.&quot;keff&quot; Effective light extintion coefficient <br />
+21.&quot;lproj&quot; Projected leaf area <br />
+22.&quot;ET_preles&quot; Annual evapotranspiration (mm m-2) <br />
+23.&quot;weight&quot; Layer weight on photosynthesis <br />
+24.&quot;Wbranch&quot; Branch biomass (kgC ha-1) <br />
+25.&quot;WfineRoots&quot; Fine roots biomass (kgC ha-1) <br />
+26.&quot;Litter_fol&quot; Foliage litter (kgC ha-1) <br />
+27.&quot;Litter_fr&quot; Fine root litter (kgC ha-1) <br />
+28.&quot;Litter_branch&quot; Branch litter (kgC ha-1) <br />
+29.&quot;Litter_wood&quot; Woody litter (kgC ha-1) <br />
+30.&quot;V&quot; Layer volume (m3 ha-1) <br />
+31.&quot;Wstem&quot; Stem Biomass (kgC ha-1) <br />
+32.&quot;W_croot&quot; Course root Biomass (kgC ha-1) <br />
+33.&quot;wf_STKG&quot; Foliage biomass (kgC ha-1) <br />
+34.&quot;wf_treeKG&quot; Foliage biomass of the average tree (kgC ha-1) <br />
+35.&quot;B_tree&quot; Basal area of average tree (m2 ha-1) <br />
+36.&quot;Light&quot; light interseption <br />
+37.&quot;Vharvested&quot; harvested volume (m3 ha-1) <br />
+38.&quot;Vtot&quot; total volume of the Layer considering also dead trees and harvested volume (m3 ha-1) <br />
+39.&quot;soilC&quot; totaal soil carbon (kgC ha-1) <br />
+40.&quot;aSW&quot; average available soil water (mm m-2) <br />
+41.&quot;summerSW&quot; summer soil water (mm m-2) <br />
+42.&quot;Vmort&quot; volume of dead trees (m3 ha-1) <br />
+43.&quot;gross growth&quot; (m3 ha-1 y-1) <br />
+44.&quot;GPPspecies&quot; Gross primary production per layer (gC m-2 y-1) <br />
+45.&quot;Rh species&quot; (gC m-2 y-1) <br />
+46.&quot;NEP sp&quot; Net ecosystem exchange (gC m-2 y-1)</p>
+</td></tr>
+<tr valign="top"><td><code>dailyPRELES</code></td>
+<td>
+
+<p>Matrix with daily output from preles. 1st column is the daily GPP (gC m-2 d-1), 2nd column daily evapotranspiration (mm m-2), 3rd column daily soil water (mm -2).
+</p>
+</td></tr></table>
+
+
+
+
+
+
+
+<h3>Author(s)</h3>
+
+<p>Francesco Minunno
+
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+##---- Should be DIRECTLY executable !! ----
+##-- ==&gt;  Define data, use random,
+##--	or do  help(data=index)  for the standard data sets.
+
+## The function is currently defined as
+function (nYears, pCROBAS = pCROB, pPRELES = pPREL, pYASSO = pYAS,
+    siteInfo = NA, thinning = matrix(0, 2, 10), nThinning = max(2,
+        nrow(thinning)), initClearcut = c(1.5, 0.5, 0.0431969,
+        0, 0), PAR, TAir, VPD, Precip, CO2, P0 = NA, initVar = NA,
+    soilC = array(0, dim = c(nYears, 5, 3, 3)), weatherYasso = matrix(0,
+        nYears, 3), litterSize = matrix(0, 3, 3), soilCtot = numeric(nYears),
+    defaultThin = 1, ClCut = 1, inDclct = NA, inAclct = NA, yassoRun = 0)
+{
+    nLayers &lt;- ifelse(!is.na(initVar), ncol(initVar), 3)
+    nSp = ncol(pCROBAS)
+    if (is.na(siteInfo))
+        siteInfo = c(1, 1, 3)
+    varNam &lt;- getVarNam()
+    nVar &lt;- length(varNam)
+    nLayers &lt;- nSp &lt;- ncol(pCROBAS)
+    layerNam &lt;- paste("layer", 1:nSp)
+    output &lt;- array(0, dim = c((nYears), nVar, nSp, 2), dimnames = list(NULL,
+        varNam, layerNam, c("stand", "thinned")))
+    fAPAR &lt;- rep(0.7, nYears)
+    Temp &lt;- TAir[1:(365 * nYears)] - 5
+    ETS &lt;- pmax(0, Temp, na.rm = T)
+    ETS &lt;- matrix(ETS, 365, nYears)
+    ETS &lt;- colSums(ETS)
+    if (is.na(P0)) {
+        P0 &lt;- PRELES(DOY = rep(1:365, nYears), PAR = PAR, TAir = TAir,
+            VPD = VPD, Precip = Precip, CO2 = CO2, fAPAR = rep(1,
+                length(PAR)), LOGFLAG = 0, p = pPRELES)$GPP
+        P0 &lt;- matrix(P0, 365, nYears)
+        P0 &lt;- colSums(P0)
+    }
+    ETSthres &lt;- 1000
+    ETSmean &lt;- mean(ETS)
+    if (any(!is.na(c(inDclct, inAclct)))) {
+        if (is.na(inDclct))
+            inDclct &lt;- 9999999.99
+        if (is.na(inAclct))
+            inAclct &lt;- 9999999.99
+    }
+    if (ClCut == 1 &amp; is.na(initVar) &amp; is.na(inDclct))
+        inDclct &lt;- c(ClCutD_Pine(ETSmean, ETSthres, siteInfo[3]),
+            ClCutD_Spruce(ETSmean, ETSthres, siteInfo[3]), ClCutD_Birch(ETSmean,
+                ETSthres, siteInfo[3]))
+    if (ClCut == 1 &amp; is.na(initVar) &amp; is.na(inAclct))
+        inAclct &lt;- c(ClCutA_Pine(ETSmean, ETSthres, siteInfo[3]),
+            ClCutA_Spruce(ETSmean, ETSthres, siteInfo[3]), ClCutA_Birch(ETSmean,
+                ETSthres, siteInfo[3]))
+    if (any(is.na(inDclct)))
+        inDclct[is.na(inDclct)] &lt;- 9999999.99
+    if (length(inDclct) == 1)
+        inDclct &lt;- rep(inDclct, nSp)
+    if (any(is.na(inAclct)))
+        inAclct[is.na(inAclct)] &lt;- 9999999.99
+    if (length(inAclct) == 1)
+        inAclct &lt;- rep(inAclct, nSp)
+    if (is.na(initVar)) {
+        initVar &lt;- matrix(NA, 6, nSp)
+        initVar[1, ] &lt;- 1:nSp
+        initVar[3, ] &lt;- initClearcut[1]
+        initVar[4, ] &lt;- initClearcut[2]
+        initVar[5, ] &lt;- initClearcut[3]/nSp
+        initVar[6, ] &lt;- initClearcut[4]
+    }
+    xx &lt;- min(10, nYears)
+    Ainit = 6 + 2 * 3.5 - 0.005 * (sum(ETS[1:xx])/xx) + 2.25
+    initVar[2, which(is.na(initVar[2, ]))] &lt;- initClearcut[5] &lt;- round(Ainit)
+    weatherPreles &lt;- array(c(PAR, TAir, VPD, Precip, CO2), dim = c(365,
+        nYears, 5))
+    weatherPreles &lt;- aperm(weatherPreles, c(2, 1, 3))
+    prebas &lt;- .Fortran("prebas", nYears = as.integer(nYears),
+        nLayers = as.integer(nLayers), nSp = as.integer(nSp),
+        siteInfo = as.numeric(siteInfo), pCROBAS = as.matrix(pCROBAS),
+        initVar = as.matrix(initVar), thinning = as.matrix(thinning),
+        output = as.array(output), nThinning = as.integer(nThinning),
+        maxYearSite = as.integer(nYears), fAPAR = as.numeric(fAPAR),
+        initClearcut = as.numeric(initClearcut), ETS = as.numeric(ETS),
+        P0 = as.numeric(P0), weather = as.array(weatherPreles),
+        DOY = as.integer(1:365), pPRELES = as.numeric(pPRELES),
+        soilC = as.array(soilC), pYASSO = as.numeric(pYASSO),
+        weatherYasso = as.matrix(weatherYasso), litterSize = as.matrix(litterSize),
+        soilCtot = as.numeric(soilCtot), defaultThin = as.double(defaultThin),
+        ClCut = as.double(ClCut), inDclct = as.double(inDclct),
+        inAclct = as.double(inAclct), yassoRun = as.double(yassoRun))
+    class(prebas) &lt;- "prebas"
+    return(prebas)
+  }
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>Rprebas</em> version 0.1.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

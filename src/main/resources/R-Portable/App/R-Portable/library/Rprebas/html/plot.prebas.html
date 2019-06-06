@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Plot PREBAS outputs</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for plot.prebas {Rprebas}"><tr><td>plot.prebas {Rprebas}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Plot PREBAS outputs
+</h2>
+
+<h3>Description</h3>
+
+<p>This function plots the outputs of PREBAS model
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+plot.prebas(x, variableIDs=NA, siteIDs=NA, layerIDs=NA, leg=T, layerNam = NA, obsData=NA)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+
+<p>a prebas or multiSitePrebas object.
+</p>
+</td></tr>
+<tr valign="top"><td><code>variableIDs</code></td>
+<td>
+
+<p>a numeric vector indicating the output variables IDs to plot. See list below.
+</p>
+</td></tr>
+<tr valign="top"><td><code>siteIDs</code></td>
+<td>
+
+<p>a numeric vector indicating the site IDs (only for a multiSitePrebas object).
+</p>
+</td></tr>
+<tr valign="top"><td><code>layerIDs</code></td>
+<td>
+
+<p>a numeric vector indicating the layer IDs to plot.
+</p>
+</td></tr>
+<tr valign="top"><td><code>leg</code></td>
+<td>
+
+<p>logical. If TRUE the legend is included in the plots.
+</p>
+</td></tr>
+<tr valign="top"><td><code>layerNam</code></td>
+<td>
+
+<p>a character vector with the layer names.
+</p>
+</td></tr>
+<tr valign="top"><td><code>obsData</code></td>
+<td>
+
+<p>a matrix with observed data. Rows are observations; Columns are 7: site IDs, layer IDs,	the year of observation from the start of the simulations, variable IDs, the actual value observed,	sd of the observation (if available).
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>List of output variables:
+</p>
+<p>1.&quot;siteID&quot; <br />
+2.&quot;climID&quot; <br />
+3.&quot;sitetype&quot; <br />
+4.&quot;species&quot; <br />
+5.&quot;ETS&quot; effective temperature sums <br />
+6.&quot;P0&quot; Potential annual gross primary production (gC m-2 y-1) <br />
+7.&quot;age&quot; Age of the layer (years) <br />
+8.&quot;Respi_m /10000.&quot; (kgC m-2 y-1) <br />
+9.&quot;Respi_tot&quot; Autotrophic respiration (gC m-2 y-1) <br />
+10.&quot;GPP/1000&quot; Total GPP  (kgC ha-1 y-1) <br />
+11.&quot;H&quot; Layer average height (m) <br />
+12.&quot;D&quot; Layer average diameter at breast height (cm) <br />
+13.&quot;BA&quot; Layer basal area (m-2 ha-1) <br />
+14.&quot;Hc_base&quot; Base of crown height (m) <br />
+15.&quot;Cw&quot; Crorn width (m) <br />
+16.&quot;Lc&quot; Length of the crown (m) <br />
+17.&quot;N&quot; Layer density <br />
+18.&quot;npp&quot; net primary production (gC m-2 y-1) <br />
+19.&quot;leff&quot; Effective leaf area <br />
+20.&quot;keff&quot; Effective light extintion coefficient <br />
+21.&quot;lproj&quot; Projected leaf area <br />
+22.&quot;ET_preles&quot; Annual evapotranspiration (mm m-2) <br />
+23.&quot;weight&quot; Layer weight on photosynthesis <br />
+24.&quot;Wbranch&quot; Branch biomass (kgC ha-1) <br />
+25.&quot;WfineRoots&quot; Fine roots biomass (kgC ha-1) <br />
+26.&quot;Litter_fol&quot; Foliage litter (kgC ha-1) <br />
+27.&quot;Litter_fr&quot; Fine root litter (kgC ha-1) <br />
+28.&quot;Litter_branch&quot; Branch litter (kgC ha-1) <br />
+29.&quot;Litter_wood&quot; Woody litter (kgC ha-1) <br />
+30.&quot;V&quot; Layer volume (m3 ha-1) <br />
+31.&quot;Wstem&quot; Stem Biomass (kgC ha-1) <br />
+32.&quot;W_croot&quot; Course root Biomass (kgC ha-1) <br />
+33.&quot;wf_STKG&quot; Foliage biomass (kgC ha-1) <br />
+34.&quot;wf_treeKG&quot; Foliage biomass of the average tree (kgC ha-1) <br />
+35.&quot;B_tree&quot; Basal area of average tree (m2 ha-1) <br />
+36.&quot;Light&quot; light interseption <br />
+37.&quot;Vharvested&quot; harvested volume (m3 ha-1) <br />
+38.&quot;Vtot&quot; total volume of the Layer considering also dead trees and harvested volume (m3 ha-1) <br />
+39.&quot;soilC&quot; totaal soil carbon (kgC ha-1) <br />
+40.&quot;aSW&quot; average available soil water (mm m-2) <br />
+41.&quot;summerSW&quot; summer soil water (mm m-2) <br />
+42.&quot;Vmort&quot; volume of dead trees (m3 ha-1) <br />
+43.&quot;gross growth&quot; (m3 ha-1 y-1) <br />
+44.&quot;GPPspecies&quot; Gross primary production per layer (gC m-2 y-1) <br />
+45.&quot;Rh species&quot; (gC m-2 y-1) <br />
+46.&quot;NEP sp&quot; Net ecosystem exchange (gC m-2 y-1)
+
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+##---- Should be DIRECTLY executable !! ----
+##-- ==&gt;  Define data, use random,
+##--	or do  help(data=index)  for the standard data sets.
+
+## The function is currently defined as
+function (x, variables = NA, sites = NA, speciesIDs = NA, leg = T,
+    speciesNam = NA, data = NA)
+{
+    varNam &lt;- getVarNam()
+    if (any(variables == "all") | anyNA(variables))
+        variables &lt;- c(5, 6, 8:18, 22, 24:34, 37:46)
+    if (inherits(x, "prebas")) {
+        if (anyNA(speciesIDs))
+            speciesIDs &lt;- 1:dim(x$output)[3]
+        nSp &lt;- length(speciesIDs)
+        if (anyNA(speciesNam))
+            speciesNam &lt;- as.character(paste("sp", 1:nSp))
+        count &lt;- 0
+        if (length(variables) &gt; 1)
+            par(mfrow = c(2, 3))
+        else par(mfrow = c(1, 1))
+        for (var in variables) {
+            count &lt;- count + 1
+            plot(x$output[, var, speciesIDs[1], 1], type = "l",
+                xaxt = "n", main = varNam[var], ylab = "units",
+                xlab = "age (y)", col = speciesIDs[1], ylim = c(min(x$output[,
+                  var, , 1]), max(x$output[, var, , 1])))
+            if (nSp &gt; 1)
+                for (ij in speciesIDs[2:nSp]) lines(x$output[,
+                  var, ij, 1], col = ij)
+            axis(1, at = seq(1, (dim(x$output)[1]), length.out = 6),
+                labels = x$output[seq(1, (dim(x$output)[1]),
+                  length.out = 6), 7, 1, 1])
+            if (leg == TRUE)
+                legend("topleft", c(speciesNam[speciesIDs]),
+                  lty = 1, col = 1:nSp)
+            if (count%%6 == 0 &amp; var != tail(variables, n = 1))
+                pause()
+        }
+    }
+    if (inherits(x, "multiPrebas")) {
+        if (anyNA(speciesIDs))
+            speciesIDs &lt;- 1:dim(x$multiOut)[4]
+        nSp &lt;- length(speciesIDs)
+        if (anyNA(speciesNam))
+            speciesNam &lt;- as.character(paste("sp", 1:nSp))
+        if (anyNA(sites))
+            sites &lt;- 1:dim(x$multiOut)[1]
+        for (iz in sites) {
+            count &lt;- 0
+            if (length(variables) &gt; 1)
+                par(mfrow = c(2, 3))
+            else par(mfrow = c(1, 1))
+            for (var in variables) {
+                plot(x$multiOut[iz, , var, speciesIDs[1], 1],
+                  type = "l", xaxt = "n", main = varNam[var],
+                  ylab = "units", xlab = "age (y)", col = speciesIDs[1],
+                  ylim = c(min(x$multiOut[iz, , var, , 1]), max(x$multiOut[iz,
+                    , var, , 1])))
+                if (nSp &gt; 1)
+                  for (ij in speciesIDs[2:nSp]) lines(x$multiOut[iz,
+                    , var, ij, 1], col = ij)
+                axis(1, at = seq(1, (dim(x$multiOut)[2]), length.out = 6),
+                  labels = x$multiOut[iz, seq(1, (dim(x$multiOut)[2]),
+                    length.out = 6), 7, 1, 1])
+                if (leg == TRUE)
+                  legend("topleft", c(speciesNam[speciesIDs]),
+                    lty = 1, col = speciesIDs)
+                if (count%%6 == 0)
+                  title(paste("Site:", x$multiOut[iz, 1, 1, 1,
+                    1]), line = -22, outer = TRUE, cex.main = 2)
+                count &lt;- count + 1
+                if (count%%6 == 0 &amp; var != tail(variables, n = 1))
+                  pause()
+            }
+            if (length(sites) &gt; 1 &amp; iz != tail(sites, n = 1))
+                pause()
+        }
+    }
+  }
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>Rprebas</em> version 0.1.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

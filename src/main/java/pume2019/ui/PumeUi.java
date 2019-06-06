@@ -1,7 +1,6 @@
 package pume2019.ui;
 
 import java.io.File;
-import java.util.Arrays;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.application.Platform;
@@ -29,14 +28,28 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import pume2019.domain.Heath;
+import pume2019.domain.Info;
 import pume2019.domain.InitStand;
 import pume2019.domain.SiteInfo;
+import pume2019.domain.Tree;
 
 public class PumeUi extends Application {
 
     private Scene scene;
+    private Info info;
     private InitStand initStand;
     private SiteInfo siteInfo;
+    private String defPath;
+
+    @Override
+    public void init() {
+        String currentDirectory = System.getProperty("user.dir");
+        defPath = currentDirectory + "\\src\\main\\resources\\R-Portable\\Rprebas_examples-master\\inputs";
+        info = new Info();
+        info.setWeatherPath(defPath + "\\weather.csv");
+        info.setManagPath(defPath + "\\thinning.csv");
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -215,6 +228,7 @@ public class PumeUi extends Application {
         RadioButton weatherRbCus = new RadioButton("Custom .csv");
         weatherRbCus.setToggleGroup(weatherTg);
         Button weatherBtn = new Button("Choose file");
+        weatherBtn.setMaxSize(80, 20);
         weatherBtn.setDisable(true);
 
         ToggleGroup managTg = new ToggleGroup();
@@ -259,6 +273,21 @@ public class PumeUi extends Application {
         AnchorPane.setLeftAnchor(infoVb, 10d);
         AnchorPane.setRightAnchor(bp, 10d);
 
+        runBtn.setOnAction(
+                new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                info.setHeath((Heath) siteCb.getValue());
+                info.setTree((Tree) treesCb.getValue());
+                info.setYears(yearsSpin.getEditor().textProperty().get());
+                System.out.println("init stand: " + info.getTree());
+                System.out.println("site type: " + info.getHeath());
+                System.out.println("weather path: " + info.getWeatherPath());
+                System.out.println("manag path: " + info.getManagPath());
+                System.out.println("years: " + info.getYears());
+            }
+        });
+
         weatherBtn.setOnAction(
                 new EventHandler<ActionEvent>() {
             @Override
@@ -267,6 +296,7 @@ public class PumeUi extends Application {
                 File file = fileChooser.showOpenDialog(primaryStage);
                 if (file != null) {
                     String path[] = file.getPath().split("\\\\");
+                    info.setWeatherPath(file.getPath());
                     if (!path[0].equals("")) {
                         weatherBtn.setText(path[path.length - 1]);
                     }
@@ -282,6 +312,7 @@ public class PumeUi extends Application {
                 File file = fileChooser.showOpenDialog(primaryStage);
                 if (file != null) {
                     String path[] = file.getPath().split("\\\\");
+                    info.setManagPath(file.getPath());
                     if (!path[0].equals("")) {
                         managBtn.setText(path[path.length - 1]);
                     }
@@ -297,6 +328,7 @@ public class PumeUi extends Application {
                 } else {
                     weatherBtn.setDisable(true);
                     weatherBtn.setText("Choose File");
+                    info.setWeatherPath(defPath + "\\weather.csv");
                 }
             }
         });
@@ -309,6 +341,7 @@ public class PumeUi extends Application {
                 } else {
                     managBtn.setDisable(true);
                     managBtn.setText("Choose File");
+                    info.setManagPath(defPath + "\\thinning.csv");
                 }
             }
         });
