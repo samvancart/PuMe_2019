@@ -192,22 +192,54 @@ public class PumeUi extends Application {
             bioGp.add(rb, i + 1, 1, 2, 2);
         }
 
+        GridPane cwgGp = new GridPane();
+        cwgGp.setVisible(false);
+        cwgGp.setHgap(10);
+        cwgGp.setVgap(10);
+
+        cwgGp.setStyle("-fx-padding: 10;"
+                + "-fx-border-style: solid inside;"
+                + "-fx-border-width: 2;"
+                + "-fx-border-insets: 5;"
+                + "-fx-border-radius: 5;"
+                + "-fx-border-color: blue;");
+
+        Button cbBtn = new Button("Carbon Balance");
+        Button gppBtn = new Button("GPP");
+        Button wuBtn = new Button("Water use");
+        Button vgBtn = new Button("Volume growth");
+        ObservableList<Button> cwgBtns;
+        cwgBtns = FXCollections.observableArrayList();
+        cwgBtns.addAll(cbBtn, gppBtn, wuBtn, vgBtn);
+
+        for (int i = 0; i < cwgBtns.size(); i++) {
+            Button btn = cwgBtns.get(i);
+            btn.prefWidthProperty().bind(cwgGp.widthProperty().divide(cwgBtns.size()));
+            cwgGp.add(btn, i, 0);
+        }
+        
+        
+
         nestedBp.setTop(tscGp);
 
         tscBtn.setOnAction(e -> {
             tscGp.setVisible(true);
+            cwgGp.setVisible(false);
             bioGp.setVisible(false);
             nestedBp.setTop(tscGp);
         });
 
         bioBtn.setOnAction(e -> {
             tscGp.setVisible(false);
+            cwgGp.setVisible(false);
             bioGp.setVisible(true);
             nestedBp.setTop(bioGp);
         });
         cbwBtn.setOnAction(e -> {
             tscGp.setVisible(false);
             bioGp.setVisible(false);
+            cwgGp.setVisible(true);
+            nestedBp.setTop(cwgGp);
         });
 
         Label initSitLbl = new Label("Initial situation:");
@@ -245,7 +277,7 @@ public class PumeUi extends Application {
         Label yearsLbl = new Label("Years:");
         final Spinner yearsSpin = new Spinner();
         String INITIAL_VALUE = "100";
-        yearsSpin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100,
+        yearsSpin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 200,
                 Integer.parseInt(INITIAL_VALUE)));
         yearsSpin.setEditable(true);
         yearsSpin.setPrefSize(60, 20);
