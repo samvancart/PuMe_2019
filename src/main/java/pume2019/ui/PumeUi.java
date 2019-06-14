@@ -2,6 +2,9 @@ package pume2019.ui;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.application.Platform;
@@ -10,12 +13,15 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Spinner;
@@ -24,12 +30,15 @@ import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javax.swing.event.HyperlinkEvent;
 import pume2019.domain.Heath;
 import pume2019.domain.Info;
 import pume2019.domain.InitStand;
@@ -44,6 +53,7 @@ public class PumeUi extends Application {
     private SiteInfo siteInfo;
     private String defPath;
     private ButtonController bc;
+    private Button clickedBtn;
 
     @Override
     public void init() {
@@ -139,11 +149,11 @@ public class PumeUi extends Application {
         Button stockBtn = new Button("Stocking density");
         stockBtn.setId("17");
         Button remBtn = new Button("Removals");
-        remBtn.setId("37");
         ObservableList<Button> tscBtns;
         tscBtns = FXCollections.observableArrayList();
         tscBtns.addAll(treeCrownBtn, diaBtn, volBtn, basBtn, stockBtn, remBtn);
         bc.addBtns(tscBtns, tscGp);
+        bc.defineBtnHandler(tscBtns);
 
         ObservableList<RadioButton> treeRbs;
         treeRbs = FXCollections.observableArrayList();
@@ -155,6 +165,44 @@ public class PumeUi extends Application {
         birchRb.setId("3");
         treeRbs.addAll(pineRb, spruceRb, birchRb);
         bc.addRbs(treeRbs, tscGp, 0);
+
+        ObservableList<RadioButton> remRbs;
+        remRbs = FXCollections.observableArrayList();
+        RadioButton cuttingsRb = new RadioButton("Cuttings");
+        cuttingsRb.setId("37");
+        RadioButton mortalityRb = new RadioButton("Mortality");
+        mortalityRb.setId("42");
+        remRbs.addAll(pineRb, spruceRb, birchRb, cuttingsRb, mortalityRb);
+
+        ArrayList<ObservableList> tscRbtns;
+        tscRbtns = new ArrayList<>();
+        tscRbtns.add(remRbs);
+        tscRbtns.add(treeRbs);
+
+        treeCrownBtn.setOnAction(e -> {
+            bc.removeRbtns(tscRbtns, tscGp);
+            bc.addRbs(treeRbs, tscGp, 0);
+        });
+        diaBtn.setOnAction(e -> {
+            bc.removeRbtns(tscRbtns, tscGp);
+            bc.addRbs(treeRbs, tscGp, 0);
+        });
+        volBtn.setOnAction(e -> {
+            bc.removeRbtns(tscRbtns, tscGp);
+            bc.addRbs(treeRbs, tscGp, 0);
+        });
+        basBtn.setOnAction(e -> {
+            bc.removeRbtns(tscRbtns, tscGp);
+            bc.addRbs(treeRbs, tscGp, 0);
+        });
+        stockBtn.setOnAction(e -> {
+            bc.removeRbtns(tscRbtns, tscGp);
+            bc.addRbs(treeRbs, tscGp, 0);
+        });
+        remBtn.setOnAction(e -> {
+            bc.removeRbtns(tscRbtns, tscGp);
+            bc.addRbs(remRbs, tscGp, 0);
+        });
 
         GridPane bioGp = new GridPane();
         bioGp.setVisible(false);
@@ -183,6 +231,7 @@ public class PumeUi extends Application {
         bioBtns = FXCollections.observableArrayList();
         bioBtns.addAll(totalBioBtn, foliageBtn, branchesBtn, stemBtn, fineBtn, coarseBtn);
         bc.addBtns(bioBtns, bioGp);
+        bc.defineBtnHandler(bioBtns);
 
         ObservableList<RadioButton> bioRbs;
         bioRbs = FXCollections.observableArrayList();
@@ -197,7 +246,30 @@ public class PumeUi extends Application {
         RadioButton coarseRb = new RadioButton("Coarse root mass");
         coarseRb.setId("32");
         bioRbs.addAll(foliageRb, branchesRb, stemRb, fineRb, coarseRb);
-        bc.addRbs(bioRbs, bioGp, 1);
+
+        ArrayList<ObservableList> bioRbtns;
+        bioRbtns = new ArrayList<>();
+        bioRbtns.add(bioRbs);
+
+        totalBioBtn.setOnAction(e -> {
+            bc.removeRbtns(bioRbtns, bioGp);
+            bc.addRbs(bioRbs, bioGp, 1);
+        });
+        foliageBtn.setOnAction(e -> {
+            bc.removeRbtns(bioRbtns, bioGp);
+        });
+        branchesBtn.setOnAction(e -> {
+            bc.removeRbtns(bioRbtns, bioGp);
+        });
+        stemBtn.setOnAction(e -> {
+            bc.removeRbtns(bioRbtns, bioGp);
+        });
+        fineBtn.setOnAction(e -> {
+            bc.removeRbtns(bioRbtns, bioGp);
+        });
+        coarseBtn.setOnAction(e -> {
+            bc.removeRbtns(bioRbtns, bioGp);
+        });
 
         GridPane cwgGp = new GridPane();
         cwgGp.setVisible(false);
@@ -217,18 +289,19 @@ public class PumeUi extends Application {
         gppBtn.setId("44");
         Button wuBtn = new Button("Water use");
         Button vgBtn = new Button("Volume growth");
-        vgBtn.setId("43"); // TARKISTA!
+        vgBtn.setId("43");
         ObservableList<Button> cwgBtns;
         cwgBtns = FXCollections.observableArrayList();
         cwgBtns.addAll(cbBtn, gppBtn, wuBtn, vgBtn);
         bc.addBtns(cwgBtns, cwgGp);
+        bc.defineBtnHandler(cwgBtns);
 
         ToggleGroup cbTg = new ToggleGroup();
         ObservableList<RadioButton> cbRbs;
         cbRbs = FXCollections.observableArrayList();
 
         RadioButton ppRb = new RadioButton("Potential photosynthesis");
-        ppRb.setId("6"); // TARKISTA!
+        ppRb.setId("6");
         RadioButton gppRb = new RadioButton("GPP");
         gppRb.setId("10");
         RadioButton nppRb = new RadioButton("NPP");
@@ -274,6 +347,9 @@ public class PumeUi extends Application {
         nestedBp.setTop(tscGp);
 
         tscBtn.setOnAction(e -> {
+            if (clickedBtn != null) {
+                clickedBtn.setStyle("");
+            }
             tscGp.setVisible(true);
             cwgGp.setVisible(false);
             bioGp.setVisible(false);
@@ -281,12 +357,18 @@ public class PumeUi extends Application {
         });
 
         bioBtn.setOnAction(e -> {
+            if (clickedBtn != null) {
+                clickedBtn.setStyle("");
+            }
             tscGp.setVisible(false);
             cwgGp.setVisible(false);
             bioGp.setVisible(true);
             nestedBp.setTop(bioGp);
         });
         cwgBtn.setOnAction(e -> {
+            if (clickedBtn != null) {
+                clickedBtn.setStyle("");
+            }
             tscGp.setVisible(false);
             bioGp.setVisible(false);
             cwgGp.setVisible(true);
@@ -466,7 +548,7 @@ public class PumeUi extends Application {
         primaryStage.show();
     }
 
-    private class ButtonController {
+    private class ButtonController implements EventHandler<Event> {
 
         public void addBtns(ObservableList<Button> btns, GridPane gp) {
             for (int i = 0; i < btns.size(); i++) {
@@ -489,6 +571,25 @@ public class PumeUi extends Application {
                 ObservableList btns = rBtns.get(i);
                 gp.getChildren().removeAll(btns);
             }
+        }
+
+        public void defineBtnHandler(ObservableList<Button> btns) {
+            btns.forEach(btn -> btn.addEventHandler(MouseEvent.MOUSE_CLICKED, new ButtonController()));
+        }
+
+        public void clearStyles() {
+
+        }
+
+        @Override
+        public void handle(Event evt) {
+            System.out.println(((Control) evt.getSource()).getId());
+            if (clickedBtn != null) {
+                clickedBtn.setStyle("");
+            }
+            clickedBtn = (Button) ((Control) evt.getSource());
+            clickedBtn.setStyle("-fx-background-color: burlywood");
+
         }
     }
 
