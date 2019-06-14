@@ -1,6 +1,7 @@
 package pume2019.ui;
 
 import java.io.File;
+import java.util.ArrayList;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.application.Platform;
@@ -13,6 +14,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -41,9 +43,11 @@ public class PumeUi extends Application {
     private InitStand initStand;
     private SiteInfo siteInfo;
     private String defPath;
+    private ButtonController bc;
 
     @Override
     public void init() {
+        bc = new ButtonController();
         String currentDirectory = System.getProperty("user.dir");
         defPath = currentDirectory + "\\src\\main\\resources\\R-Portable\\Rprebas_examples-master\\inputs";
         info = new Info();
@@ -91,17 +95,18 @@ public class PumeUi extends Application {
                 + "stand \n"
                 + "characteristics");
         Button bioBtn = new Button("Biomasses");
-        Button cbwBtn = new Button("Carbon \n"
-                + "balance and \n"
-                + "water use");
+        Button cwgBtn = new Button("Carbon "
+                + "balance, \n"
+                + "water use \n"
+                + "and growth");
         tscBtn.setMaxWidth(Double.MAX_VALUE);
         bioBtn.setMaxWidth(Double.MAX_VALUE);
-        cbwBtn.setMaxWidth(Double.MAX_VALUE);
+        cwgBtn.setMaxWidth(Double.MAX_VALUE);
         tscBtn.prefHeightProperty().bind(bpLeftVb.heightProperty().divide(3));
         bioBtn.prefHeightProperty().bind(bpLeftVb.heightProperty().divide(3));
-        cbwBtn.prefHeightProperty().bind(bpLeftVb.heightProperty().divide(3));
+        cwgBtn.prefHeightProperty().bind(bpLeftVb.heightProperty().divide(3));
 
-        bpLeftVb.getChildren().addAll(tscBtn, bioBtn, cbwBtn);
+        bpLeftVb.getChildren().addAll(tscBtn, bioBtn, cwgBtn);
 
         BorderPane nestedBp = new BorderPane();
         nestedBp.setStyle("-fx-padding: 10;"
@@ -124,32 +129,32 @@ public class PumeUi extends Application {
                 + "-fx-border-color: blue;");
 
         Button treeCrownBtn = new Button("Tree Height, Crown base");
+        treeCrownBtn.setId("11 14");
         Button diaBtn = new Button("Diameter");
+        diaBtn.setId("12");
         Button volBtn = new Button("Volume");
+        volBtn.setId("30");
         Button basBtn = new Button("Basal area");
+        basBtn.setId("13");
         Button stockBtn = new Button("Stocking density");
+        stockBtn.setId("17");
         Button remBtn = new Button("Removals");
+        remBtn.setId("37");
         ObservableList<Button> tscBtns;
         tscBtns = FXCollections.observableArrayList();
         tscBtns.addAll(treeCrownBtn, diaBtn, volBtn, basBtn, stockBtn, remBtn);
+        bc.addBtns(tscBtns, tscGp);
 
-        for (int i = 0; i < tscBtns.size(); i++) {
-            Button btn = tscBtns.get(i);
-            btn.prefWidthProperty().bind(tscGp.widthProperty().divide(tscBtns.size()));
-            tscGp.add(btn, i, 0);
-        }
-
-        ObservableList<RadioButton> tscRbs;
-        tscRbs = FXCollections.observableArrayList();
+        ObservableList<RadioButton> treeRbs;
+        treeRbs = FXCollections.observableArrayList();
         RadioButton pineRb = new RadioButton("Pine");
+        pineRb.setId("1");
         RadioButton spruceRb = new RadioButton("Spruce");
+        spruceRb.setId("2");
         RadioButton birchRb = new RadioButton("Birch");
-        tscRbs.addAll(pineRb, spruceRb, birchRb);
-        for (int i = 0; i < tscRbs.size(); i++) {
-            RadioButton rb = tscRbs.get(i);
-            rb.prefWidthProperty().bind(tscGp.widthProperty().divide(tscRbs.size()));
-            tscGp.add(rb, i, 1, 2, 2);
-        }
+        birchRb.setId("3");
+        treeRbs.addAll(pineRb, spruceRb, birchRb);
+        bc.addRbs(treeRbs, tscGp, 0);
 
         GridPane bioGp = new GridPane();
         bioGp.setVisible(false);
@@ -163,34 +168,36 @@ public class PumeUi extends Application {
                 + "-fx-border-radius: 5;"
                 + "-fx-border-color: blue;");
 
-        Button totalBioBtn = new Button("Total biomass");
+        Button totalBioBtn = new Button("Total biomass"); // Ei Id:tä, koska lasketaan kaikkien summasta
         Button foliageBtn = new Button("Foliage mass");
+        foliageBtn.setId("33");
         Button branchesBtn = new Button("Branch mass");
+        branchesBtn.setId("24");
         Button stemBtn = new Button("Stem mass");
-        Button fineRBtn = new Button("Fine root mass");
-        Button coarseRBtn = new Button("Coarse root mass");
+        stemBtn.setId("31");
+        Button fineBtn = new Button("Fine root mass");
+        fineBtn.setId("25");
+        Button coarseBtn = new Button("Coarse root mass");
+        coarseBtn.setId("32");
         ObservableList<Button> bioBtns;
         bioBtns = FXCollections.observableArrayList();
-        bioBtns.addAll(totalBioBtn, foliageBtn, branchesBtn, stemBtn, fineRBtn, coarseRBtn);
-        for (int i = 0; i < bioBtns.size(); i++) {
-            Button btn = bioBtns.get(i);
-            btn.prefWidthProperty().bind(bioGp.widthProperty().divide(bioBtns.size()));
-            bioGp.add(btn, i, 0);
-        }
+        bioBtns.addAll(totalBioBtn, foliageBtn, branchesBtn, stemBtn, fineBtn, coarseBtn);
+        bc.addBtns(bioBtns, bioGp);
 
         ObservableList<RadioButton> bioRbs;
         bioRbs = FXCollections.observableArrayList();
         RadioButton foliageRb = new RadioButton("Foliage mass");
+        foliageRb.setId("33");
         RadioButton branchesRb = new RadioButton("Branch mass");
+        branchesRb.setId("24");
         RadioButton stemRb = new RadioButton("Stem mass");
+        stemRb.setId("31");
         RadioButton fineRb = new RadioButton("Fine root mass");
+        fineRb.setId("25");
         RadioButton coarseRb = new RadioButton("Coarse root mass");
+        coarseRb.setId("32");
         bioRbs.addAll(foliageRb, branchesRb, stemRb, fineRb, coarseRb);
-        for (int i = 0; i < bioRbs.size(); i++) {
-            RadioButton rb = bioRbs.get(i);
-            rb.prefWidthProperty().bind(bioGp.widthProperty().divide(bioRbs.size()));
-            bioGp.add(rb, i + 1, 1, 2, 2);
-        }
+        bc.addRbs(bioRbs, bioGp, 1);
 
         GridPane cwgGp = new GridPane();
         cwgGp.setVisible(false);
@@ -205,20 +212,64 @@ public class PumeUi extends Application {
                 + "-fx-border-color: blue;");
 
         Button cbBtn = new Button("Carbon Balance");
+        // id?
         Button gppBtn = new Button("GPP");
+        gppBtn.setId("44");
         Button wuBtn = new Button("Water use");
         Button vgBtn = new Button("Volume growth");
+        vgBtn.setId("43"); // TARKISTA!
         ObservableList<Button> cwgBtns;
         cwgBtns = FXCollections.observableArrayList();
         cwgBtns.addAll(cbBtn, gppBtn, wuBtn, vgBtn);
+        bc.addBtns(cwgBtns, cwgGp);
 
-        for (int i = 0; i < cwgBtns.size(); i++) {
-            Button btn = cwgBtns.get(i);
-            btn.prefWidthProperty().bind(cwgGp.widthProperty().divide(cwgBtns.size()));
-            cwgGp.add(btn, i, 0);
-        }
-        
-        
+        ToggleGroup cbTg = new ToggleGroup();
+        ObservableList<RadioButton> cbRbs;
+        cbRbs = FXCollections.observableArrayList();
+
+        RadioButton ppRb = new RadioButton("Potential photosynthesis");
+        ppRb.setId("6"); // TARKISTA!
+        RadioButton gppRb = new RadioButton("GPP");
+        gppRb.setId("10");
+        RadioButton nppRb = new RadioButton("NPP");
+        nppRb.setId("18");
+        nppRb.setToggleGroup(cbTg);
+        RadioButton arRb = new RadioButton("Autotrophic respiration");
+        arRb.setId("9");
+        arRb.setToggleGroup(cbTg);
+        cbRbs.addAll(ppRb, gppRb, nppRb, arRb);
+
+        ObservableList<RadioButton> wuRbs;
+        wuRbs = FXCollections.observableArrayList();
+
+        RadioButton evapRb = new RadioButton("Evapotranspiration");
+        evapRb.setId("22");
+        RadioButton summerSoilRb = new RadioButton("Summer soil water");
+        summerSoilRb.setId("41");
+        wuRbs.addAll(evapRb, summerSoilRb);
+
+        ArrayList<ObservableList> cwgRbtns;
+        cwgRbtns = new ArrayList<>();
+        cwgRbtns.add(wuRbs);
+        cwgRbtns.add(treeRbs);
+        cwgRbtns.add(cbRbs);
+
+        cbBtn.setOnAction(e -> {
+            bc.removeRbtns(cwgRbtns, cwgGp);
+            bc.addRbs(cbRbs, cwgGp, 0);
+        });
+        gppBtn.setOnAction(e -> {
+            bc.removeRbtns(cwgRbtns, cwgGp);
+            bc.addRbs(treeRbs, cwgGp, 0);
+        });
+        wuBtn.setOnAction(e -> {
+            bc.removeRbtns(cwgRbtns, cwgGp);
+            bc.addRbs(wuRbs, cwgGp, 0);
+        });
+        vgBtn.setOnAction(e -> {
+            bc.removeRbtns(cwgRbtns, cwgGp);
+            bc.addRbs(treeRbs, cwgGp, 0);
+        });
 
         nestedBp.setTop(tscGp);
 
@@ -235,7 +286,7 @@ public class PumeUi extends Application {
             bioGp.setVisible(true);
             nestedBp.setTop(bioGp);
         });
-        cbwBtn.setOnAction(e -> {
+        cwgBtn.setOnAction(e -> {
             tscGp.setVisible(false);
             bioGp.setVisible(false);
             cwgGp.setVisible(true);
@@ -413,6 +464,32 @@ public class PumeUi extends Application {
         primaryStage.setTitle("PuMe 2019");
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    private class ButtonController {
+
+        public void addBtns(ObservableList<Button> btns, GridPane gp) {
+            for (int i = 0; i < btns.size(); i++) {
+                Button btn = btns.get(i);
+                btn.prefWidthProperty().bind(gp.widthProperty().divide(btns.size()));
+                gp.add(btn, i, 0);
+            }
+        }
+
+        public void addRbs(ObservableList<RadioButton> rbs, GridPane gp, int startIndex) {
+            for (int i = 0; i < rbs.size(); i++) {
+                RadioButton rb = rbs.get(i);
+                rb.prefWidthProperty().bind(gp.widthProperty().divide(rbs.size()));
+                gp.add(rb, i + startIndex, 1, 2, 2);
+            }
+        }
+
+        public void removeRbtns(ArrayList<ObservableList> rBtns, GridPane gp) {
+            for (int i = 0; i < rBtns.size(); i++) {
+                ObservableList btns = rBtns.get(i);
+                gp.getChildren().removeAll(btns);
+            }
+        }
     }
 
 //    public static GridPane toGridPane(GridPane gp, ObservableList<Button> buttons) {
