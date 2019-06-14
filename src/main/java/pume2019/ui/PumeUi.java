@@ -2,9 +2,6 @@ package pume2019.ui;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.application.Platform;
@@ -15,7 +12,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -30,15 +26,13 @@ import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javax.swing.event.HyperlinkEvent;
+import pume2019.controllers.ButtonController;
 import pume2019.domain.Heath;
 import pume2019.domain.Info;
 import pume2019.domain.InitStand;
@@ -57,7 +51,7 @@ public class PumeUi extends Application {
 
     @Override
     public void init() {
-        bc = new ButtonController();
+        bc = new ButtonController(new ButtonHandler());
         String currentDirectory = System.getProperty("user.dir");
         defPath = currentDirectory + "\\src\\main\\resources\\R-Portable\\Rprebas_examples-master\\inputs";
         info = new Info();
@@ -548,40 +542,9 @@ public class PumeUi extends Application {
         primaryStage.show();
     }
 
-    private class ButtonController implements EventHandler<Event> {
+   public class ButtonHandler implements EventHandler<Event> {
 
-        public void addBtns(ObservableList<Button> btns, GridPane gp) {
-            for (int i = 0; i < btns.size(); i++) {
-                Button btn = btns.get(i);
-                btn.prefWidthProperty().bind(gp.widthProperty().divide(btns.size()));
-                gp.add(btn, i, 0);
-            }
-        }
-
-        public void addRbs(ObservableList<RadioButton> rbs, GridPane gp, int startIndex) {
-            for (int i = 0; i < rbs.size(); i++) {
-                RadioButton rb = rbs.get(i);
-                rb.prefWidthProperty().bind(gp.widthProperty().divide(rbs.size()));
-                gp.add(rb, i + startIndex, 1, 2, 2);
-            }
-        }
-
-        public void removeRbtns(ArrayList<ObservableList> rBtns, GridPane gp) {
-            for (int i = 0; i < rBtns.size(); i++) {
-                ObservableList btns = rBtns.get(i);
-                gp.getChildren().removeAll(btns);
-            }
-        }
-
-        public void defineBtnHandler(ObservableList<Button> btns) {
-            btns.forEach(btn -> btn.addEventHandler(MouseEvent.MOUSE_CLICKED, new ButtonController()));
-        }
-
-        public void clearStyles() {
-
-        }
-
-        @Override
+       @Override
         public void handle(Event evt) {
             System.out.println(((Control) evt.getSource()).getId());
             if (clickedBtn != null) {
@@ -593,14 +556,6 @@ public class PumeUi extends Application {
         }
     }
 
-//    public static GridPane toGridPane(GridPane gp, ObservableList<Button> buttons) {
-//        for (int i = 0; i < buttons.size(); i++) {
-//            Button btn = buttons.get(i);
-//            btn.prefWidthProperty().bind(gp.widthProperty().divide(buttons.size()));
-//            gp.add(btn, i, 0);
-//        }
-//        return gp;
-//    }
     public static void main(String[] args) {
         launch(args);
     }
