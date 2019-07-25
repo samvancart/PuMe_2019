@@ -53,6 +53,13 @@ public class ButtonController {
         }
     }
 
+    public void resetChbs(ObservableList<Object> chbs) {
+        
+        chbs.stream().map((o) -> (CheckBox) o).forEachOrdered((chb) -> {
+            chb.setSelected(false);
+        });
+    }
+
     public void defineBtnHandler(ObservableList<Button> btns) {
         btns.forEach(btn -> btn.addEventHandler(MouseEvent.MOUSE_CLICKED, bh));
         btns.forEach(btn -> btn.addEventHandler(KEY_RELEASED, bh));

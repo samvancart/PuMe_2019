@@ -1,15 +1,19 @@
-
-
 package pume2019.domain;
 
 public class Info {
+
     private Tree tree;
     private Heath heath;
     private String weatherPath;
     private String managPath;
     private String years;
+    private String initPath;
 
     public Info() {
+    }
+
+    public String getInitPath() {
+        return initPath;
     }
 
     public Heath getHeath() {
@@ -37,7 +41,7 @@ public class Info {
     }
 
     public void setManagPath(String managPath) {
-        this.managPath = managPath;
+        this.managPath = toFwdSlashes(managPath);
     }
 
     public void setTree(Tree tree) {
@@ -45,13 +49,20 @@ public class Info {
     }
 
     public void setWeatherPath(String weatherPath) {
-        this.weatherPath = weatherPath;
+        this.weatherPath = toFwdSlashes(weatherPath);
+    }
+
+    public void setInitPath(String initPath) {
+        this.initPath = toFwdSlashes(initPath);
     }
 
     public void setYears(String years) {
         this.years = years;
     }
-     
-    
-    
+
+    public String toFwdSlashes(String path) {
+        path = path.replace("\\", "/");
+        return path;
+    }
+
 }
