@@ -8,6 +8,7 @@ public class PumeButton {
 
     private Button button;
     private List<List<String>> dataLists;
+    private String unit;
 
     public PumeButton(Button button) {
         this.button = button;
@@ -26,6 +27,14 @@ public class PumeButton {
         return button;
     }
 
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+    
     public List<List<String>> getDataLists() {
         return dataLists;
     }

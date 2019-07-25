@@ -9,7 +9,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.layout.BorderPane;
 import pume2019.domain.LineChartDrawer;
 import pume2019.domain.PumeButton;
-import pume2019.domain.PumeLineChart;
+import pume2019.domain.PumeChart;
 import pume2019.domain.PumeSeries;
 import pume2019.domain.PumeSeriesHandler;
 
@@ -30,8 +30,9 @@ public class PumeChartHandler {
     
     public void createLineChart(BorderPane nestedBp) {
         rh.calculate(pumeBtn);
-        PumeLineChart pumeLineChart = new PumeLineChart();
-        pumeLineChart.createChart(pumeBtn.getButton().getId(), pumeBtn.getButton().getText());
+        PumeChart pumeLineChart = new PumeChart();
+        String unit = pumeBtn.getUnit();
+        pumeLineChart.createLineChart(pumeBtn.getButton().getId(), pumeBtn.getButton().getText(),unit);
         PumeSeries series = new PumeSeries();
         series.createSeries(pumeBtn.getDataList(0));
         Map<Integer, XYChart.Series> seriesMap = new HashMap<>();

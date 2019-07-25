@@ -13,7 +13,7 @@ Precip = c(weather$Precip,weather$Precip,weather$Precip)
 VPD = c(weather$VPD,weather$VPD,weather$VPD)
 CO2 = c(weather$CO2,weather$CO2,weather$CO2)
 DOY = c(weather$DOY,weather$DOY,weather$DOY)
-PREBASout <- prebas(nYears=71,pCROBAS = pCROB, pPRELES = pPREL,siteInfo = c(1,1,5),thinning = thinning,PAR=PAR,TAir=TAir,VPD=VPD,Precip=Precip,CO2=CO2,P0=NA,initVar = as.matrix(initVar),defaultThin = 0.,ClCut = 1.,inDclct = NA,inAclct = NA)
+PREBASout <- prebas(nYears=100,pCROBAS = pCROB, pPRELES = pPREL,siteInfo = c(1,1,3),thinning = thinning,PAR=PAR,TAir=TAir,VPD=VPD,Precip=Precip,CO2=CO2,P0=NA,initVar = as.matrix(initVar),defaultThin = 0.,ClCut = 1.,inDclct = NA,inAclct = NA)
 client <- function(){
     con <- socketConnection(host="localhost", port = 6011, blocking=TRUE,
   server=FALSE, open="r+")

@@ -19,7 +19,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -54,8 +53,6 @@ import pume2019.domain.InitStand;
 import pume2019.domain.LineChartDrawer;
 import pume2019.domain.Management;
 import pume2019.domain.PumeButton;
-import pume2019.domain.PumeLineChart;
-import pume2019.domain.PumeSeries;
 import pume2019.domain.PumeSeriesHandler;
 import pume2019.domain.Recommendation;
 import pume2019.domain.SiteInfo;
@@ -98,7 +95,6 @@ public class PumeUi extends Application {
         functions = new RFunctions();
         inputHandler = new RInputHandler();
         rh = new ResultHandler();
-        drawer = new LineChartDrawer();
     }
 
     @Override
@@ -406,6 +402,7 @@ public class PumeUi extends Application {
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
+            pumeBtn.setUnit("kg C/ha");
             pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
             pumeChartHandler.removeGraph(nestedBp);
             pumeChartHandler.createLineChart(nestedBp);
@@ -417,6 +414,7 @@ public class PumeUi extends Application {
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
+            pumeBtn.setUnit("kg C/ha");
             pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
             pumeChartHandler.removeGraph(nestedBp);
             pumeChartHandler.createLineChart(nestedBp);
@@ -428,6 +426,7 @@ public class PumeUi extends Application {
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
+            pumeBtn.setUnit("kg C/ha");
             pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
             pumeChartHandler.removeGraph(nestedBp);
             pumeChartHandler.createLineChart(nestedBp);
@@ -439,6 +438,7 @@ public class PumeUi extends Application {
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
+            pumeBtn.setUnit("kg C/ha");
             pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
             pumeChartHandler.removeGraph(nestedBp);
             pumeChartHandler.createLineChart(nestedBp);
@@ -450,6 +450,7 @@ public class PumeUi extends Application {
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
+            pumeBtn.setUnit("kg C/ha");
             pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
             pumeChartHandler.removeGraph(nestedBp);
             pumeChartHandler.createLineChart(nestedBp);
@@ -532,6 +533,7 @@ public class PumeUi extends Application {
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
+            pumeBtn.setUnit("gC/m²/yr");
             pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
             pumeChartHandler.removeGraph(nestedBp);
             pumeChartHandler.createLineChart(nestedBp);
@@ -550,6 +552,7 @@ public class PumeUi extends Application {
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
+            pumeBtn.setUnit("gC/m²/yr");
             pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
             pumeChartHandler.removeGraph(nestedBp);
             pumeChartHandler.createLineChart(nestedBp);

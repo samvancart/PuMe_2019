@@ -13,16 +13,16 @@ import javafx.scene.chart.XYChart.Series;
 
 public class PumeSeriesHandler {
 
-    private PumeLineChart lineChart;
+    private PumeChart lineChart;
     private List<XYChart.Series> seriesList;
     private Map<Integer, XYChart.Series> seriesMap;
 
-    public PumeSeriesHandler(PumeLineChart lineChart, List<XYChart.Series> seriesList) {
+    public PumeSeriesHandler(PumeChart lineChart, List<XYChart.Series> seriesList) {
         this.lineChart = lineChart;
         this.seriesList = seriesList;
     }
 
-    public PumeSeriesHandler(PumeLineChart lineChart, Map<Integer, XYChart.Series> seriesMap) {
+    public PumeSeriesHandler(PumeChart lineChart, Map<Integer, XYChart.Series> seriesMap) {
         this.lineChart = lineChart;
         this.seriesMap = seriesMap;
     }
@@ -31,11 +31,11 @@ public class PumeSeriesHandler {
         return seriesMap;
     }
 
-    public PumeLineChart getLineChart() {
+    public PumeChart getLineChart() {
         return lineChart;
     }
 
-    public void setLineChart(PumeLineChart lineChart) {
+    public void setLineChart(PumeChart lineChart) {
         this.lineChart = lineChart;
     }
 
