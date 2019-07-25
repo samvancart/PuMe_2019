@@ -14,6 +14,18 @@ public class ResultHandler {
     private Map<Integer, List<String>> birchMap;
     private boolean conversionDone = false;
 
+    public boolean isConversionDone() {
+        return conversionDone;
+    }
+
+    public void setConversionDone(boolean conversionDone) {
+        this.conversionDone = conversionDone;
+    }
+
+    public void resetConversionDone() {
+        this.conversionDone = false;
+    }
+
     public ResultHandler() {
         idMap = new HashMap<>();
 
@@ -41,7 +53,7 @@ public class ResultHandler {
                         button.addToList(avg);
                         break;
                     case 2:
-                        if (id.equals("44")&& !conversionDone) {
+                        if (id.equals("44") && !conversionDone) {
                             convertToGrams(pineMap.get(Integer.parseInt(id)), spruceMap.get(Integer.parseInt(id)), birchMap.get(Integer.parseInt(id)), Integer.parseInt(id));
                         }
                         List<String> sum;

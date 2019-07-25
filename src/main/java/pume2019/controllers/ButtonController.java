@@ -53,8 +53,7 @@ public class ButtonController {
         }
     }
 
-    public void resetChbs(ObservableList<Object> chbs) {
-        
+    public void resetChbs(ObservableList<Object> chbs) {      
         chbs.stream().map((o) -> (CheckBox) o).forEachOrdered((chb) -> {
             chb.setSelected(false);
         });

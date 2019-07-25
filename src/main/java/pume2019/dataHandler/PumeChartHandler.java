@@ -27,6 +27,7 @@ public class PumeChartHandler {
         this.rh = rh;
     }
 
+    
     public void createLineChart(BorderPane nestedBp) {
         rh.calculate(pumeBtn);
         PumeLineChart pumeLineChart = new PumeLineChart();
@@ -56,9 +57,9 @@ public class PumeChartHandler {
         pumeSeriesHandler.removeSeries(treeId);
         graph = drawer.drawChart(pumeSeriesHandler);
     }
-    
-    public void removeGraph(BorderPane nestedBp){
-        nestedBp.getChildren().remove(graph);
+
+    public void removeGraph(BorderPane nestedBp) {
+            nestedBp.getChildren().remove(graph);
     }
 
 }

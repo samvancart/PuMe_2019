@@ -677,6 +677,11 @@ public class PumeUi extends Application {
                 System.out.println("weather path: " + info.getWeatherPath());
                 System.out.println("manag path: " + info.getManagPath());
                 System.out.println("years: " + info.getYears());
+                rh.resetConversionDone();
+//                if (pumeBtn != null) {
+//                    pumeBtn = new PumeButton(pumeBtn.getButton());
+//                }
+//                pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
 
                 //Run model
                 try {
@@ -694,12 +699,18 @@ public class PumeUi extends Application {
 
                 server.start();
 
+                if (pumeChartHandler != null) {
+                    pumeChartHandler.removeGraph(nestedBp);
+                    bc.resetChbs(treeObs);
+                }
+
                 maps = server.getResultDataList(Integer.parseInt(info.getYears()));
                 rh.setMaps(maps);
                 pineMap = (HashMap<Integer, List<String>>) rh.getPineMap();
                 spruceMap = (HashMap<Integer, List<String>>) rh.getSpruceMap();
                 birchMap = (HashMap<Integer, List<String>>) rh.getBirchMap();
                 System.out.println("hello");
+                System.out.println("conversionDone: " + rh.isConversionDone());
 
             }
         });
