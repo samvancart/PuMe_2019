@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javafx.scene.control.Button;
 import pume2019.domain.PumeButton;
 
 public class ResultHandler {
@@ -112,6 +113,30 @@ public class ResultHandler {
             String sum = String.valueOf((pineD + spruceD + birchD));
             results.add(sum);
         }
+        System.out.println("Results: "+ results);
+        return results;
+    }
+
+    // TOTAL BIOMASS
+    public List<String> getTotalBiomass(PumeButton pumeButton,List<Button> buttons) {
+        List<List<String>> dataLists = new ArrayList<>();
+        List<String> results = new ArrayList<>();
+        for (Button button : buttons) {
+            PumeButton pumeBtn = new PumeButton(button);
+            this.calculate(pumeBtn);
+            dataLists.add(pumeBtn.getDataList(0));
+        }
+        for (int i = 0; i < dataLists.get(0).size(); i++) {
+           int dataListsFirstSize=dataLists.get(0).size();
+            Double sum = 0.0;
+            for (int j = 0; j < dataLists.size(); j++) {
+                int dataListsSize = dataLists.size();
+                sum += Double.parseDouble(dataLists.get(j).get(i));
+            }
+            results.add(String.valueOf(sum));
+        }
+        pumeButton.addToList(results);
+        System.out.println("Summed up: "+results);
         return results;
     }
 

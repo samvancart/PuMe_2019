@@ -13,29 +13,34 @@ import javafx.scene.chart.XYChart.Series;
 
 public class PumeSeriesHandler {
 
-    private PumeChart lineChart;
+    private PumeLineChart lineChart;
+    private PumeStackedAreaChart stackedAreaChart;
     private List<XYChart.Series> seriesList;
     private Map<Integer, XYChart.Series> seriesMap;
 
-    public PumeSeriesHandler(PumeChart lineChart, List<XYChart.Series> seriesList) {
-        this.lineChart = lineChart;
-        this.seriesList = seriesList;
-    }
-
-    public PumeSeriesHandler(PumeChart lineChart, Map<Integer, XYChart.Series> seriesMap) {
+    public PumeSeriesHandler(PumeLineChart lineChart, Map<Integer, XYChart.Series> seriesMap) {
         this.lineChart = lineChart;
         this.seriesMap = seriesMap;
+    }
+
+    public PumeSeriesHandler(PumeStackedAreaChart stackedAreaChart, Map<Integer, XYChart.Series> seriesMap) {
+        this.stackedAreaChart = stackedAreaChart;
+        this.seriesMap = seriesMap;
+    }
+
+    public PumeStackedAreaChart getStackedAreaChart() {
+        return stackedAreaChart;
     }
 
     public Map<Integer, XYChart.Series> getSeriesMap() {
         return seriesMap;
     }
 
-    public PumeChart getLineChart() {
+    public PumeLineChart getLineChart() {
         return lineChart;
     }
 
-    public void setLineChart(PumeChart lineChart) {
+    public void setLineChart(PumeLineChart lineChart) {
         this.lineChart = lineChart;
     }
 
@@ -51,14 +56,18 @@ public class PumeSeriesHandler {
         this.seriesMap = seriesMap;
     }
 
-    public void addSeries(Integer key, XYChart.Series series) {
+    public void addSeriesToLineChart(Integer key, XYChart.Series series) {
 //        seriesMap.clear();
         seriesMap.putIfAbsent(key, series);
         lineChart.getLineChart().getData().add(series);
-
     }
 
-    public void removeSeries(Integer key) {
+    public void addSeriesToStackedAreaChart(Integer key, XYChart.Series series) {
+        seriesMap.putIfAbsent(key, series);
+        stackedAreaChart.getStackedAreaChart().getData().add(series);
+    }
+
+    public void removeSeriesFromLineChart(Integer key) {
 //        seriesMap.clear();
 //        seriesMap.remove(key);
 //        seriesMap.put(key, null);
@@ -70,7 +79,17 @@ public class PumeSeriesHandler {
             }
         }
         lineChart.getLineChart().setData(newSeriesList);
+    }
 
+    public void removeSeriesFromStackedAreaChart(Integer key) {
+        ObservableList<Series<Integer, Double>> newSeriesList = FXCollections.observableArrayList();
+        seriesMap.replace(key, null);
+        for (Map.Entry<Integer, Series> entry : seriesMap.entrySet()) {
+            if (seriesMap.get(entry.getKey()) != null) {
+                newSeriesList.add(entry.getValue());
+            }
+        }
+        stackedAreaChart.getStackedAreaChart().setData(newSeriesList);
     }
 
     public void colourSeries(LineChart<Integer, Double> chart, Series series, String name) {

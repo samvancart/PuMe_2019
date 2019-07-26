@@ -8,23 +8,25 @@ import java.util.Map;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.StackedAreaChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Series;
 
-public class LineChartDrawer {
+public class ChartDrawer {
 
-    private LineChart<Integer, Double> handlerChart;
+    private LineChart<Integer, Double> handlerLineChart;
+    private StackedAreaChart<Integer,Double> handlerStackedAreaChart;
 
-    public LineChartDrawer() {
+    public ChartDrawer() {
 
     }
 
 
 
-    public LineChart<Integer, Double> drawChart(PumeSeriesHandler handler) {
-        handlerChart = handler.getLineChart().getLineChart();
+    public LineChart<Integer, Double> drawLineChart(PumeSeriesHandler handler) {
+        handlerLineChart = handler.getLineChart().getLineChart();
         this.handleColourSeries(handler);
-        return handlerChart;
+        return handlerLineChart;
     }
 
     public void handleColourSeries(PumeSeriesHandler handler) {
@@ -35,20 +37,20 @@ public class LineChartDrawer {
             System.out.println(seriesMap.get(entry.getKey()));
             if (seriesMap.get(entry.getKey()) != null) {
                 if (null == entry.getKey()) {
-                    handler.colourSeries(handlerChart, series, "default");
+                    handler.colourSeries(handlerLineChart, series, "default");
                 } else {
                     switch (entry.getKey()) {
                         case 1:
-                            handler.colourSeries(handlerChart, series, "pine");
+                            handler.colourSeries(handlerLineChart, series, "pine");
                             break;
                         case 2:
-                            handler.colourSeries(handlerChart, series, "spruce");
+                            handler.colourSeries(handlerLineChart, series, "spruce");
                             break;
                         case 3:
-                            handler.colourSeries(handlerChart, series, "birch");
+                            handler.colourSeries(handlerLineChart, series, "birch");
                             break;
                         default:
-                            handler.colourSeries(handlerChart, series, "default");
+                            handler.colourSeries(handlerLineChart, series, "default");
                             break;
                     }
                 }
@@ -60,23 +62,23 @@ public class LineChartDrawer {
         Axis xAxis = new NumberAxis();
         Axis yAxis = new NumberAxis();
         xAxis.setLabel("Year");
-        handlerChart = new LineChart(xAxis, yAxis);
-        handlerChart.setTitle("Variable " + var);
+        handlerLineChart = new LineChart(xAxis, yAxis);
+        handlerLineChart.setTitle("Variable " + var);
         XYChart.Series series = new XYChart.Series();
         for (int i = 0; i < data.size(); i++) {
             Double dataD = Double.parseDouble(data.get(i));
             series.getData().add(new XYChart.Data(i + 1, dataD));
         }
-        handlerChart.getData().addAll(series);
-        return handlerChart;
+        handlerLineChart.getData().addAll(series);
+        return handlerLineChart;
     }
 
     public LineChart<Integer, Double> sumChart(HashMap<Integer, List<String>> pine, HashMap<Integer, List<String>> spruce, HashMap<Integer, List<String>> birch, int var) {
         Axis xAxis = new NumberAxis();
         Axis yAxis = new NumberAxis();
         xAxis.setLabel("Year");
-        handlerChart = new LineChart(xAxis, yAxis);
-        handlerChart.setTitle("Variable " + var);
+        handlerLineChart = new LineChart(xAxis, yAxis);
+        handlerLineChart.setTitle("Variable " + var);
         XYChart.Series series = new XYChart.Series();
         ArrayList<String> pineList = (ArrayList<String>) pine.get(var);
         ArrayList<String> spruceList = new ArrayList<>();
@@ -91,8 +93,14 @@ public class LineChartDrawer {
             Double dataD = pineD + spruceD + birchD;
             series.getData().add(new XYChart.Data(i + 1, dataD));
         }
-        handlerChart.getData().addAll(series);
-        return handlerChart;
+        handlerLineChart.getData().addAll(series);
+        return handlerLineChart;
+    }
+    
+        public StackedAreaChart<Integer, Double> drawStackedAreaChart(PumeSeriesHandler handler) {
+        handlerStackedAreaChart = handler.getStackedAreaChart().getStackedAreaChart();
+//        this.handleColourSeries(handler);
+        return handlerStackedAreaChart;
     }
 
 }

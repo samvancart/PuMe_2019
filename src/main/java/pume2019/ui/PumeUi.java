@@ -50,7 +50,7 @@ import pume2019.dataHandler.ResultHandler;
 import pume2019.domain.Heath;
 import pume2019.domain.Info;
 import pume2019.domain.InitStand;
-import pume2019.domain.LineChartDrawer;
+import pume2019.domain.ChartDrawer;
 import pume2019.domain.Management;
 import pume2019.domain.PumeButton;
 import pume2019.domain.PumeSeriesHandler;
@@ -77,10 +77,9 @@ public class PumeUi extends Application {
     private ResultHandler rh;
     private PumeChartHandler pumeChartHandler;
     private PumeButton pumeBtn;
-    private PumeSeriesHandler pumeSeriesHandler;
-    private LineChart<Integer, Double> graph;
-    private LineChartDrawer drawer;
+    private List<Button> totalBioMassBtns;
     private String id;
+    private List<ObservableList<Object>> checkBoxesList;
 
     @Override
     public void init() throws IOException {
@@ -230,10 +229,10 @@ public class PumeUi extends Application {
             System.out.println(id);
             if (pineChb.isSelected()) {
                 int intId = Integer.parseInt(id);
-                pumeChartHandler.addToChart(pineMap, intId, "Pine", 1);
+                pumeChartHandler.addTreeToChart(pineMap, intId, "Pine", 1);
             }
             if (!pineChb.isSelected()) {
-                pumeChartHandler.removeFromChart(1);
+                pumeChartHandler.removeTreeFromChart(1);
             }
         });
 //      Spruce
@@ -241,10 +240,10 @@ public class PumeUi extends Application {
             System.out.println(id);
             if (spruceChb.isSelected()) {
                 int intId = Integer.parseInt(id);
-                pumeChartHandler.addToChart(spruceMap, intId, "Spruce", 2);
+                pumeChartHandler.addTreeToChart(spruceMap, intId, "Spruce", 2);
             }
             if (!spruceChb.isSelected()) {
-                pumeChartHandler.removeFromChart(2);
+                pumeChartHandler.removeTreeFromChart(2);
             }
         });
 //      Birch
@@ -252,10 +251,10 @@ public class PumeUi extends Application {
             System.out.println(id);
             if (birchChb.isSelected()) {
                 int intId = Integer.parseInt(id);
-                pumeChartHandler.addToChart(birchMap, intId, "Birch", 3);
+                pumeChartHandler.addTreeToChart(birchMap, intId, "Birch", 3);
             }
             if (!birchChb.isSelected()) {
-                pumeChartHandler.removeFromChart(3);
+                pumeChartHandler.removeTreeFromChart(3);
             }
         });
 
@@ -268,69 +267,6 @@ public class PumeUi extends Application {
         tscObtns = new ArrayList<>();
 //        tscObtns.add(remObs);
         tscObtns.add(treeObs);
-
-        //ActionEvent handlers 1
-        treeCrownBtn.setOnAction(e -> {
-            bc.removeRbtns(tscObtns, tscGp);
-            bc.addOBtns(treeObs, tscGp, 0);
-            bc.resetChbs(treeObs);
-//          graph
-            pumeChartHandler.removeGraph(nestedBp);
-        });
-        diaBtn.setOnAction(e -> {
-            bc.removeRbtns(tscObtns, tscGp);
-            bc.addOBtns(treeObs, tscGp, 0);
-            bc.resetChbs(treeObs);
-//          graph
-            Button button = (Button) ((Control) e.getSource());
-            pumeBtn = new PumeButton(button);
-            pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
-            pumeChartHandler.removeGraph(nestedBp);
-            pumeChartHandler.createLineChart(nestedBp);
-
-        });
-        volBtn.setOnAction(e -> {
-            bc.removeRbtns(tscObtns, tscGp);
-            bc.addOBtns(treeObs, tscGp, 0);
-            bc.resetChbs(treeObs);
-//          graph
-            Button button = (Button) ((Control) e.getSource());
-            pumeBtn = new PumeButton(button);
-            pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
-            pumeChartHandler.removeGraph(nestedBp);
-            pumeChartHandler.createLineChart(nestedBp);
-
-        });
-        basBtn.setOnAction(e -> {
-            bc.removeRbtns(tscObtns, tscGp);
-            bc.addOBtns(treeObs, tscGp, 0);
-            bc.resetChbs(treeObs);
-//          graph
-            Button button = (Button) ((Control) e.getSource());
-            pumeBtn = new PumeButton(button);
-            pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
-            pumeChartHandler.removeGraph(nestedBp);
-            pumeChartHandler.createLineChart(nestedBp);
-        });
-        stockBtn.setOnAction(e -> {
-            bc.removeRbtns(tscObtns, tscGp);
-            bc.addOBtns(treeObs, tscGp, 0);
-            bc.resetChbs(treeObs);
-//          graph
-            Button button = (Button) ((Control) e.getSource());
-            pumeBtn = new PumeButton(button);
-            pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
-            pumeChartHandler.removeGraph(nestedBp);
-            pumeChartHandler.createLineChart(nestedBp);
-        });
-        remBtn.setOnAction(e -> {
-            bc.removeRbtns(tscObtns, tscGp);
-            bc.addOBtns(treeObs, tscGp, 0);
-            bc.resetChbs(treeObs);
-//          graph
-            pumeChartHandler.removeGraph(nestedBp);
-//            bc.addOBtns(remObs, tscGp, 0);
-        });
 
         GridPane bioGp = new GridPane();
         bioGp.setVisible(false);
@@ -345,7 +281,9 @@ public class PumeUi extends Application {
                 + "-fx-border-color: blue;");
 
         //Buttons 2
-        Button totalBioBtn = new Button("Total biomass"); // Ei Id:tä, koska lasketaan kaikkien summasta
+        Button totalBioBtn = new Button("Total biomass"); // Ei Id:tä, koska lasketaan kaikkien summasta -> id=47
+        totalBioBtn.setId("47");
+        rh.addIdToMap(totalBioBtn.getId(), 3);
         Button foliageBtn = new Button("Foliage mass");
         foliageBtn.setId("33");
         rh.addIdToMap(foliageBtn.getId(), 2);
@@ -387,18 +325,31 @@ public class PumeUi extends Application {
         bioObtns.add(bioObs);
         bioObtns.add(treeObs);
 
+        //Total Biomass array
+        totalBioMassBtns = new ArrayList<>();
+        totalBioMassBtns.addAll(bioBtns);
+        totalBioMassBtns.remove(0);
+
 //ActionEvent handlers 2
         totalBioBtn.setOnAction(e -> {
             bc.removeRbtns(bioObtns, bioGp);
             bc.addOBtns(bioObs, bioGp, 1);
-            bc.resetChbs(treeObs);
+//            bc.resetChbs(treeObs);
+            bc.resetChbs(bioObtns);
 //          graph
+            Button button = (Button) ((Control) e.getSource());
+            pumeBtn = new PumeButton(button);
+            pumeBtn.setUnit("kg C/ha");
+            pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
             pumeChartHandler.removeGraph(nestedBp);
+            pumeChartHandler.createStackedAreaChartOfBiomass(nestedBp, totalBioMassBtns);
+
         });
         foliageBtn.setOnAction(e -> {
             bc.removeRbtns(bioObtns, bioGp);
             bc.addOBtns(treeObs, bioGp, 0);
-            bc.resetChbs(treeObs);
+//            bc.resetChbs(treeObs);
+            bc.resetChbs(bioObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
@@ -410,7 +361,8 @@ public class PumeUi extends Application {
         branchesBtn.setOnAction(e -> {
             bc.removeRbtns(bioObtns, bioGp);
             bc.addOBtns(treeObs, bioGp, 0);
-            bc.resetChbs(treeObs);
+//            bc.resetChbs(treeObs);
+            bc.resetChbs(bioObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
@@ -422,7 +374,8 @@ public class PumeUi extends Application {
         stemBtn.setOnAction(e -> {
             bc.removeRbtns(bioObtns, bioGp);
             bc.addOBtns(treeObs, bioGp, 0);
-            bc.resetChbs(treeObs);
+//            bc.resetChbs(treeObs);
+            bc.resetChbs(bioObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
@@ -434,7 +387,8 @@ public class PumeUi extends Application {
         fineBtn.setOnAction(e -> {
             bc.removeRbtns(bioObtns, bioGp);
             bc.addOBtns(treeObs, bioGp, 0);
-            bc.resetChbs(treeObs);
+//            bc.resetChbs(treeObs);
+            bc.resetChbs(bioObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
@@ -446,7 +400,8 @@ public class PumeUi extends Application {
         coarseBtn.setOnAction(e -> {
             bc.removeRbtns(bioObtns, bioGp);
             bc.addOBtns(treeObs, bioGp, 0);
-            bc.resetChbs(treeObs);
+//            bc.resetChbs(treeObs);
+            bc.resetChbs(bioObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
@@ -454,6 +409,132 @@ public class PumeUi extends Application {
             pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
             pumeChartHandler.removeGraph(nestedBp);
             pumeChartHandler.createLineChart(nestedBp);
+        });
+
+        // Total biomass Checkboxes
+//      Foliage        
+        foliageChb.setOnAction(e -> {
+            System.out.println(id);
+            if (foliageChb.isSelected()) {
+                int intId = 33;
+                pumeChartHandler.addMassToBioChart(maps, intId, "Foliage mass", 1);
+            }
+            if (!foliageChb.isSelected()) {
+                pumeChartHandler.removeMassFromBioChart(1);
+            }
+        });
+//      Branches
+        branchesChb.setOnAction(e -> {
+            System.out.println(id);
+            if (branchesChb.isSelected()) {
+                int intId = 24;
+                pumeChartHandler.addMassToBioChart(maps, intId, "Branch mass", 2);
+            }
+            if (!branchesChb.isSelected()) {
+                pumeChartHandler.removeMassFromBioChart(2);
+            }
+        });
+//      Stem      
+        stemChb.setOnAction(e -> {
+            System.out.println(id);
+            if (stemChb.isSelected()) {
+                int intId = 31;
+                pumeChartHandler.addMassToBioChart(maps, intId, "Stem mass", 3);
+            }
+            if (!stemChb.isSelected()) {
+                pumeChartHandler.removeMassFromBioChart(3);
+            }
+        });
+//      Fine roots             
+        fineChb.setOnAction(e -> {
+            System.out.println(id);
+            if (fineChb.isSelected()) {
+                int intId = 25;
+                pumeChartHandler.addMassToBioChart(maps, intId, "Fine root mass", 4);
+            }
+            if (!fineChb.isSelected()) {
+                pumeChartHandler.removeMassFromBioChart(4);
+            }
+        });
+//      Coarse roots            
+        coarseChb.setOnAction(e -> {
+            System.out.println(id);
+            if (coarseChb.isSelected()) {
+                int intId = 32;
+                pumeChartHandler.addMassToBioChart(maps, intId, "Coarse root mass", 5);
+            }
+            if (!coarseChb.isSelected()) {
+                pumeChartHandler.removeMassFromBioChart(5);
+            }
+        });
+
+        //ActionEvent handlers 1
+        treeCrownBtn.setOnAction(e -> {
+            bc.removeRbtns(tscObtns, tscGp);
+            bc.addOBtns(treeObs, tscGp, 0);
+//            bc.resetChbs(treeObs);
+            bc.resetChbs(bioObtns);
+//          graph
+            pumeChartHandler.removeGraph(nestedBp);
+        });
+        diaBtn.setOnAction(e -> {
+            bc.removeRbtns(tscObtns, tscGp);
+            bc.addOBtns(treeObs, tscGp, 0);
+//            bc.resetChbs(treeObs);
+            bc.resetChbs(bioObtns);
+//          graph
+            Button button = (Button) ((Control) e.getSource());
+            pumeBtn = new PumeButton(button);
+            pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
+            pumeChartHandler.removeGraph(nestedBp);
+            pumeChartHandler.createLineChart(nestedBp);
+
+        });
+        volBtn.setOnAction(e -> {
+            bc.removeRbtns(tscObtns, tscGp);
+            bc.addOBtns(treeObs, tscGp, 0);
+//            bc.resetChbs(treeObs);
+            bc.resetChbs(bioObtns);
+//          graph
+            Button button = (Button) ((Control) e.getSource());
+            pumeBtn = new PumeButton(button);
+            pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
+            pumeChartHandler.removeGraph(nestedBp);
+            pumeChartHandler.createLineChart(nestedBp);
+
+        });
+        basBtn.setOnAction(e -> {
+            bc.removeRbtns(tscObtns, tscGp);
+            bc.addOBtns(treeObs, tscGp, 0);
+//            bc.resetChbs(treeObs);
+            bc.resetChbs(bioObtns);
+//          graph
+            Button button = (Button) ((Control) e.getSource());
+            pumeBtn = new PumeButton(button);
+            pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
+            pumeChartHandler.removeGraph(nestedBp);
+            pumeChartHandler.createLineChart(nestedBp);
+        });
+        stockBtn.setOnAction(e -> {
+            bc.removeRbtns(tscObtns, tscGp);
+            bc.addOBtns(treeObs, tscGp, 0);
+//            bc.resetChbs(treeObs);
+            bc.resetChbs(bioObtns);
+//          graph
+            Button button = (Button) ((Control) e.getSource());
+            pumeBtn = new PumeButton(button);
+            pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
+            pumeChartHandler.removeGraph(nestedBp);
+            pumeChartHandler.createLineChart(nestedBp);
+        });
+        remBtn.setOnAction(e -> {
+            bc.removeRbtns(tscObtns, tscGp);
+            bc.addOBtns(treeObs, tscGp, 0);
+//            bc.resetChbs(treeObs);
+            bc.resetChbs(bioObtns);
+//          graph
+            pumeChartHandler.removeGraph(nestedBp);
+//            bc.addOBtns(remObs, tscGp, 0);
         });
 
         GridPane cwgGp = new GridPane();
@@ -521,7 +602,8 @@ public class PumeUi extends Application {
         cbBtn.setOnAction(e -> {
             bc.removeRbtns(cwgObtns, cwgGp);
             bc.addOBtns(cbObs, cwgGp, 0);
-            bc.resetChbs(treeObs);
+//            bc.resetChbs(treeObs);
+            bc.resetChbs(bioObtns);
 //          graph
             pumeChartHandler.removeGraph(nestedBp);
 
@@ -529,7 +611,8 @@ public class PumeUi extends Application {
         gppBtn.setOnAction(e -> {
             bc.removeRbtns(cwgObtns, cwgGp);
             bc.addOBtns(treeObs, cwgGp, 0);
-            bc.resetChbs(treeObs);
+//            bc.resetChbs(treeObs);
+            bc.resetChbs(bioObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
@@ -541,14 +624,16 @@ public class PumeUi extends Application {
         wuBtn.setOnAction(e -> {
             bc.removeRbtns(cwgObtns, cwgGp);
             bc.addOBtns(wuObs, cwgGp, 0);
-            bc.resetChbs(treeObs);
+//            bc.resetChbs(treeObs);
+            bc.resetChbs(bioObtns);
 //          graph
             pumeChartHandler.removeGraph(nestedBp);
         });
         vgBtn.setOnAction(e -> {
             bc.removeRbtns(cwgObtns, cwgGp);
             bc.addOBtns(treeObs, cwgGp, 0);
-            bc.resetChbs(treeObs);
+//            bc.resetChbs(treeObs);
+            bc.resetChbs(bioObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
@@ -704,7 +789,8 @@ public class PumeUi extends Application {
 
                 if (pumeChartHandler != null) {
                     pumeChartHandler.removeGraph(nestedBp);
-                    bc.resetChbs(treeObs);
+//                    bc.resetChbs(treeObs);
+                    bc.resetChbs(bioObtns);
                 }
 
                 maps = server.getResultDataList(Integer.parseInt(info.getYears()));

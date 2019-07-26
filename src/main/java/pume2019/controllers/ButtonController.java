@@ -1,14 +1,11 @@
 package pume2019.controllers;
 
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.List;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.RadioButton;
-import static javafx.scene.input.KeyEvent.KEY_PRESSED;
 import static javafx.scene.input.KeyEvent.KEY_RELEASED;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -53,10 +50,19 @@ public class ButtonController {
         }
     }
 
-    public void resetChbs(ObservableList<Object> chbs) {      
-        chbs.stream().map((o) -> (CheckBox) o).forEachOrdered((chb) -> {
-            chb.setSelected(false);
-        });
+//    public void resetChbs(ObservableList<Object> chbs) {      
+//        chbs.stream().map((o) -> (CheckBox) o).forEachOrdered((chb) -> {
+//            chb.setSelected(false);
+//        });
+//    }
+    public void resetChbs(ArrayList<ObservableList> chbLists) {
+        for (int i = 0; i < chbLists.size(); i++) {
+            ObservableList<Object> objectList = chbLists.get(i);
+            for (int j = 0; j < objectList.size(); j++) {
+                CheckBox chb = (CheckBox) objectList.get(j);
+                chb.setSelected(false);
+            }
+        }
     }
 
     public void defineBtnHandler(ObservableList<Button> btns) {
