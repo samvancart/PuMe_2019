@@ -116,6 +116,19 @@ public class ResultHandler {
         System.out.println("Results: "+ results);
         return results;
     }
+        public List<String> getMinusSum(List<String> pine, List<String> spruce, List<String> birch) {
+        List<String> results = new ArrayList<>();
+        for (int i = 0; i < pine.size(); i++) {
+            Double pineD = Double.parseDouble(pine.get(i));
+            Double spruceD = Double.parseDouble(spruce.get(i));
+            Double birchD = Double.parseDouble(birch.get(i));
+            Double sumD = pineD+spruceD+birchD; 
+            String sum = String.valueOf(sumD*(-1));
+            results.add(sum);
+        }
+        System.out.println("Results: "+ results);
+        return results;
+    }
 
     // TOTAL BIOMASS
     public List<String> getTotalBiomass(PumeButton pumeButton,List<Button> buttons) {

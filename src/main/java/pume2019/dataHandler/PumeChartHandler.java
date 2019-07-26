@@ -35,14 +35,16 @@ public class PumeChartHandler {
         rh.getTotalBiomass(pumeBtn, buttons);
         PumeStackedAreaChart stackedAreaChart = new PumeStackedAreaChart();
         String unit = pumeBtn.getUnit();
-        stackedAreaChart.createAreaChart(pumeBtn.getButton().getId(), pumeBtn.getButton().getText(), unit);
+        stackedAreaChart.createAreaChart(pumeBtn.getButton().getId(), "Biomass", unit);
         PumeSeries series = new PumeSeries();
         series.createSeries(pumeBtn.getDataList(0));
         Map<Integer, XYChart.Series> seriesMap = new HashMap<>();
         seriesMap.put(0, series.getSeries());
         pumeSeriesHandler = new PumeSeriesHandler(stackedAreaChart, seriesMap);
+        series.getSeries().setName(pumeBtn.getButton().getText());
         pumeSeriesHandler.addSeriesToStackedAreaChart(0, series.getSeries());
         stackedAreaGraph = drawer.drawStackedAreaChart(pumeSeriesHandler);
+        stackedAreaGraph.setAnimated(true);
         nestedBp.setCenter(stackedAreaGraph);
     }
 
@@ -56,6 +58,7 @@ public class PumeChartHandler {
         Map<Integer, XYChart.Series> seriesMap = new HashMap<>();
         seriesMap.put(0, series.getSeries());
         pumeSeriesHandler = new PumeSeriesHandler(pumeLineChart, seriesMap);
+        series.getSeries().setName(pumeBtn.getButton().getText());
         pumeSeriesHandler.addSeriesToLineChart(0, series.getSeries());
 //        nestedBp.getChildren().remove(graph);
         lineGraph = drawer.drawLineChart(pumeSeriesHandler);
@@ -82,14 +85,15 @@ public class PumeChartHandler {
     }
 
     public void addMassToBioChart(List<Map<Integer, List<String>>> maps, int id, String name, int checkBoxId) {
-        Map<Integer,List<String>> pine = maps.get(0);
-        Map<Integer,List<String>> spruce = maps.get(1);
-        Map<Integer,List<String>> birch = maps.get(2);
+        Map<Integer, List<String>> pine = maps.get(0);
+        Map<Integer, List<String>> spruce = maps.get(1);
+        Map<Integer, List<String>> birch = maps.get(2);
         List<String> data = rh.getSum(pine.get(id), spruce.get(id), birch.get(id));
         PumeSeries series = new PumeSeries();
         series.createSeries(data);
         series.getSeries().setName(name);
         pumeSeriesHandler.addSeriesToStackedAreaChart(checkBoxId, series.getSeries());
+        stackedAreaGraph.setAnimated(true);
         stackedAreaGraph = drawer.drawStackedAreaChart(pumeSeriesHandler);
     }
 

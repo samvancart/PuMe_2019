@@ -18,7 +18,6 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.chart.LineChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -50,10 +49,8 @@ import pume2019.dataHandler.ResultHandler;
 import pume2019.domain.Heath;
 import pume2019.domain.Info;
 import pume2019.domain.InitStand;
-import pume2019.domain.ChartDrawer;
 import pume2019.domain.Management;
 import pume2019.domain.PumeButton;
-import pume2019.domain.PumeSeriesHandler;
 import pume2019.domain.Recommendation;
 import pume2019.domain.SiteInfo;
 import pume2019.domain.Tree;
@@ -417,10 +414,12 @@ public class PumeUi extends Application {
             System.out.println(id);
             if (foliageChb.isSelected()) {
                 int intId = 33;
+                pumeChartHandler.removeMassFromBioChart(0);
                 pumeChartHandler.addMassToBioChart(maps, intId, "Foliage mass", 1);
             }
             if (!foliageChb.isSelected()) {
                 pumeChartHandler.removeMassFromBioChart(1);
+                bc.areNoneSelected(bioObs, pumeChartHandler, nestedBp, totalBioMassBtns);
             }
         });
 //      Branches
@@ -428,10 +427,12 @@ public class PumeUi extends Application {
             System.out.println(id);
             if (branchesChb.isSelected()) {
                 int intId = 24;
+                pumeChartHandler.removeMassFromBioChart(0);
                 pumeChartHandler.addMassToBioChart(maps, intId, "Branch mass", 2);
             }
             if (!branchesChb.isSelected()) {
                 pumeChartHandler.removeMassFromBioChart(2);
+                bc.areNoneSelected(bioObs, pumeChartHandler, nestedBp, totalBioMassBtns);
             }
         });
 //      Stem      
@@ -439,10 +440,12 @@ public class PumeUi extends Application {
             System.out.println(id);
             if (stemChb.isSelected()) {
                 int intId = 31;
+                pumeChartHandler.removeMassFromBioChart(0);
                 pumeChartHandler.addMassToBioChart(maps, intId, "Stem mass", 3);
             }
             if (!stemChb.isSelected()) {
                 pumeChartHandler.removeMassFromBioChart(3);
+                bc.areNoneSelected(bioObs, pumeChartHandler, nestedBp, totalBioMassBtns);
             }
         });
 //      Fine roots             
@@ -450,10 +453,12 @@ public class PumeUi extends Application {
             System.out.println(id);
             if (fineChb.isSelected()) {
                 int intId = 25;
+                pumeChartHandler.removeMassFromBioChart(0);
                 pumeChartHandler.addMassToBioChart(maps, intId, "Fine root mass", 4);
             }
             if (!fineChb.isSelected()) {
                 pumeChartHandler.removeMassFromBioChart(4);
+                bc.areNoneSelected(bioObs, pumeChartHandler, nestedBp, totalBioMassBtns);
             }
         });
 //      Coarse roots            
@@ -461,10 +466,12 @@ public class PumeUi extends Application {
             System.out.println(id);
             if (coarseChb.isSelected()) {
                 int intId = 32;
+                pumeChartHandler.removeMassFromBioChart(0);
                 pumeChartHandler.addMassToBioChart(maps, intId, "Coarse root mass", 5);
             }
             if (!coarseChb.isSelected()) {
                 pumeChartHandler.removeMassFromBioChart(5);
+                bc.areNoneSelected(bioObs, pumeChartHandler, nestedBp, totalBioMassBtns);
             }
         });
 

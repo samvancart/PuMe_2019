@@ -8,7 +8,9 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.RadioButton;
 import static javafx.scene.input.KeyEvent.KEY_RELEASED;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import pume2019.dataHandler.PumeChartHandler;
 import pume2019.ui.PumeUi.ButtonHandler;
 
 public class ButtonController {
@@ -68,5 +70,19 @@ public class ButtonController {
     public void defineBtnHandler(ObservableList<Button> btns) {
         btns.forEach(btn -> btn.addEventHandler(MouseEvent.MOUSE_CLICKED, bh));
         btns.forEach(btn -> btn.addEventHandler(KEY_RELEASED, bh));
+    }
+
+    
+        public void areNoneSelected(ObservableList<Object> buttons,PumeChartHandler handler,BorderPane nestedBp,List<Button> totalBioMassBtns) {
+        boolean noneSelected = true;
+        for (int i = 0; i < buttons.size(); i++) {
+            CheckBox c = (CheckBox) buttons.get(i);
+            if (c.isSelected()) {
+                noneSelected = false;
+            }
+        }
+        if (noneSelected) {
+            handler.createStackedAreaChartOfBiomass(nestedBp, totalBioMassBtns);
+        }
     }
 }
