@@ -1,4 +1,3 @@
-
 package pume2019.domain;
 
 import java.util.ArrayList;
@@ -15,13 +14,11 @@ import javafx.scene.chart.XYChart.Series;
 public class ChartDrawer {
 
     private LineChart<Integer, Double> handlerLineChart;
-    private StackedAreaChart<Integer,Double> handlerStackedAreaChart;
+    private StackedAreaChart<Integer, Double> handlerStackedAreaChart;
 
     public ChartDrawer() {
 
     }
-
-
 
     public LineChart<Integer, Double> drawLineChart(PumeSeriesHandler handler) {
         handlerLineChart = handler.getLineChart().getLineChart();
@@ -40,6 +37,12 @@ public class ChartDrawer {
                     handler.colourSeries(handlerLineChart, series, "default");
                 } else {
                     switch (entry.getKey()) {
+                        case 0:
+                            handler.colourSeries(handlerLineChart, series, handlerLineChart.getId());
+                            break;
+                        case 14:
+                            handler.colourSeries(handlerLineChart, series, "Crown base");
+                            break;
                         case 1:
                             handler.colourSeries(handlerLineChart, series, "pine");
                             break;
@@ -47,6 +50,16 @@ public class ChartDrawer {
                             handler.colourSeries(handlerLineChart, series, "spruce");
                             break;
                         case 3:
+                            handler.colourSeries(handlerLineChart, series, "birch");
+                            break;
+                        //muokkaus
+                        case 5:
+                            handler.colourSeries(handlerLineChart, series, "pine");
+                            break;
+                        case 6:
+                            handler.colourSeries(handlerLineChart, series, "spruce");
+                            break;
+                        case 7:
                             handler.colourSeries(handlerLineChart, series, "birch");
                             break;
                         default:
@@ -96,12 +109,11 @@ public class ChartDrawer {
         handlerLineChart.getData().addAll(series);
         return handlerLineChart;
     }
-    
-        public StackedAreaChart<Integer, Double> drawStackedAreaChart(PumeSeriesHandler handler) {
+
+    public StackedAreaChart<Integer, Double> drawStackedAreaChart(PumeSeriesHandler handler) {
         handlerStackedAreaChart = handler.getStackedAreaChart().getStackedAreaChart();
 //        this.handleColourSeries(handler);
         return handlerStackedAreaChart;
     }
 
 }
-

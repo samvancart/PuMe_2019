@@ -61,8 +61,14 @@ public class ButtonController {
         for (int i = 0; i < chbLists.size(); i++) {
             ObservableList<Object> objectList = chbLists.get(i);
             for (int j = 0; j < objectList.size(); j++) {
-                CheckBox chb = (CheckBox) objectList.get(j);
-                chb.setSelected(false);
+                if (objectList.get(j).getClass().equals((CheckBox.class))) {
+                    CheckBox chb = (CheckBox) objectList.get(j);
+                    chb.setSelected(false);
+                } else {
+                    RadioButton rb = (RadioButton) objectList.get(j);
+                    rb.setSelected(false);
+                }
+
             }
         }
     }
@@ -72,8 +78,7 @@ public class ButtonController {
         btns.forEach(btn -> btn.addEventHandler(KEY_RELEASED, bh));
     }
 
-    
-        public void areNoneSelected(ObservableList<Object> buttons,PumeChartHandler handler,BorderPane nestedBp,List<Button> totalBioMassBtns) {
+    public void areNoneSelected(ObservableList<Object> buttons, PumeChartHandler handler, BorderPane nestedBp, List<Button> totalBioMassBtns) {
         boolean noneSelected = true;
         for (int i = 0; i < buttons.size(); i++) {
             CheckBox c = (CheckBox) buttons.get(i);

@@ -65,19 +65,74 @@ public class PumeChartHandler {
         nestedBp.setCenter(lineGraph);
     }
 
-    public void addTreeToChart(Map<Integer, List<String>> treeMap, int id, String name, int treeId) {
-        List<String> data = new ArrayList<>();
-        data = treeMap.get(id);
+    public void createTHCBLineChart(BorderPane nestedBp) {
+        pumeBtn.getButton().setId("11");
+        rh.calculate(pumeBtn);
+        PumeLineChart pumeLineChart = new PumeLineChart();
+        String unit = pumeBtn.getUnit();
+        pumeLineChart.createLineChart(pumeBtn.getButton().getId(), pumeBtn.getButton().getText(), unit);
         PumeSeries series = new PumeSeries();
-        series.createSeries(data);
-        series.getSeries().setName(name);
-        pumeSeriesHandler.addSeriesToLineChart(treeId, series.getSeries());
+        series.createSeries(pumeBtn.getDataList(0));
+        Map<Integer, XYChart.Series> seriesMap = new HashMap<>();
+        seriesMap.put(0, series.getSeries());
+        pumeSeriesHandler = new PumeSeriesHandler(pumeLineChart, seriesMap);
+        series.getSeries().setName("Tree height");
+        pumeSeriesHandler.addSeriesToLineChart(0, series.getSeries());
+        lineGraph = drawer.drawLineChart(pumeSeriesHandler);
+        nestedBp.setCenter(lineGraph);
+        this.addCrownBaseToChart();
+    }
+
+    public void addCrownBaseToChart() {
+        pumeBtn.getButton().setId("14");
+        rh.calculate(pumeBtn);
+        PumeSeries series = new PumeSeries();
+        series.createSeries(pumeBtn.getDataList(1));
+        series.getSeries().setName("Crown base");
+        pumeSeriesHandler.addSeriesToLineChart(14, series.getSeries());
         lineGraph = drawer.drawLineChart(pumeSeriesHandler);
     }
 
-    public void removeTreeFromChart(int treeId) {
-        pumeSeriesHandler.removeSeriesFromLineChart(treeId);
+    public void addTreeToTHCBChart(Map<Integer, List<String>> treeMap, int id, String name, int treeId) {
+        List<String> data = new ArrayList<>();
+        data = treeMap.get(11);
+        PumeSeries series = new PumeSeries();
+        series.createSeries(data);
+        series.getSeries().setName("(Tree Height) " + name);
+        pumeSeriesHandler.addSeriesToLineChart(treeId, series.getSeries());
+        data = treeMap.get(14);
+        series = new PumeSeries();
+        series.createSeries(data);
+        series.getSeries().setName("(Crown base) " + name);
+        pumeSeriesHandler.addSeriesToLineChart(treeId + 4, series.getSeries());
         lineGraph = drawer.drawLineChart(pumeSeriesHandler);
+    }
+
+    public void addTreeToChart(Map<Integer, List<String>> treeMap, int id, String name, int treeId) {
+        if (id == 14) {
+            this.addTreeToTHCBChart(treeMap, id, name, treeId);
+        } else {
+            List<String> data = new ArrayList<>();
+            data = treeMap.get(id);
+            PumeSeries series = new PumeSeries();
+            series.createSeries(data);
+            series.getSeries().setName(name);
+            pumeSeriesHandler.addSeriesToLineChart(treeId, series.getSeries());
+            lineGraph = drawer.drawLineChart(pumeSeriesHandler);
+        }
+
+    }
+
+    public void removeTreeFromChart(int treeId) {
+        if (pumeBtn.getButton().getId().equals("14")) {
+            pumeSeriesHandler.removeSeriesFromLineChart(treeId);
+            pumeSeriesHandler.removeSeriesFromLineChart(treeId + 4);
+            lineGraph = drawer.drawLineChart(pumeSeriesHandler);
+        } else {
+            pumeSeriesHandler.removeSeriesFromLineChart(treeId);
+            lineGraph = drawer.drawLineChart(pumeSeriesHandler);
+        }
+
     }
 
     public void removeGraph(BorderPane nestedBp) {
@@ -100,6 +155,10 @@ public class PumeChartHandler {
     public void removeMassFromBioChart(int checkBoxId) {
         pumeSeriesHandler.removeSeriesFromStackedAreaChart(checkBoxId);
         stackedAreaGraph = drawer.drawStackedAreaChart(pumeSeriesHandler);
+    }
+    public void removeFromLineChart(int id){
+        pumeSeriesHandler.removeSeriesFromLineChart(id);
+        lineGraph = drawer.drawLineChart(pumeSeriesHandler);
     }
 
 }

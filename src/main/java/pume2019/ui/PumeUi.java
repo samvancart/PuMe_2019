@@ -185,8 +185,9 @@ public class PumeUi extends Application {
 
         //Buttons 1
         Button treeCrownBtn = new Button("Tree Height, Crown base");
-        treeCrownBtn.setId("11 14");
-        rh.addIdToMap(treeCrownBtn.getId(), 1);
+        treeCrownBtn.setId("11");
+        rh.addIdToMap("11", 1);
+        rh.addIdToMap("14", 1);
         treeCrownBtn.setTooltip(new Tooltip("Tree Height, Crown base"));
         Button diaBtn = new Button("Diameter");
         diaBtn.setId("12");
@@ -482,7 +483,11 @@ public class PumeUi extends Application {
 //            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
 //          graph
+            Button button = (Button) ((Control) e.getSource());
+            pumeBtn = new PumeButton(button);
+            pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
             pumeChartHandler.removeGraph(nestedBp);
+            pumeChartHandler.createTHCBLineChart(nestedBp);
         });
         diaBtn.setOnAction(e -> {
             bc.removeRbtns(tscObtns, tscGp);
@@ -563,6 +568,8 @@ public class PumeUi extends Application {
         gppBtn.setId("44");
         rh.addIdToMap(gppBtn.getId(), 2);
         Button wuBtn = new Button("Water use");
+        wuBtn.setId("48");
+        rh.addIdToMap(wuBtn.getId(), 4);
         Button vgBtn = new Button("Volume growth");
         vgBtn.setId("43");
         rh.addIdToMap(vgBtn.getId(), 2);
@@ -605,6 +612,33 @@ public class PumeUi extends Application {
         cwgObtns.add(treeObs);
         cwgObtns.add(cbObs);
 
+        // Water use checkbox ActionEvent handlers
+        evapChb.setOnAction(e -> {
+            System.out.println(id);
+            if (evapChb.isSelected()) {
+                int intId = Integer.parseInt("22");
+                pumeChartHandler.addTreeToChart(spruceMap, intId, "Evapotranspiration", 1);
+            }
+            if (!evapChb.isSelected() && summerSoilChb.isSelected()) {
+                pumeChartHandler.removeTreeFromChart(1);
+            } else {
+                evapChb.setSelected(true);
+            }
+        });
+
+        summerSoilChb.setOnAction(e -> {
+            System.out.println(id);
+            if (summerSoilChb.isSelected()) {
+                int intId = Integer.parseInt("41");
+                pumeChartHandler.addTreeToChart(spruceMap, intId, "Summer soil water", 2);
+            }
+            if (!summerSoilChb.isSelected() && evapChb.isSelected()) {
+                pumeChartHandler.removeTreeFromChart(2);
+            } else{
+                summerSoilChb.setSelected(true);
+            }
+        });
+
         //ActionEvent handlers 3
         cbBtn.setOnAction(e -> {
             bc.removeRbtns(cwgObtns, cwgGp);
@@ -633,8 +667,17 @@ public class PumeUi extends Application {
             bc.addOBtns(wuObs, cwgGp, 0);
 //            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
+            bc.resetChbs(cwgObtns);
 //          graph
+            Button button = (Button) ((Control) e.getSource());
+            pumeBtn = new PumeButton(button);
+            pumeBtn.setUnit("mm/yr");
+            pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
             pumeChartHandler.removeGraph(nestedBp);
+            pumeChartHandler.createLineChart(nestedBp);
+            evapChb.fire();
+            summerSoilChb.fire();
+            pumeChartHandler.removeFromLineChart(0);
         });
         vgBtn.setOnAction(e -> {
             bc.removeRbtns(cwgObtns, cwgGp);

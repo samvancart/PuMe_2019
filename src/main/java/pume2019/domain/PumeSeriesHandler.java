@@ -101,7 +101,11 @@ public class PumeSeriesHandler {
             color = Color.BLUE;
         } else if (name.equals("birch")) {
             color = Color.GREEN;
-        }
+        } else if (name.equals("crown base")) {
+            color = Color.BLACK;
+        } else if (name.equals("48")) {
+            color = Color.WHITE;
+        } 
 
         String rgb = String.format("%d, %d, %d",
                 (int) (color.getRed() * 255),
