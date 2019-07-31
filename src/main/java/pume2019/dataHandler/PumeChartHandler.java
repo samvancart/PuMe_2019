@@ -98,18 +98,18 @@ public class PumeChartHandler {
         data = treeMap.get(11);
         PumeSeries series = new PumeSeries();
         series.createSeries(data);
-        series.getSeries().setName("(Tree Height) " + name);
+        series.getSeries().setName(name + " (Tree height)");
         pumeSeriesHandler.addSeriesToLineChart(treeId, series.getSeries());
         data = treeMap.get(14);
         series = new PumeSeries();
         series.createSeries(data);
-        series.getSeries().setName("(Crown base) " + name);
+        series.getSeries().setName(name + " (Crown base)");
         pumeSeriesHandler.addSeriesToLineChart(treeId + 4, series.getSeries());
         lineGraph = drawer.drawLineChart(pumeSeriesHandler);
     }
 
     public void addTreeToChart(Map<Integer, List<String>> treeMap, int id, String name, int treeId) {
-        if (id == 14) {
+        if (id == 14 || id == 11) {
             this.addTreeToTHCBChart(treeMap, id, name, treeId);
         } else {
             List<String> data = new ArrayList<>();
@@ -156,7 +156,8 @@ public class PumeChartHandler {
         pumeSeriesHandler.removeSeriesFromStackedAreaChart(checkBoxId);
         stackedAreaGraph = drawer.drawStackedAreaChart(pumeSeriesHandler);
     }
-    public void removeFromLineChart(int id){
+
+    public void removeFromLineChart(int id) {
         pumeSeriesHandler.removeSeriesFromLineChart(id);
         lineGraph = drawer.drawLineChart(pumeSeriesHandler);
     }

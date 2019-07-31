@@ -55,4 +55,4 @@ Package 'sm', version 2.2-5.6: type help(sm) for summary information
 > 
 > proc.time()
    user  system elapsed 
-   0.70    0.43    1.15 
+   0.48    0.70    1.17 

@@ -54,13 +54,13 @@ public class ChartDrawer {
                             break;
                         //muokkaus
                         case 5:
-                            handler.colourSeries(handlerLineChart, series, "pine");
+                            handler.colourSeries(handlerLineChart, series, "pine2");
                             break;
                         case 6:
-                            handler.colourSeries(handlerLineChart, series, "spruce");
+                            handler.colourSeries(handlerLineChart, series, "spruce2");
                             break;
                         case 7:
-                            handler.colourSeries(handlerLineChart, series, "birch");
+                            handler.colourSeries(handlerLineChart, series, "birch2");
                             break;
                         default:
                             handler.colourSeries(handlerLineChart, series, "default");

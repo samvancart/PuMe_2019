@@ -564,6 +564,9 @@ public class PumeUi extends Application {
         //Buttons 3
         Button cbBtn = new Button("Carbon Balance");
         // id?
+        // sama resultHandler case kuin wuBtn koska 0
+        cbBtn.setId("48");
+        rh.addIdToMap(cbBtn.getId(), 4);
         Button gppBtn = new Button("GPP");
         gppBtn.setId("44");
         rh.addIdToMap(gppBtn.getId(), 2);
@@ -634,8 +637,50 @@ public class PumeUi extends Application {
             }
             if (!summerSoilChb.isSelected() && evapChb.isSelected()) {
                 pumeChartHandler.removeTreeFromChart(2);
-            } else{
+            } else {
                 summerSoilChb.setSelected(true);
+            }
+        });
+        // Carbon balance checkbox ActionEvent handlers
+        ppChb.setOnAction(e -> {
+            System.out.println(id);
+            if (ppChb.isSelected()) {
+                int intId = Integer.parseInt("6");
+                pumeChartHandler.addTreeToChart(spruceMap, intId, "Potential photosynthesis", 1);
+            }
+            if (!ppChb.isSelected() && gppChb.isSelected()) {
+                pumeChartHandler.removeTreeFromChart(1);
+            } else {
+                ppChb.setSelected(true);
+            }
+        });
+
+        gppChb.setOnAction(e -> {
+            System.out.println(id);
+            if (gppChb.isSelected()) {
+                int intId = Integer.parseInt("10");
+                pumeChartHandler.addTreeToChart(spruceMap, intId, "GPP", 2);
+            }
+            if (!gppChb.isSelected() && ppChb.isSelected()) {
+                pumeChartHandler.removeTreeFromChart(2);
+            } else {
+                gppChb.setSelected(true);
+            }
+        });
+
+        //Toggle Carbon balance radiobuttons Listener 
+        cbTg.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+            @Override
+            public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
+                if (nppRb.isSelected()) {
+                    pumeChartHandler.removeTreeFromChart(4);
+                    int intId = Integer.parseInt("18");
+                    pumeChartHandler.addTreeToChart(spruceMap, intId, "NPP", 3);
+                } else {
+                    pumeChartHandler.removeTreeFromChart(3);
+                    int intId = Integer.parseInt("9");
+                    pumeChartHandler.addTreeToChart(spruceMap, intId, "Autotrophic respiration", 4);
+                }
             }
         });
 
@@ -645,8 +690,16 @@ public class PumeUi extends Application {
             bc.addOBtns(cbObs, cwgGp, 0);
 //            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
+            bc.resetChbs(cwgObtns);
 //          graph
+            Button button = (Button) ((Control) e.getSource());
+            pumeBtn = new PumeButton(button);
+            pumeBtn.setUnit("gC/m²/yr");
+            pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
             pumeChartHandler.removeGraph(nestedBp);
+            pumeChartHandler.createLineChart(nestedBp);
+            ppChb.fire();
+            pumeChartHandler.removeFromLineChart(0);
 
         });
         gppBtn.setOnAction(e -> {
@@ -654,6 +707,7 @@ public class PumeUi extends Application {
             bc.addOBtns(treeObs, cwgGp, 0);
 //            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
+            bc.resetChbs(cwgObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
@@ -684,6 +738,7 @@ public class PumeUi extends Application {
             bc.addOBtns(treeObs, cwgGp, 0);
 //            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
+            bc.resetChbs(cwgObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);

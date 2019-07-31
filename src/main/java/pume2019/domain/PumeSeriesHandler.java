@@ -104,8 +104,14 @@ public class PumeSeriesHandler {
         } else if (name.equals("crown base")) {
             color = Color.BLACK;
         } else if (name.equals("48")) {
-            color = Color.WHITE;
-        } 
+            color = Color.RED;
+        }else if (name.equals("pine2")) {
+            color = Color.CYAN;
+        }else if (name.equals("spruce2")) {
+            color = Color.MAGENTA;
+        }else if (name.equals("birch2")) {
+            color = Color.YELLOW;
+        }
 
         String rgb = String.format("%d, %d, %d",
                 (int) (color.getRed() * 255),
@@ -116,7 +122,7 @@ public class PumeSeriesHandler {
             // we're looping for each data point, changing the color of line symbol
             XYChart.Data dataPoint = (XYChart.Data) series.getData().get(index);
             Node lineSymbol = dataPoint.getNode().lookup(".chart-line-symbol");
-            lineSymbol.setStyle("-fx-background-color: rgba(" + rgb + ", 1.0), white;");
+            lineSymbol.setStyle("-fx-background-color: rgba(" + rgb + ", 1.0), whitesmoke;");
         }
         series.getNode().setStyle("-fx-border-style: solid; -fx-stroke:rgba(" + rgb + ", 1.0); -fx-background-color: rgba(" + rgb + ", 1.0);");
         this.colourLegend(chart, series, rgb);
