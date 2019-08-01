@@ -104,6 +104,8 @@ public class ResultHandler {
         birchMap.replace(id, newBirch);
         conversionDone = true;
     }
+    
+   
 
     public List<String> getAvg(List<String> pine, List<String> spruce, List<String> birch) {
         List<String> results = new ArrayList<>();
@@ -126,7 +128,7 @@ public class ResultHandler {
             String sum = String.valueOf((pineD + spruceD + birchD));
             results.add(sum);
         }
-        System.out.println("Results: " + results);
+        System.out.println("sum Results: " + results);
         return results;
     }
 
@@ -140,7 +142,7 @@ public class ResultHandler {
             String sum = String.valueOf(sumD * (-1));
             results.add(sum);
         }
-        System.out.println("Results: " + results);
+        System.out.println("minus sum Results: " + results);
         return results;
     }
 

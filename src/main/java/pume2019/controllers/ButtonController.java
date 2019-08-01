@@ -90,4 +90,16 @@ public class ButtonController {
             handler.createStackedAreaChartOfBiomass(nestedBp, totalBioMassBtns);
         }
     }
+        public void areNoneSelectedRemovals(ObservableList<Object> buttons, PumeChartHandler handler, BorderPane nestedBp) {
+        boolean noneSelected = true;
+        for (int i = 0; i < buttons.size(); i++) {
+            CheckBox c = (CheckBox) buttons.get(i);
+            if (c.isSelected()) {
+                noneSelected = false;
+            }
+        }
+        if (noneSelected) {
+            handler.createStackedBarChart(nestedBp);
+        }
+    }
 }

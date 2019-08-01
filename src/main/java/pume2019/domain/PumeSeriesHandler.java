@@ -15,6 +15,7 @@ public class PumeSeriesHandler {
 
     private PumeLineChart lineChart;
     private PumeStackedAreaChart stackedAreaChart;
+    private PumeStackedBarChart stackedBarChart;
     private List<XYChart.Series> seriesList;
     private Map<Integer, XYChart.Series> seriesMap;
 
@@ -28,10 +29,19 @@ public class PumeSeriesHandler {
         this.seriesMap = seriesMap;
     }
 
+    public PumeSeriesHandler(PumeStackedBarChart stackedBarChart, Map<Integer, XYChart.Series> seriesMap) {
+        this.stackedBarChart = stackedBarChart;
+        this.seriesMap = seriesMap;
+    }
+
     public PumeStackedAreaChart getStackedAreaChart() {
         return stackedAreaChart;
     }
 
+    public PumeStackedBarChart getStackedBarChart() {
+        return stackedBarChart;
+    }
+    
     public Map<Integer, XYChart.Series> getSeriesMap() {
         return seriesMap;
     }
@@ -67,6 +77,11 @@ public class PumeSeriesHandler {
         stackedAreaChart.getStackedAreaChart().getData().add(series);
     }
 
+    public void addSeriesToStackedBarChart(Integer key, XYChart.Series series) {
+        seriesMap.putIfAbsent(key, series);
+        stackedBarChart.getStackedBarChart().getData().add(series);
+    }
+
     public void removeSeriesFromLineChart(Integer key) {
 //        seriesMap.clear();
 //        seriesMap.remove(key);
@@ -92,6 +107,17 @@ public class PumeSeriesHandler {
         stackedAreaChart.getStackedAreaChart().setData(newSeriesList);
     }
 
+    public void removeSeriesFromStackedBarChart(Integer key) {
+        ObservableList<Series<String, Double>> newSeriesList = FXCollections.observableArrayList();
+        seriesMap.replace(key, null);
+        for (Map.Entry<Integer, Series> entry : seriesMap.entrySet()) {
+            if (seriesMap.get(entry.getKey()) != null) {
+                newSeriesList.add(entry.getValue());
+            }
+        }
+        stackedBarChart.getStackedBarChart().setData(newSeriesList);
+    }
+
     public void colourSeries(LineChart<Integer, Double> chart, Series series, String name) {
         name = name.toLowerCase();
         Color color = Color.RED;
@@ -105,11 +131,11 @@ public class PumeSeriesHandler {
             color = Color.BLACK;
         } else if (name.equals("48")) {
             color = Color.RED;
-        }else if (name.equals("pine2")) {
+        } else if (name.equals("pine2")) {
             color = Color.CYAN;
-        }else if (name.equals("spruce2")) {
+        } else if (name.equals("spruce2")) {
             color = Color.MAGENTA;
-        }else if (name.equals("birch2")) {
+        } else if (name.equals("birch2")) {
             color = Color.YELLOW;
         }
 

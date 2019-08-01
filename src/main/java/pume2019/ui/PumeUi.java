@@ -202,7 +202,11 @@ public class PumeUi extends Application {
         stockBtn.setId("17");
         rh.addIdToMap(stockBtn.getId(), 2);
         Button remBtn = new Button("Removals");
-        remBtn.setId("37 42");
+        remBtn.setId("37");
+        rh.addIdToMap(remBtn.getId(), 2);
+        // TEST
+        rh.addIdToMap("42", 2);
+
         ObservableList<Button> tscBtns;
         tscBtns = FXCollections.observableArrayList();
         tscBtns.addAll(treeCrownBtn, diaBtn, volBtn, basBtn, stockBtn, remBtn);
@@ -225,33 +229,55 @@ public class PumeUi extends Application {
 //        Pine
         pineChb.setOnAction(e -> {
             System.out.println(id);
+            int intId = Integer.parseInt(id);
             if (pineChb.isSelected()) {
-                int intId = Integer.parseInt(id);
+                if (intId == 37) {
+                    pumeChartHandler.removeFromStackedBarChart(0);
+                }
                 pumeChartHandler.addTreeToChart(pineMap, intId, "Pine", 1);
             }
             if (!pineChb.isSelected()) {
+                if (intId == 37) {
+                    pumeChartHandler.removeFromStackedBarChart(1);
+                    bc.areNoneSelectedRemovals(treeObs, pumeChartHandler, nestedBp);
+                }
                 pumeChartHandler.removeTreeFromChart(1);
+
             }
         });
 //      Spruce
         spruceChb.setOnAction(e -> {
             System.out.println(id);
+            int intId = Integer.parseInt(id);
             if (spruceChb.isSelected()) {
-                int intId = Integer.parseInt(id);
+                if (intId == 37) {
+                    pumeChartHandler.removeFromStackedBarChart(0);
+                }
                 pumeChartHandler.addTreeToChart(spruceMap, intId, "Spruce", 2);
             }
             if (!spruceChb.isSelected()) {
+                if (intId == 37) {
+                    pumeChartHandler.removeFromStackedBarChart(2);
+                    bc.areNoneSelectedRemovals(treeObs, pumeChartHandler, nestedBp);
+                }
                 pumeChartHandler.removeTreeFromChart(2);
             }
         });
 //      Birch
         birchChb.setOnAction(e -> {
             System.out.println(id);
+            int intId = Integer.parseInt(id);
             if (birchChb.isSelected()) {
-                int intId = Integer.parseInt(id);
+                if (intId == 37) {
+                    pumeChartHandler.removeFromStackedBarChart(0);
+                }
                 pumeChartHandler.addTreeToChart(birchMap, intId, "Birch", 3);
             }
             if (!birchChb.isSelected()) {
+                if (intId == 37) {
+                    pumeChartHandler.removeFromStackedBarChart(3);
+                    bc.areNoneSelectedRemovals(treeObs, pumeChartHandler, nestedBp);
+                }
                 pumeChartHandler.removeTreeFromChart(3);
             }
         });
@@ -545,8 +571,13 @@ public class PumeUi extends Application {
 //            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
 //          graph
+            Button button = (Button) ((Control) e.getSource());
+            pumeBtn = new PumeButton(button);
+            pumeBtn.setUnit("m³");
+            pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
             pumeChartHandler.removeGraph(nestedBp);
-//            bc.addOBtns(remObs, tscGp, 0);
+            pumeChartHandler.createStackedBarChart(nestedBp);
+//            pumeChartHandler.createRemovalsCharts(nestedBp);
         });
 
         GridPane cwgGp = new GridPane();

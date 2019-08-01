@@ -8,6 +8,7 @@ import javafx.scene.chart.Axis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.StackedAreaChart;
+import javafx.scene.chart.StackedBarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Series;
 
@@ -15,6 +16,7 @@ public class ChartDrawer {
 
     private LineChart<Integer, Double> handlerLineChart;
     private StackedAreaChart<Integer, Double> handlerStackedAreaChart;
+    private StackedBarChart<String, Double> handlerStackedBarChart;
 
     public ChartDrawer() {
 
@@ -116,4 +118,8 @@ public class ChartDrawer {
         return handlerStackedAreaChart;
     }
 
+    public StackedBarChart<String, Double> drawStackedBarChart(PumeSeriesHandler handler) {
+        handlerStackedBarChart = handler.getStackedBarChart().getStackedBarChart();
+        return handlerStackedBarChart;
+    }
 }
