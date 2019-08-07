@@ -1,5 +1,6 @@
 package pume2019.domain;
 
+import javafx.geometry.Side;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -19,6 +20,7 @@ public class PumeLineChart {
 
     public void setCombinedLineChart() {
         lineChart.setLegendVisible(false);
+        lineChart.getXAxis().setVisible(false);
         lineChart.setAnimated(false);
         lineChart.setCreateSymbols(true);
         lineChart.setOpacity(0.5);
@@ -28,6 +30,11 @@ public class PumeLineChart {
         lineChart.setVerticalGridLinesVisible(false);
         lineChart.getXAxis().setVisible(false);
         lineChart.getYAxis().setVisible(false);
+        lineChart.getYAxis().setSide(Side.RIGHT);
+
+//        lineChart.getXAxis().setTickMarkVisible(false);
+//        lineChart.getXAxis().setTickLabelsVisible(false);
+//        lineChart.getXAxis().setSide(Side.TOP);
     }
 
     public LineChart<Integer, Double> createLineChart(String var, String name, String unit) {

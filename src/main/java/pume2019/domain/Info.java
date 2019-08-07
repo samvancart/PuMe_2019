@@ -61,7 +61,10 @@ public class Info {
     }
 
     public String toFwdSlashes(String path) {
-        path = path.replace("\\", "/");
+        if (path != null) {
+            path = path.replace("\\", "/");
+        }
+
         return path;
     }
 

@@ -177,7 +177,7 @@ public class PumeChartHandler {
             this.addTreeToTHCBChart(treeMap, id, name, treeId);
         } else if (id == 37) {
             this.addTreeToStackedBarChart(treeMap, id, name, treeId);
-        } else if (id == 10||id==18||id==9) {
+        } else if (id == 10 || id == 18 || id == 9) {
             this.addTreeToChartAndConvertToGrams(treeMap, id, name, treeId);
         } else {
             List<String> data = new ArrayList<>();
@@ -230,7 +230,6 @@ public class PumeChartHandler {
             lineGraph = drawer.drawLineChart(pumeSeriesHandler);
         } else if (pumeBtn.getButton().getId().equals("37")) {
             pumeSeriesHandler.removeSeriesFromStackedBarChart(treeId);
-
         } else {
             pumeSeriesHandler.removeSeriesFromLineChart(treeId);
             lineGraph = drawer.drawLineChart(pumeSeriesHandler);
@@ -239,7 +238,9 @@ public class PumeChartHandler {
     }
 
     public void removeGraph(BorderPane nestedBp) {
-        nestedBp.getChildren().remove(lineGraph);
+        if (lineGraph != null) {
+            nestedBp.getChildren().remove(lineGraph);
+        }
     }
 
     public void addMassToBioChart(List<Map<Integer, List<String>>> maps, int id, String name, int checkBoxId) {

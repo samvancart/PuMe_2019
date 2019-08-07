@@ -18,6 +18,8 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -42,16 +44,21 @@ import javafx.stage.Stage;
 import pume2019.controllers.ButtonController;
 import pume2019.dataHandler.MyServerSocket;
 import pume2019.dataHandler.PumeChartHandler;
+import pume2019.dataHandler.PumeErrorHandler;
 import pume2019.dataHandler.RFileHandler;
 import pume2019.dataHandler.RFunctions;
 import pume2019.dataHandler.RInputHandler;
 import pume2019.dataHandler.ResultHandler;
+import pume2019.domain.FileChooserButton;
 import pume2019.domain.Heath;
 import pume2019.domain.Info;
 import pume2019.domain.InitStand;
 import pume2019.domain.Management;
+import pume2019.domain.Notification;
+import pume2019.domain.Notifications;
 import pume2019.domain.PumeButton;
-import pume2019.domain.Recommendation;
+import pume2019.domain.PumeId;
+import pume2019.domain.Thinning;
 import pume2019.domain.SiteInfo;
 import pume2019.domain.Tree;
 
@@ -75,8 +82,15 @@ public class PumeUi extends Application {
     private PumeChartHandler pumeChartHandler;
     private PumeButton pumeBtn;
     private List<Button> totalBioMassBtns;
-    private String id;
+//    private String id;
+    private PumeId id = new PumeId();
+    private PumeErrorHandler errorHandler = new PumeErrorHandler();
     private List<ObservableList<Object>> checkBoxesList;
+    private File initBtnFile;
+    private File weatherBtnFile;
+    private File managBtnFile;
+    private FileChooserButton fcb = new FileChooserButton();
+    private Notifications notifications = new Notifications();
 
     @Override
     public void init() throws IOException {
@@ -91,6 +105,7 @@ public class PumeUi extends Application {
         functions = new RFunctions();
         inputHandler = new RInputHandler();
         rh = new ResultHandler();
+
     }
 
     @Override
@@ -204,8 +219,6 @@ public class PumeUi extends Application {
         Button remBtn = new Button("Removals");
         remBtn.setId("37");
         rh.addIdToMap(remBtn.getId(), 2);
-        // TEST
-        rh.addIdToMap("42", 2);
 
         ObservableList<Button> tscBtns;
         tscBtns = FXCollections.observableArrayList();
@@ -228,8 +241,8 @@ public class PumeUi extends Application {
         // Tree ActionEvent handlers
 //        Pine
         pineChb.setOnAction(e -> {
-            System.out.println(id);
-            int intId = Integer.parseInt(id);
+            System.out.println(id.getId());
+            int intId = Integer.parseInt(id.getId());
             if (pineChb.isSelected()) {
                 if (intId == 37) {
                     pumeChartHandler.removeFromStackedBarChart(0);
@@ -248,7 +261,7 @@ public class PumeUi extends Application {
 //      Spruce
         spruceChb.setOnAction(e -> {
             System.out.println(id);
-            int intId = Integer.parseInt(id);
+            int intId = Integer.parseInt(id.getId());
             if (spruceChb.isSelected()) {
                 if (intId == 37) {
                     pumeChartHandler.removeFromStackedBarChart(0);
@@ -266,7 +279,7 @@ public class PumeUi extends Application {
 //      Birch
         birchChb.setOnAction(e -> {
             System.out.println(id);
-            int intId = Integer.parseInt(id);
+            int intId = Integer.parseInt(id.getId());
             if (birchChb.isSelected()) {
                 if (intId == 37) {
                     pumeChartHandler.removeFromStackedBarChart(0);
@@ -283,13 +296,22 @@ public class PumeUi extends Application {
         });
 
         //RadioButtons    
-//        ObservableList<Object> remObs;
-//        remObs = FXCollections.observableArrayList();
-//      SELVITÄ LASKUTAPA
-//        remObs.addAll(pineChb, spruceChb, birchChb);
+        ToggleGroup remTg = new ToggleGroup();
+        ObservableList<Object> remObs;
+        remObs = FXCollections.observableArrayList();
+        RadioButton cuttingsRb = new RadioButton("Cuttings");
+        cuttingsRb.setId("37");
+        rh.addIdToMap(cuttingsRb.getId(), 2);
+        cuttingsRb.setToggleGroup(remTg);
+        RadioButton mortalityRb = new RadioButton("Mortality");
+        mortalityRb.setId("42");
+        rh.addIdToMap(mortalityRb.getId(), 2);
+        mortalityRb.setToggleGroup(remTg);
+        remObs.addAll(pineChb, spruceChb, birchChb, cuttingsRb, mortalityRb);
+
         ArrayList<ObservableList> tscObtns;
         tscObtns = new ArrayList<>();
-//        tscObtns.add(remObs);
+        tscObtns.add(remObs);
         tscObtns.add(treeObs);
 
         GridPane bioGp = new GridPane();
@@ -508,9 +530,11 @@ public class PumeUi extends Application {
             bc.addOBtns(treeObs, tscGp, 0);
 //            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
+            bc.resetChbs(tscObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
+            pumeBtn.setUnit("m");
             pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
             pumeChartHandler.removeGraph(nestedBp);
             pumeChartHandler.createTHCBLineChart(nestedBp);
@@ -520,9 +544,11 @@ public class PumeUi extends Application {
             bc.addOBtns(treeObs, tscGp, 0);
 //            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
+            bc.resetChbs(tscObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
+            pumeBtn.setUnit("cm");
             pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
             pumeChartHandler.removeGraph(nestedBp);
             pumeChartHandler.createLineChart(nestedBp);
@@ -533,9 +559,11 @@ public class PumeUi extends Application {
             bc.addOBtns(treeObs, tscGp, 0);
 //            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
+            bc.resetChbs(tscObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
+            pumeBtn.setUnit("m³/ha");
             pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
             pumeChartHandler.removeGraph(nestedBp);
             pumeChartHandler.createLineChart(nestedBp);
@@ -549,6 +577,7 @@ public class PumeUi extends Application {
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
+            pumeBtn.setUnit("m²/ha");
             pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
             pumeChartHandler.removeGraph(nestedBp);
             pumeChartHandler.createLineChart(nestedBp);
@@ -558,26 +587,75 @@ public class PumeUi extends Application {
             bc.addOBtns(treeObs, tscGp, 0);
 //            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
+//            bc.resetChbs(tscObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
+            pumeBtn.setUnit("1/ha");
             pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
             pumeChartHandler.removeGraph(nestedBp);
             pumeChartHandler.createLineChart(nestedBp);
         });
         remBtn.setOnAction(e -> {
             bc.removeRbtns(tscObtns, tscGp);
-            bc.addOBtns(treeObs, tscGp, 0);
-//            bc.resetChbs(treeObs);
+            bc.addOBtns(remObs, tscGp, 0);
+//            bc.addOBtns(treeObs, tscGp, 0);
+
             bc.resetChbs(bioObtns);
+            bc.resetChbs(tscObtns);
+
 //          graph
-            Button button = (Button) ((Control) e.getSource());
-            pumeBtn = new PumeButton(button);
-            pumeBtn.setUnit("m³");
-            pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
-            pumeChartHandler.removeGraph(nestedBp);
-            pumeChartHandler.createStackedBarChart(nestedBp);
+//            Button button = (Button) ((Control) e.getSource());
+//            pumeBtn = new PumeButton(button);
+//            pumeBtn.setUnit("m³/ha/yr");
+//            pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
+//            pumeChartHandler.removeGraph(nestedBp);
+//            pumeChartHandler.createStackedBarChart(nestedBp);
+//            cuttingsRb.arm();
+            cuttingsRb.fire();
+//            pumeChartHandler.removeFromStackedBarChart(0);
+
 //            pumeChartHandler.createRemovalsCharts(nestedBp);
+        });
+
+        //Toggle removals radiobuttons Listener 
+        remTg.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+            @Override
+            public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
+                if (cuttingsRb.isSelected()) {
+                    bc.removeRbtns(tscObtns, tscGp);
+                    bc.addOBtns(remObs, tscGp, 0);
+                    bc.resetChbs(bioObtns);
+//                    bc.resetChbs(tscObtns);
+                    //graph
+                    RadioButton selectedRadioButton = (RadioButton) remTg.getSelectedToggle();
+                    String toggleGroupId = selectedRadioButton.getId();
+                    System.out.println("toggleGroupValue:" + toggleGroupId);
+                    id.setId("37");
+                    Button button = new Button("Cuttings");
+                    button.setId(id.getId());
+                    pumeBtn = new PumeButton(button);
+                    pumeBtn.setUnit("m³/ha/yr");
+                    pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
+                    pumeChartHandler.removeGraph(nestedBp);
+                    pumeChartHandler.createStackedBarChart(nestedBp);
+
+                } else {
+                    bc.removeRbtns(tscObtns, tscGp);
+                    bc.addOBtns(remObs, tscGp, 0);
+                    bc.resetChbs(bioObtns);
+//                    bc.resetChbs(tscObtns);
+                    //graph
+                    id.setId("42");
+                    Button button = new Button("Mortality");
+                    button.setId(id.getId());
+                    pumeBtn = new PumeButton(button);
+                    pumeBtn.setUnit("m³/ha/yr");
+                    pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
+                    pumeChartHandler.removeGraph(nestedBp);
+                    pumeChartHandler.createLineChart(nestedBp);
+                }
+            }
         });
 
         GridPane cwgGp = new GridPane();
@@ -828,9 +906,10 @@ public class PumeUi extends Application {
         Label weatherLbl = new Label("Weather:");
         Label managLbl = new Label("Management:");
         initStand = new InitStand();
-        ComboBox treesCb = new ComboBox(initStand.getTrees());
-        treesCb.getSelectionModel().selectFirst();
+        ComboBox initStandCb = new ComboBox(initStand.getTrees());
+        initStandCb.getSelectionModel().selectFirst();
         Button initBtn = new Button("Choose file");
+        initBtn.setId("initBtn");
         initBtn.setMaxSize(80, 20);
         initBtn.setDisable(true);
         siteInfo = new SiteInfo();
@@ -844,13 +923,15 @@ public class PumeUi extends Application {
         RadioButton weatherRbCus = new RadioButton("Custom .csv");
         weatherRbCus.setToggleGroup(weatherTg);
         Button weatherBtn = new Button("Choose file");
+        weatherBtn.setId("weatherBtn");
         weatherBtn.setMaxSize(80, 20);
         weatherBtn.setDisable(true);
 
         manag = new Management();
-        ComboBox recsCb = new ComboBox(manag.getRecs());
-        recsCb.getSelectionModel().selectFirst();
+        ComboBox thinningsCb = new ComboBox(manag.getThinnings());
+        thinningsCb.getSelectionModel().selectFirst();
         Button managBtn = new Button("Choose file");
+        managBtn.setId("managBtn");
         managBtn.setMaxSize(80, 20);
         managBtn.setDisable(true);
 
@@ -865,7 +946,7 @@ public class PumeUi extends Application {
         Button runBtn = new Button("Run Model");
 
         gp.add(initSitLbl, 0, 0);
-        gp.add(treesCb, 1, 0);
+        gp.add(initStandCb, 1, 0);
         gp.add(initBtn, 2, 0);
         gp.add(siteLbl, 0, 1);
         gp.add(siteCb, 1, 1);
@@ -875,7 +956,7 @@ public class PumeUi extends Application {
         gp.add(weatherBtn, 3, 2);
         gp.add(managLbl, 0, 3);
 //        gp.add(managRbDef, 1, 3);
-        gp.add(recsCb, 1, 3);
+        gp.add(thinningsCb, 1, 3);
 //        gp.add(managRbCus, 2, 3);
         gp.add(managBtn, 2, 3);
         gp.add(yearsLbl, 0, 4);
@@ -892,58 +973,74 @@ public class PumeUi extends Application {
                 new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                notifications.clear();
                 info.setHeath((Heath) siteCb.getValue());
-                info.setTree((Tree) treesCb.getValue());
+                info.setTree((Tree) initStandCb.getValue());
                 info.setYears(yearsSpin.getEditor().textProperty().get());
-                System.out.println("init stand: " + info.getTree());
-                System.out.println("initPath: " + info.getInitPath());
-                System.out.println("site type: " + info.getHeath());
-                System.out.println("weather path: " + info.getWeatherPath());
-                System.out.println("manag path: " + info.getManagPath());
-                System.out.println("years: " + info.getYears());
-                rh.resetConversionDone();
+                String weatherPath = info.getWeatherPath();
+                errorHandler.checkForErrors("Weather", weatherPath, notifications);
+                String managPath = info.getManagPath();
+                errorHandler.checkForErrors("Management", managPath, notifications);
+                String initPath = info.getInitPath();
+                errorHandler.checkForErrors("Initial stand", initPath, notifications);
+                Alert errorAlert = errorHandler.getErrorAlert(notifications);
+                if (errorAlert == null) {
+
+                    System.out.println("init stand: " + info.getTree());
+                    System.out.println("initPath: " + info.getInitPath());
+                    System.out.println("site type: " + info.getHeath());
+                    System.out.println("weather path: " + info.getWeatherPath());
+                    System.out.println("manag path: " + info.getManagPath());
+                    System.out.println("years: " + info.getYears());
+                    rh.resetConversionDone();
 //                if (pumeBtn != null) {
 //                    pumeBtn = new PumeButton(pumeBtn.getButton());
 //                }
 //                pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
 
-                //Run model
-                try {
-                    inputHandler.getRInputs(fileHandler, functions, info);
-                } catch (IOException e) {
-                    System.out.println("getInputs " + e);
-                }
-                if (server == null) {
+                    //Run model
                     try {
-                        server = new MyServerSocket(6011);
+                        inputHandler.getRInputs(fileHandler, functions, info);
                     } catch (IOException e) {
-                        System.out.println("Server socket " + e);
+                        System.out.println("getInputs " + e);
                     }
-                }
+                    if (server == null) {
+                        try {
+                            server = new MyServerSocket(6011);
+                        } catch (IOException e) {
+                            System.out.println("Server socket " + e);
+                        }
+                    }
 
-                server.start();
+                    server.start();
 
-                if (pumeChartHandler != null) {
-                    pumeChartHandler.removeGraph(nestedBp);
+                    if (pumeChartHandler != null) {
+                        pumeChartHandler.removeGraph(nestedBp);
 //                    bc.resetChbs(treeObs);
-                    bc.resetChbs(bioObtns);
-                }
+                        bc.resetChbs(bioObtns);
+                    }
 
-                maps = server.getResultDataList(Integer.parseInt(info.getYears()));
-                rh.setMaps(maps);
-                pineMap = (HashMap<Integer, List<String>>) rh.getPineMap();
-                spruceMap = (HashMap<Integer, List<String>>) rh.getSpruceMap();
-                birchMap = (HashMap<Integer, List<String>>) rh.getBirchMap();
-                System.out.println("hello");
-                System.out.println("conversionDone: " + rh.isConversionDone());
+                    maps = server.getResultDataList(Integer.parseInt(info.getYears()));
+                    rh.setMaps(maps);
+                    pineMap = (HashMap<Integer, List<String>>) rh.getPineMap();
+                    spruceMap = (HashMap<Integer, List<String>>) rh.getSpruceMap();
+                    birchMap = (HashMap<Integer, List<String>>) rh.getBirchMap();
+                    System.out.println("hello");
+                    System.out.println("conversionDone: " + rh.isConversionDone());
+                    System.out.println("initBtnFile: " + initBtnFile);
+                    System.out.println("weatherBtnFile: " + weatherBtnFile);
+                    System.out.println("managBtnFile: " + managBtnFile);
+                } else {
+                    errorAlert.showAndWait();
+                }
 
             }
         });
 
         // recsCb listener
-        recsCb.valueProperty().addListener(new ChangeListener<Recommendation>() {
+        thinningsCb.valueProperty().addListener(new ChangeListener<Thinning>() {
             @Override
-            public void changed(ObservableValue ov, Recommendation oldVal, Recommendation newVal) {
+            public void changed(ObservableValue ov, Thinning oldVal, Thinning newVal) {
                 switch (newVal.getId()) {
                     case 0:
                         managBtn.setDisable(true);
@@ -958,6 +1055,7 @@ public class PumeUi extends Application {
                         break;
                     case 2:
                         managBtn.setDisable(false);
+                        fcb.setNoFileChosen(primaryStage, info, managBtn);
                         break;
                     default:
                         break;
@@ -966,7 +1064,7 @@ public class PumeUi extends Application {
         });
 
         // treesCb listener
-        treesCb.valueProperty().addListener(new ChangeListener<Tree>() {
+        initStandCb.valueProperty().addListener(new ChangeListener<Tree>() {
             @Override
             public void changed(ObservableValue ov, Tree oldVal, Tree newVal) {
                 switch (newVal.getId()) {
@@ -987,6 +1085,7 @@ public class PumeUi extends Application {
                         break;
                     case 3:
                         initBtn.setDisable(false);
+                        fcb.setNoFileChosen(primaryStage, info, initBtn);
                         break;
                     default:
                         break;
@@ -999,16 +1098,7 @@ public class PumeUi extends Application {
                 new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                FileChooser fileChooser = new FileChooser();
-                File file = fileChooser.showOpenDialog(primaryStage);
-//              TARKISTA TIEDOSTON FORMAATTI
-                if (file != null) {
-                    String path[] = file.getPath().split("\\\\");
-                    info.setWeatherPath(file.getPath());
-                    if (!path[0].equals("")) {
-                        weatherBtn.setText(path[path.length - 1]);
-                    }
-                }
+                fcb.chooseFile(primaryStage, info, weatherBtn);
             }
         });
 
@@ -1017,33 +1107,15 @@ public class PumeUi extends Application {
                 new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                FileChooser fileChooser = new FileChooser();
-                File file = fileChooser.showOpenDialog(primaryStage);
-//              TARKISTA TIEDOSTON FORMAATTI
-                if (file != null) {
-                    String path[] = file.getPath().split("\\\\");
-                    info.setManagPath(file.getPath());
-                    if (!path[0].equals("")) {
-                        managBtn.setText(path[path.length - 1]);
-                    }
-                }
+                fcb.chooseFile(primaryStage, info, managBtn);
             }
         });
-
+        //Initial stand file chooser ActionEvent     
         initBtn.setOnAction(
                 new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                FileChooser fileChooser = new FileChooser();
-                File file = fileChooser.showOpenDialog(primaryStage);
-//              TARKISTA TIEDOSTON FORMAATTI
-                if (file != null) {
-                    String path[] = file.getPath().split("\\\\");
-                    info.setInitPath(file.getPath());
-                    if (!path[0].equals("")) {
-                        initBtn.setText(path[path.length - 1]);
-                    }
-                }
+                fcb.chooseFile(primaryStage, info, initBtn);
             }
         });
 
@@ -1053,6 +1125,7 @@ public class PumeUi extends Application {
             public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
                 if (weatherRbCus.isSelected()) {
                     weatherBtn.setDisable(false);
+                    fcb.setNoFileChosen(primaryStage, info, weatherBtn);
                 } else {
                     weatherBtn.setDisable(true);
                     weatherBtn.setText("Choose file");
@@ -1106,11 +1179,11 @@ public class PumeUi extends Application {
     // Handle button click  
     public class ButtonHandler implements EventHandler<Event> {
 
-//      TEE PUMECHARTHANDLER JOKA HOITAA KAIKEN?
         @Override
         public void handle(Event evt) {
-            id = ((Control) evt.getSource()).getId();
-            System.out.println("rh map: " + rh.getIdMap().get(id));
+//            id = ((Control) evt.getSource()).getId();
+            id.setId(((Control) evt.getSource()).getId());
+            System.out.println("rh map: " + rh.getIdMap().get(id.getId()));
             Button button = (Button) ((Control) evt.getSource());
 //            String name = button.getText();
 //            System.out.println("Name: " + name);

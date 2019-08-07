@@ -1,11 +1,11 @@
 package pume2019.domain;
 
-public class Recommendation {
+public class Thinning {
 
     private String name;
     private int id;
 
-    public Recommendation(String name, int id) {
+    public Thinning(String name, int id) {
         this.name = name;
         this.id = id;
     }
