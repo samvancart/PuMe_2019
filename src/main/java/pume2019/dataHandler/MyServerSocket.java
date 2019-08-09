@@ -15,20 +15,41 @@ import java.util.Map;
 public class MyServerSocket {
 
     private Socket clientSocket;
-    private final ServerSocket serverSocket;
+    private ServerSocket serverSocket;
     private PrintWriter out;
     private BufferedReader in;
     private List<String> resultData;
     private final RFileHandler fileHandler;
     private final RFunctions functions;
+    private boolean bindError = false;
+    private String bindErrorMsg = "";
 
     // constructor with port 
     public MyServerSocket(int port) throws IOException {
-        serverSocket = new ServerSocket(port);
+        try {
+            serverSocket = new ServerSocket(port);
+        } catch (IOException e) {
+            System.out.println("ServerSocket-Error" + e.getMessage());
+            System.out.println("Closing connection");
+            bindError=true;
+            bindErrorMsg=e.getMessage();
+        }
         fileHandler = new RFileHandler();
         functions = new RFunctions();
     }
 
+    public List<String> getResultData() {
+        return resultData;
+    }
+
+    public boolean isBindError() {
+        return bindError;
+    }
+
+    public String getBindErrorMsg() {
+        return bindErrorMsg;
+    }
+    
     public void start() {
         try {
             System.out.println("Server started");
@@ -37,7 +58,6 @@ public class MyServerSocket {
 
 //            RUN BATCH JOB HERE
             fileHandler.runBat(functions.getCurrentDirectory(), functions.getHomePath(), functions.getExePath(), functions.getInputPath());
-
 
             clientSocket = serverSocket.accept();
             System.out.println("Client accepted");
@@ -65,7 +85,6 @@ public class MyServerSocket {
         } catch (IOException e) {
             System.out.println("Exception_2: " + e);
         }
-
     }
 
     public List<Map<Integer, List<String>>> getResultDataList(int years) {

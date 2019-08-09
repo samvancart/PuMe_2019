@@ -31,7 +31,7 @@ public class PumeErrorHandler {
         return (dotIndex == -1) ? "" : fileName.substring(dotIndex + 1);
     }
 
-    public void checkForErrors(String name, String path, Notifications notifications) {
+    public void checkForFileErrors(String name, String path, Notifications notifications) {
         if (path == null) {
             String message = name + ": No file path specified.";
             notifications.addNotification(new Notification(message));
@@ -57,6 +57,20 @@ public class PumeErrorHandler {
             return null;
         }
         return errorAlert;
+    }
+
+    public void checkForRErrors(List<String> resultData, Notifications notifications) {
+        for (String line : resultData) {
+            String lowerCaseLine = line.toLowerCase();
+            if (lowerCaseLine.contains("error")) {
+                notifications.addNotification(new Notification(line));
+            }
+        }
+    }
+
+    public void serverSocketBindError(String msg,Notifications notifications) {
+        String msg2 = ": Select free port to continue.";
+        notifications.addNotification(new Notification(msg+msg2));
     }
 
 }

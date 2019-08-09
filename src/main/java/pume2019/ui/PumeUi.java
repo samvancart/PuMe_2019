@@ -39,6 +39,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import pume2019.controllers.ButtonController;
@@ -530,7 +531,7 @@ public class PumeUi extends Application {
             bc.addOBtns(treeObs, tscGp, 0);
 //            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
-            bc.resetChbs(tscObtns);
+//            bc.resetChbs(tscObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
@@ -544,7 +545,7 @@ public class PumeUi extends Application {
             bc.addOBtns(treeObs, tscGp, 0);
 //            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
-            bc.resetChbs(tscObtns);
+//            bc.resetChbs(tscObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
@@ -559,7 +560,7 @@ public class PumeUi extends Application {
             bc.addOBtns(treeObs, tscGp, 0);
 //            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
-            bc.resetChbs(tscObtns);
+//            bc.resetChbs(tscObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
@@ -977,12 +978,13 @@ public class PumeUi extends Application {
                 info.setHeath((Heath) siteCb.getValue());
                 info.setTree((Tree) initStandCb.getValue());
                 info.setYears(yearsSpin.getEditor().textProperty().get());
+                info.setThinning((Thinning) thinningsCb.getValue());
                 String weatherPath = info.getWeatherPath();
-                errorHandler.checkForErrors("Weather", weatherPath, notifications);
+                errorHandler.checkForFileErrors("Weather", weatherPath, notifications);
                 String managPath = info.getManagPath();
-                errorHandler.checkForErrors("Management", managPath, notifications);
+                errorHandler.checkForFileErrors("Management", managPath, notifications);
                 String initPath = info.getInitPath();
-                errorHandler.checkForErrors("Initial stand", initPath, notifications);
+                errorHandler.checkForFileErrors("Initial stand", initPath, notifications);
                 Alert errorAlert = errorHandler.getErrorAlert(notifications);
                 if (errorAlert == null) {
 
@@ -1011,30 +1013,41 @@ public class PumeUi extends Application {
                             System.out.println("Server socket " + e);
                         }
                     }
-
-                    server.start();
-
-                    if (pumeChartHandler != null) {
-                        pumeChartHandler.removeGraph(nestedBp);
+                    if (!server.isBindError()) {
+                        server.start();
+                        errorHandler.checkForRErrors(server.getResultData(), notifications);
+                        errorAlert = errorHandler.getErrorAlert(notifications);
+                        if (errorAlert == null) {
+                            if (pumeChartHandler != null) {
+                                pumeChartHandler.removeGraph(nestedBp);
 //                    bc.resetChbs(treeObs);
-                        bc.resetChbs(bioObtns);
-                    }
+                                bc.resetChbs(bioObtns);
+                            }
 
-                    maps = server.getResultDataList(Integer.parseInt(info.getYears()));
-                    rh.setMaps(maps);
-                    pineMap = (HashMap<Integer, List<String>>) rh.getPineMap();
-                    spruceMap = (HashMap<Integer, List<String>>) rh.getSpruceMap();
-                    birchMap = (HashMap<Integer, List<String>>) rh.getBirchMap();
-                    System.out.println("hello");
-                    System.out.println("conversionDone: " + rh.isConversionDone());
-                    System.out.println("initBtnFile: " + initBtnFile);
-                    System.out.println("weatherBtnFile: " + weatherBtnFile);
-                    System.out.println("managBtnFile: " + managBtnFile);
+                            maps = server.getResultDataList(Integer.parseInt(info.getYears()));
+                            rh.setMaps(maps);
+                            pineMap = (HashMap<Integer, List<String>>) rh.getPineMap();
+                            spruceMap = (HashMap<Integer, List<String>>) rh.getSpruceMap();
+                            birchMap = (HashMap<Integer, List<String>>) rh.getBirchMap();
+                            System.out.println("hello");
+                            System.out.println("conversionDone: " + rh.isConversionDone());
+                            System.out.println("initBtnFile: " + initBtnFile);
+                            System.out.println("weatherBtnFile: " + weatherBtnFile);
+                            System.out.println("managBtnFile: " + managBtnFile);
+                        } else {
+                            errorAlert.showAndWait();
+                        }
+                    } else {
+                        errorHandler.serverSocketBindError(server.getBindErrorMsg(), notifications);
+                        errorAlert = errorHandler.getErrorAlert(notifications);
+                        errorAlert.showAndWait();
+                    }
                 } else {
                     errorAlert.showAndWait();
                 }
 
             }
+
         });
 
         // recsCb listener

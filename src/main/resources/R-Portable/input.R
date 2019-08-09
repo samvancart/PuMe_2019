@@ -3,6 +3,8 @@ library(Rprebas)
 library(Rpreles)
 results<-1:46
 trees<-1:3
+con <- socketConnection(host="localhost", port = 6011, blocking=TRUE,
+  server=FALSE, open="r+")
 siteInfo <- read.csv("Rprebas_examples-master/inputs/siteInfo.csv",header = T)
 thinning <- read.csv("C:/Users/Sam/Documents/NetBeansProjects/pume/PuMe2019/src/main/resources/R-Portable/Rprebas_examples-master/inputs/thinning.csv",header = T)
 initVar <- read.csv("C:/Users/Sam/Documents/NetBeansProjects/pume/PuMe2019/src/main/resources/R-Portable/Rprebas_examples-master/inputs/initVar.csv",header = T, row.names = 1)
@@ -13,10 +15,8 @@ Precip = c(weather$Precip,weather$Precip,weather$Precip)
 VPD = c(weather$VPD,weather$VPD,weather$VPD)
 CO2 = c(weather$CO2,weather$CO2,weather$CO2)
 DOY = c(weather$DOY,weather$DOY,weather$DOY)
-PREBASout <- prebas(nYears=45,pCROBAS = pCROB, pPRELES = pPREL,siteInfo = c(1,1,1),thinning = thinning,PAR=PAR,TAir=TAir,VPD=VPD,Precip=Precip,CO2=CO2,P0=NA,initVar = as.matrix(initVar),defaultThin = 0.,ClCut = 1.,inDclct = NA,inAclct = NA)
 client <- function(){
-    con <- socketConnection(host="localhost", port = 6011, blocking=TRUE,
-  server=FALSE, open="r+")
+PREBASout <- prebas(nYears=120,pCROBAS = pCROB, pPRELES = pPREL,siteInfo = c(1,1,1),thinning = NA,PAR=PAR,TAir=TAir,VPD=VPD,Precip=Precip,CO2=CO2,P0=NA,initVar = as.matrix(initVar),defaultThin = 1.,ClCut = 1.,inDclct = NA,inAclct = NA)
     for (i in results) {
         for (j in trees) {
 	    for(k in PREBASout$output[ ,i,j,1]){
@@ -27,4 +27,13 @@ client <- function(){
     }
 close(con)
 }
+tryCatch({
 client()
+},
+error=function(cond) {
+data<-toString(cond)
+     write_resp <- writeLines(data,con)
+     return(NA)
+close(con)
+}
+)

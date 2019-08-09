@@ -132,7 +132,7 @@ public class PumeSeriesHandler {
         } else if (name.equals("48")) {
             color = Color.RED;
         } else if (name.equals("pine2")) {
-            color = Color.CYAN;
+            color = Color.WHITE;
         } else if (name.equals("spruce2")) {
             color = Color.MAGENTA;
         } else if (name.equals("birch2")) {

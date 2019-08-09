@@ -4,6 +4,7 @@ public class Info {
 
     private Tree tree;
     private Heath heath;
+    private Thinning thinning;
     private String weatherPath;
     private String managPath;
     private String years;
@@ -12,6 +13,14 @@ public class Info {
     public Info() {
     }
 
+    public void setThinning(Thinning thinning) {
+        this.thinning = thinning;
+    }
+
+    public Thinning getThinning() {
+        return thinning;
+    }
+    
     public String getInitPath() {
         return initPath;
     }

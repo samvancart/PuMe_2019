@@ -5,6 +5,45 @@ import java.util.List;
 
 public class RFunctions {
 
+    public String tryCatchOpen() {
+        String tryCatch = "tryCatch({";
+        return tryCatch;
+    }
+
+    public List<String> catchSocketError() {
+        List<String> lines = new ArrayList<>();
+        lines.add("},");
+        lines.add("error=function(cond) {");
+        lines.add("data<-toString(cond)");
+        lines.add("     write_resp <- writeLines(data,con)");
+        lines.add("     return(NA)");
+        lines.add("close(con)");
+        // close Catch
+//        lines.add("},");
+        return lines;
+    }
+
+    public List<String> catchError() {
+        List<String> lines = new ArrayList<>();
+        lines.add("},");
+        lines.add("error=function(cond) {");
+        lines.add("     write_resp <- writeLines(cond)");
+        lines.add("     return(NA)");
+        return lines;
+    }
+
+    public String finallyOpen() {
+        String finallyOpen = "finally={";
+        return finallyOpen;
+    }
+
+    public List<String> tryCatchClose() {
+        List<String> lines = new ArrayList<>();
+        lines.add("}");
+        lines.add(")");
+        return lines;
+    }
+
     public String libraryRprebas() {
         String prebas = "library(Rprebas)";
         return prebas;
@@ -25,6 +64,12 @@ public class RFunctions {
         return trees;
     }
 
+    public String varCon() {
+        String con = "con <- socketConnection(host=\"localhost\", port = 6011, blocking=TRUE,\n"
+                + "  server=FALSE, open=\"r+\")";
+        return con;
+    }
+
     public String initCsv(String value, String path, int rowNames) {
         String text;
         if (rowNames != -1) {
@@ -40,34 +85,61 @@ public class RFunctions {
         return text;
     }
 
-    public String prebasOut(int years,int site) {
+    public String prebasOut(int years, int site, String thinning, int defaultThin, int ClCut) {
         String text = "PREBASout <- prebas("
                 + "nYears=" + years + ","
                 + "pCROBAS = pCROB,"
                 + " pPRELES = pPREL,"
-//                + "siteInfo = c(1,1,2),"
-                + "siteInfo = c(1,1,"+site+"),"
-                + "thinning = thinning,"
+                + "siteInfo = c(1,1," + site + "),"
+                + "thinning = " + thinning + ","
                 + "PAR=PAR,TAir=TAir,VPD=VPD,Precip=Precip,CO2=CO2,"
                 + "P0=NA,"
                 + "initVar = as.matrix(initVar),"
-                + "defaultThin = 0.,"
-                + "ClCut = 1.,"
+                + "defaultThin = " + defaultThin + ".,"
+                + "ClCut = " + ClCut + ".,"
                 + "inDclct = NA,"
                 + "inAclct = NA)";
         return text;
     }
 
-    public List<String> createRClientSocketLines() {
+//    public List<String> createRClientSocketLines(int years, int site, String thinning, int defaultThin, int ClCut) {
+//        List<String> lines = new ArrayList<>();
+//        lines.add("client <- function(){");
+//        //open tryCatch
+//        lines.add(tryCatchOpen());
+//        // prebasOut
+//        lines.add(prebasOut(years, site, thinning, defaultThin, ClCut));
+//        lines.add("    con <- socketConnection(host=\"localhost\", port = 6011, blocking=TRUE,\n"
+//                + "  server=FALSE, open=\"r+\")");
+//        lines.addAll(responseLoop());
+//        //catchError
+//        lines.addAll(catchSocketError());
+////        Close tryCatch
+//        lines.addAll(tryCatchClose());
+//        lines.add("close(con)");
+//        lines.add("}");
+//        lines.add("client()");
+//
+//        return lines;
+//    }
+    public List<String> createRClientSocketLines(int years, int site, String thinning, int defaultThin, int ClCut) {
         List<String> lines = new ArrayList<>();
         lines.add("client <- function(){");
-        lines.add("    con <- socketConnection(host=\"localhost\", port = 6011, blocking=TRUE,\n"
-                + "  server=FALSE, open=\"r+\")");
+
+        // prebasOut
+        lines.add(prebasOut(years, site, thinning, defaultThin, ClCut));
+//        lines.add("    con <- socketConnection(host=\"localhost\", port = 6011, blocking=TRUE,\n"
+//                + "  server=FALSE, open=\"r+\")");
         lines.addAll(responseLoop());
         lines.add("close(con)");
         lines.add("}");
+        //open tryCatch
+        lines.add(tryCatchOpen());
         lines.add("client()");
-
+        //catchError
+        lines.addAll(catchSocketError());
+        //Close tryCatch
+        lines.addAll(tryCatchClose());
         return lines;
     }
 
@@ -99,11 +171,11 @@ public class RFunctions {
 
     public String getExePath() {
         String currentDirectory = getCurrentDirectory();
-        String exePath ="\"" + currentDirectory + "\\src\\main\\resources\\R-Portable\\App\\R-Portable\\bin\\R.exe" + "\"";
+        String exePath = "\"" + currentDirectory + "\\src\\main\\resources\\R-Portable\\App\\R-Portable\\bin\\R.exe" + "\"";
         return exePath;
     }
-   
-        public String getInputPath() {
+
+    public String getInputPath() {
         String currentDirectory = getCurrentDirectory();
         String inputPath = "\"" + currentDirectory + "\\src\\main\\resources\\R-Portable\\input.R" + "\"";
         return inputPath;
