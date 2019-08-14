@@ -42,10 +42,12 @@ public class PumeLineChart {
         Axis yAxis = new NumberAxis();
         xAxis.setLabel("Year");
         yAxis.setLabel(unit);
+        yAxis.setStyle("-fx-font-size: 20");
         lineChart = new LineChart(xAxis, yAxis);
         lineChart.setTitle(name);
         lineChart.setId(var);
-        lineChart.lookup(".chart-plot-background").setStyle("-fx-background-color: #D6FDD5;");
+//        lineChart.lookup(".chart-plot-background").setStyle("-fx-background-color: #D6FDD5;");
+        lineChart.lookup(".chart-plot-background").setStyle("-fx-background-color: #FDE3CF;");
         return lineChart;
     }
 

@@ -1,7 +1,12 @@
 package pume2019.dataHandler;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class RFunctions {
 
@@ -157,27 +162,40 @@ public class RFunctions {
         return lines;
     }
 
-    public String getCurrentDirectory() {
-        String currentDirectory = System.getProperty("user.dir");
-        System.out.println("The current working directory is " + currentDirectory + "\\src\\main\\resources\\R-Portable");
+    public String getCurrentDirectory() throws IOException, URISyntaxException {
+//        String currentDirectory = System.getProperty("user.dir");
+        String cur = System.getProperty("user.dir");
+        System.out.println("CUR "+ cur);
+        Properties properties = new Properties();
+        InputStream is = getClass().getClassLoader().getResourceAsStream("config.properties");
+        properties.load(is);
+        String rPath = properties.getProperty("rPath");
+//        String jarDir = new File(RFunctions.class.getProtectionDomain().getCodeSource().getLocation()
+//                .toURI()).getPath();
+//        System.out.println("jarDir getCurrent " + jarDir);
+        String currentDirectory = cur+"\\"+rPath;
+
         return currentDirectory;
     }
 
-    public String getHomePath() {
+    public String getHomePath() throws IOException, URISyntaxException {
         String currentDirectory = getCurrentDirectory();
-        String homePath = "\"" + currentDirectory + "\\src\\main\\resources\\R-Portable\"";
+//        String homePath = "\"" + currentDirectory + "\\src\\main\\resources\\R-Portable\"";
+        String homePath = "\"" + currentDirectory + "\"";
         return homePath;
     }
 
-    public String getExePath() {
+    public String getExePath() throws IOException, URISyntaxException {
         String currentDirectory = getCurrentDirectory();
-        String exePath = "\"" + currentDirectory + "\\src\\main\\resources\\R-Portable\\App\\R-Portable\\bin\\R.exe" + "\"";
+//        String exePath = "\"" + currentDirectory + "\\src\\main\\resources\\R-Portable\\App\\R-Portable\\bin\\R.exe" + "\"";
+        String exePath = "\"" + currentDirectory + "\\App\\R-Portable\\bin\\R.exe" + "\"";
         return exePath;
     }
 
-    public String getInputPath() {
+    public String getInputPath() throws IOException, URISyntaxException {
         String currentDirectory = getCurrentDirectory();
-        String inputPath = "\"" + currentDirectory + "\\src\\main\\resources\\R-Portable\\input.R" + "\"";
+//        String inputPath = "\"" + currentDirectory + "\\src\\main\\resources\\R-Portable\\input.R" + "\"";
+        String inputPath = "\"" + currentDirectory + "\\input.R" + "\"";
         return inputPath;
     }
 

@@ -1,5 +1,8 @@
 package pume2019.domain;
 
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+
 public class Info {
 
     private Tree tree;
@@ -20,7 +23,7 @@ public class Info {
     public Thinning getThinning() {
         return thinning;
     }
-    
+
     public String getInitPath() {
         return initPath;
     }
@@ -73,8 +76,24 @@ public class Info {
         if (path != null) {
             path = path.replace("\\", "/");
         }
-
         return path;
+    }
+
+    public int setYearsToMax(int years, int max) {
+        if (years > max) {
+            years = max;
+        }
+        return years;
+    }
+
+    public void setSpinnerValue(SpinnerValueFactory.IntegerSpinnerValueFactory yearsSpinFactory, Spinner yearsSpin) {
+        int maxYears = yearsSpinFactory.getMax();
+        String spinnerYears = yearsSpin.getEditor().textProperty().get();
+        int maxYearsSet = setYearsToMax(Integer.parseInt(spinnerYears), maxYears);
+
+        setYears(String.valueOf(maxYearsSet));
+        yearsSpinFactory.setValue(Integer.parseInt(this.getYears()));
+
     }
 
 }

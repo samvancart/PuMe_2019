@@ -2,6 +2,7 @@ package pume2019.domain;
 
 import com.sun.javafx.charts.Legend;
 import java.awt.Color;
+import static java.awt.Color.RGBtoHSB;
 import java.util.List;
 import java.util.Map;
 import javafx.collections.FXCollections;
@@ -132,7 +133,7 @@ public class PumeSeriesHandler {
         } else if (name.equals("48")) {
             color = Color.RED;
         } else if (name.equals("pine2")) {
-            color = Color.WHITE;
+            color = Color.lightGray;
         } else if (name.equals("spruce2")) {
             color = Color.MAGENTA;
         } else if (name.equals("birch2")) {
@@ -140,9 +141,10 @@ public class PumeSeriesHandler {
         }
 
         String rgb = String.format("%d, %d, %d",
-                (int) (color.getRed() * 255),
-                (int) (color.getGreen() * 255),
-                (int) (color.getBlue() * 255));
+                (int) (color.getRed() * 1),
+                (int) (color.getGreen() * 1),
+                (int) (color.getBlue() * 1));
+        System.out.println("RGB: "+rgb);
 
         for (int index = 0; index < series.getData().size(); index++) {
             // we're looping for each data point, changing the color of line symbol

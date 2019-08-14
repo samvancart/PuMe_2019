@@ -1,11 +1,17 @@
 package pume2019.ui;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.application.Platform;
@@ -17,6 +23,7 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -28,9 +35,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -41,6 +50,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import pume2019.controllers.ButtonController;
 import pume2019.dataHandler.MyServerSocket;
@@ -92,17 +102,37 @@ public class PumeUi extends Application {
     private File managBtnFile;
     private FileChooserButton fcb = new FileChooserButton();
     private Notifications notifications = new Notifications();
+    private int oldYears;
 
     @Override
-    public void init() throws IOException {
+    public void init() throws IOException, URISyntaxException {
+        // config props
+        Properties properties = new Properties();
+        InputStream is = getClass().getClassLoader().getResourceAsStream("config.properties");
+        properties.load(is);
+
+        String inputFile = properties.getProperty("inputFile");
+        String pathCsv = properties.getProperty("pathCsv");
+
+        fileHandler = new RFileHandler(inputFile);
         bc = new ButtonController(new ButtonHandler());
-        String currentDirectory = System.getProperty("user.dir");
-        defPath = currentDirectory + "\\src\\main\\resources\\R-Portable\\Rprebas_examples-master\\inputs";
+//        String currentDirectory = System.getProperty("user.dir");
+//        System.out.println("Current U I" + currentDirectory);
+//        File jarDir = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath());
+//        System.out.println("jarDir " + jarDir);
+        String jarDir = new File(RFunctions.class.getProtectionDomain().getCodeSource().getLocation()
+                .toURI()).getPath();
+        System.out.println("jarDir getCurrent " + jarDir);
+
+        defPath = pathCsv;
+        System.out.println("defPath " + defPath);
         info = new Info();
         info.setWeatherPath(defPath + "\\weather.csv");
         info.setManagPath(defPath + "\\thinning.csv");
         info.setInitPath(defPath + "\\initVar.csv");
-        fileHandler = new RFileHandler("src\\main\\resources\\R-Portable\\input.R");
+        info.setYears("100");
+        oldYears = Integer.parseInt(info.getYears());
+
         functions = new RFunctions();
         inputHandler = new RInputHandler();
         rh = new ResultHandler();
@@ -131,33 +161,36 @@ public class PumeUi extends Application {
         AnchorPane ap = new AnchorPane();
         VBox infoVb = new VBox();
         infoVb.setStyle("-fx-padding: 10;"
-                + "-fx-border-style: solid inside;"
-                + "-fx-border-width: 2;"
-                + "-fx-border-insets: 5;"
-                + "-fx-border-radius: 5;"
-                + "-fx-border-color: black;");
+                //                + "-fx-border-style: solid inside;"
+                //                                + "-fx-border-width: 1;"
+                //                                + "-fx-border-insets: 1;"
+                //                                + "-fx-border-radius: 1;"
+                //                                + "-fx-border-color: black;"
+                + "-fx-background-color: #E1E2E1;");
         GridPane gp = new GridPane();
         gp.setHgap(20);
         gp.setVgap(30);
         gp.setPadding(new Insets(10, 10, 10, 10));
         BorderPane bp = new BorderPane();
-        bp.setStyle("-fx-padding: 10;"
-                + "-fx-border-style: solid inside;"
-                + "-fx-border-width: 2;"
-                + "-fx-border-insets: 5;"
-                + "-fx-border-radius: 5;"
-                + "-fx-border-color: black;");
+        bp.setStyle("-fx-padding: 10;");
+//        bp.setStyle("-fx-padding: 10;"
+//                + "-fx-border-style: solid inside;"
+//                + "-fx-border-width: 1;"
+//                + "-fx-border-insets: 1;"
+//                + "-fx-border-radius: 1;"
+//                + "-fx-border-color: black;");
 //        bp.setPrefSize(1100,800);
         bp.prefHeightProperty().bind(ap.heightProperty());
         bp.prefWidthProperty().bind(ap.widthProperty().subtract(infoVb.widthProperty().add(20)));
 
         VBox bpLeftVb = new VBox();
+//        bpLeftVb.setStyle("-fx-padding: 10;");
         bpLeftVb.setStyle("-fx-padding: 10;"
                 + "-fx-border-style: solid inside;"
-                + "-fx-border-width: 2;"
-                + "-fx-border-insets: 5;"
-                + "-fx-border-radius: 5;"
-                + "-fx-border-color: blue;");
+                + "-fx-border-width: 1;"
+                + "-fx-border-insets: 1;"
+                + "-fx-border-radius: 1;"
+                + "-fx-border-color: black;");
         bp.setLeft(bpLeftVb);
         bpLeftVb.setPadding(new Insets(5, 5, 5, 5));
         bpLeftVb.setSpacing(20);
@@ -180,31 +213,33 @@ public class PumeUi extends Application {
         bpLeftVb.getChildren().addAll(tscBtn, bioBtn, cwgBtn);
 
         BorderPane nestedBp = new BorderPane();
-        nestedBp.setStyle("-fx-padding: 10;"
-                + "-fx-border-style: solid inside;"
-                + "-fx-border-width: 2;"
-                + "-fx-border-insets: 5;"
-                + "-fx-border-radius: 5;"
-                + "-fx-border-color: red;");
+        nestedBp.setStyle("-fx-padding: 10;");
+//        nestedBp.setStyle("-fx-padding: 10;"
+//                + "-fx-border-style: solid inside;"
+//                + "-fx-border-width: 2;"
+//                + "-fx-border-insets: 5;"
+//                + "-fx-border-radius: 5;"
+//                + "-fx-border-color: red;");
         bp.setCenter(nestedBp);
 
         GridPane tscGp = new GridPane();
         tscGp.setHgap(10);
         tscGp.setVgap(10);
-
+//        tscGp.setStyle("-fx-padding: 10;");
         tscGp.setStyle("-fx-padding: 10;"
                 + "-fx-border-style: solid inside;"
-                + "-fx-border-width: 2;"
-                + "-fx-border-insets: 5;"
-                + "-fx-border-radius: 5;"
-                + "-fx-border-color: blue;");
-
+                + "-fx-border-width: 1;"
+                + "-fx-border-insets: 1;"
+                + "-fx-border-radius: 1;"
+                + "-fx-border-color: black;");
         //Buttons 1
         Button treeCrownBtn = new Button("Tree Height, Crown base");
         treeCrownBtn.setId("11");
         rh.addIdToMap("11", 1);
         rh.addIdToMap("14", 1);
-        treeCrownBtn.setTooltip(new Tooltip("Tree Height, Crown base"));
+        Tooltip treeCrownTool = new Tooltip("Tree Height, Crown base");
+        treeCrownTool.setStyle("-fx-font-size: 15");
+        treeCrownBtn.setTooltip(treeCrownTool);
         Button diaBtn = new Button("Diameter");
         diaBtn.setId("12");
         rh.addIdToMap(diaBtn.getId(), 1);
@@ -319,13 +354,13 @@ public class PumeUi extends Application {
         bioGp.setVisible(false);
         bioGp.setHgap(10);
         bioGp.setVgap(10);
-
+//        bioGp.setStyle("-fx-padding: 10;");
         bioGp.setStyle("-fx-padding: 10;"
                 + "-fx-border-style: solid inside;"
-                + "-fx-border-width: 2;"
-                + "-fx-border-insets: 5;"
-                + "-fx-border-radius: 5;"
-                + "-fx-border-color: blue;");
+                + "-fx-border-width: 1;"
+                + "-fx-border-insets: 1;"
+                + "-fx-border-radius: 1;"
+                + "-fx-border-color: black;");
 
         //Buttons 2
         Button totalBioBtn = new Button("Total biomass"); // Ei Id:tä, koska lasketaan kaikkien summasta -> id=47
@@ -663,14 +698,14 @@ public class PumeUi extends Application {
         cwgGp.setVisible(false);
         cwgGp.setHgap(10);
         cwgGp.setVgap(10);
+//        cwgGp.setStyle("-fx-padding: 10;");
 
         cwgGp.setStyle("-fx-padding: 10;"
                 + "-fx-border-style: solid inside;"
-                + "-fx-border-width: 2;"
-                + "-fx-border-insets: 5;"
-                + "-fx-border-radius: 5;"
-                + "-fx-border-color: blue;");
-
+                + "-fx-border-width: 1;"
+                + "-fx-border-insets: 1;"
+                + "-fx-border-radius: 1;"
+                + "-fx-border-color: black;");
         //Buttons 3
         Button cbBtn = new Button("Carbon Balance");
         // id?
@@ -939,10 +974,28 @@ public class PumeUi extends Application {
         Label yearsLbl = new Label("Years:");
         final Spinner yearsSpin = new Spinner();
         String INITIAL_VALUE = "100";
-        yearsSpin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 200,
-                Integer.parseInt(INITIAL_VALUE)));
+//        yearsSpin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 200,
+//                Integer.parseInt(INITIAL_VALUE)));
+        IntegerSpinnerValueFactory yearsSpinFactory = new IntegerSpinnerValueFactory(1, 200, Integer.parseInt(INITIAL_VALUE));
+        yearsSpin.setValueFactory(yearsSpinFactory);
         yearsSpin.setEditable(true);
         yearsSpin.setPrefSize(60, 20);
+
+        Alert infoAlert = new Alert(AlertType.INFORMATION);
+        infoAlert.setTitle("Information Dialog");
+        infoAlert.setHeaderText("An Information Dialog");
+        infoAlert.setContentText("Information Message");
+//        infoAlert.showAndWait();
+//        infoAlert.hide();
+        Label yearsSpinLbl = new Label();
+        ImageView infoIcon = new ImageView(this.getClass().getResource("/com/sun/javafx/scene/control/skin/modena/dialog-information.png").toString());
+        infoIcon.setFitHeight(30);
+        infoIcon.setFitWidth(30);
+        yearsSpinLbl.setGraphic(infoIcon);
+        Tooltip infoTool = new Tooltip("Maximum value for default weather.csv is 129 years. Maximum value for custom file is 200 years.");
+        infoTool.setStyle("-fx-font-size: 15");
+
+        yearsSpinLbl.setTooltip(infoTool);
 
         Button runBtn = new Button("Run Model");
 
@@ -962,10 +1015,12 @@ public class PumeUi extends Application {
         gp.add(managBtn, 2, 3);
         gp.add(yearsLbl, 0, 4);
         gp.add(yearsSpin, 1, 4);
+        gp.add(yearsSpinLbl, 2, 4);
         gp.add(runBtn, 0, 5);
 
         infoVb.getChildren().add(gp);
-        ap.getChildren().addAll(infoVb, bp);
+//        ap.getChildren().addAll(infoVb, bp);
+        ap.getChildren().add(infoVb);
         AnchorPane.setLeftAnchor(infoVb, 10d);
         AnchorPane.setRightAnchor(bp, 10d);
 
@@ -977,7 +1032,10 @@ public class PumeUi extends Application {
                 notifications.clear();
                 info.setHeath((Heath) siteCb.getValue());
                 info.setTree((Tree) initStandCb.getValue());
-                info.setYears(yearsSpin.getEditor().textProperty().get());
+                info.setSpinnerValue(yearsSpinFactory, yearsSpin);
+
+                System.out.println("years: " + info.getYears());
+
                 info.setThinning((Thinning) thinningsCb.getValue());
                 String weatherPath = info.getWeatherPath();
                 errorHandler.checkForFileErrors("Weather", weatherPath, notifications);
@@ -986,6 +1044,7 @@ public class PumeUi extends Application {
                 String initPath = info.getInitPath();
                 errorHandler.checkForFileErrors("Initial stand", initPath, notifications);
                 Alert errorAlert = errorHandler.getErrorAlert(notifications);
+
                 if (errorAlert == null) {
 
                     System.out.println("init stand: " + info.getTree());
@@ -995,10 +1054,6 @@ public class PumeUi extends Application {
                     System.out.println("manag path: " + info.getManagPath());
                     System.out.println("years: " + info.getYears());
                     rh.resetConversionDone();
-//                if (pumeBtn != null) {
-//                    pumeBtn = new PumeButton(pumeBtn.getButton());
-//                }
-//                pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
 
                     //Run model
                     try {
@@ -1014,10 +1069,17 @@ public class PumeUi extends Application {
                         }
                     }
                     if (!server.isBindError()) {
-                        server.start();
+                        try {
+                            server.start();
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(PumeUi.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (URISyntaxException ex) {
+                            Logger.getLogger(PumeUi.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                         errorHandler.checkForRErrors(server.getResultData(), notifications);
                         errorAlert = errorHandler.getErrorAlert(notifications);
                         if (errorAlert == null) {
+
                             if (pumeChartHandler != null) {
                                 pumeChartHandler.removeGraph(nestedBp);
 //                    bc.resetChbs(treeObs);
@@ -1034,6 +1096,16 @@ public class PumeUi extends Application {
                             System.out.println("initBtnFile: " + initBtnFile);
                             System.out.println("weatherBtnFile: " + weatherBtnFile);
                             System.out.println("managBtnFile: " + managBtnFile);
+                            ap.getChildren().remove(bp);
+                            ap.getChildren().add(bp);
+                            if (clickedBtn != null) {
+                                clickedBtn.fire();
+                            } else {
+                                tscBtn.fire();
+                            }
+                            // Old years
+                            oldYears = Integer.parseInt(info.getYears());
+
                         } else {
                             errorAlert.showAndWait();
                         }
@@ -1042,10 +1114,12 @@ public class PumeUi extends Application {
                         errorAlert = errorHandler.getErrorAlert(notifications);
                         errorAlert.showAndWait();
                     }
+
                 } else {
                     errorAlert.showAndWait();
                 }
-
+                info.setYears(String.valueOf(oldYears));
+                yearsSpin.getEditor().setText(info.getYears());
             }
 
         });
@@ -1089,12 +1163,12 @@ public class PumeUi extends Application {
                     case 1:
                         initBtn.setDisable(true);
                         initBtn.setText("Choose file");
-                        info.setInitPath(defPath + "\\initVar.csv");
+                        info.setInitPath(defPath + "\\initVarYoungPine.csv");
                         break;
                     case 2:
                         initBtn.setDisable(true);
                         initBtn.setText("Choose file");
-                        info.setInitPath(defPath + "\\initVar.csv");
+                        info.setInitPath(defPath + "\\initVarYoungSpruce.csv");
                         break;
                     case 3:
                         initBtn.setDisable(false);
@@ -1147,9 +1221,9 @@ public class PumeUi extends Application {
             }
         });
 
-        //Key EventHandler
-        EventHandler<KeyEvent> enterKeyEventHandler;
-        enterKeyEventHandler = new EventHandler<KeyEvent>() {
+        //Spinner enterKey EventHandler
+        EventHandler<KeyEvent> spinnerEnterKeyEventHandler;
+        spinnerEnterKeyEventHandler = new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
                 if (event.getCode() == KeyCode.ENTER) {
@@ -1163,9 +1237,23 @@ public class PumeUi extends Application {
                 }
             }
         };
+        //RunBtn enterKey EventHandler
+        EventHandler<KeyEvent> runBtnEnterKeyEventHandler;
+        runBtnEnterKeyEventHandler = new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode() == KeyCode.ENTER) {
+                    try {
+                        runBtn.fire();
+                    } catch (Exception e) {
+                    }
+                }
+            }
+        };
+        runBtn.addEventHandler(KeyEvent.KEY_PRESSED, runBtnEnterKeyEventHandler);
 
         //Spinner EventHandler      
-        yearsSpin.getEditor().addEventHandler(KeyEvent.KEY_PRESSED, enterKeyEventHandler);
+        yearsSpin.getEditor().addEventHandler(KeyEvent.KEY_PRESSED, spinnerEnterKeyEventHandler);
 
         yearsSpin.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
             if (!yearsSpin.getEditor().textProperty().get().matches("[0-9]*")) {
@@ -1175,13 +1263,17 @@ public class PumeUi extends Application {
                 Platform.runLater(() -> {
                     yearsSpin.getEditor().textProperty().set("100");
                 });
-
                 infoVb.requestFocus();
             }
         });
 
         //Set Scene
         scene = new Scene(ap, 1600, 800);
+        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+        primaryStage.setMinWidth(scene.getWidth());
+        primaryStage.setMinHeight(scene.getHeight());
+        primaryStage.setMaxWidth(primaryScreenBounds.getWidth());
+        primaryStage.setMaxHeight(primaryScreenBounds.getHeight());
 
         primaryStage.setTitle("PuMe 2019");
         primaryStage.setScene(scene);

@@ -30,9 +30,9 @@ Package 'sm', version 2.2-5.6: type help(sm) for summary information
 > con <- socketConnection(host="localhost", port = 6011, blocking=TRUE,
 +   server=FALSE, open="r+")
 > siteInfo <- read.csv("Rprebas_examples-master/inputs/siteInfo.csv",header = T)
-> thinning <- read.csv("C:/Users/Sam/Documents/NetBeansProjects/pume/PuMe2019/src/main/resources/R-Portable/Rprebas_examples-master/inputs/thinning.csv",header = T)
-> initVar <- read.csv("C:/Users/Sam/Documents/NetBeansProjects/pume/PuMe2019/src/main/resources/R-Portable/Rprebas_examples-master/inputs/initVar.csv",header = T, row.names = 1)
-> weather <- read.csv("C:/Users/Sam/Documents/NetBeansProjects/pume/PuMe2019/src/main/resources/R-Portable/Rprebas_examples-master/inputs/weather.csv",header = T)
+> thinning <- read.csv("Rprebas_examples-master/inputs/thinning.csv",header = T)
+> initVar <- read.csv("Rprebas_examples-master/inputs/initVarYoungPine.csv",header = T, row.names = 1)
+> weather <- read.csv("Rprebas_examples-master/inputs/weather.csv",header = T)
 > PAR = c(weather$PAR,weather$PAR,weather$PAR)
 > TAir = c(weather$TAir,weather$TAir,weather$TAir)
 > Precip = c(weather$Precip,weather$Precip,weather$Precip)
@@ -40,7 +40,7 @@ Package 'sm', version 2.2-5.6: type help(sm) for summary information
 > CO2 = c(weather$CO2,weather$CO2,weather$CO2)
 > DOY = c(weather$DOY,weather$DOY,weather$DOY)
 > client <- function(){
-+ PREBASout <- prebas(nYears=120,pCROBAS = pCROB, pPRELES = pPREL,siteInfo = c(1,1,1),thinning = NA,PAR=PAR,TAir=TAir,VPD=VPD,Precip=Precip,CO2=CO2,P0=NA,initVar = as.matrix(initVar),defaultThin = 1.,ClCut = 1.,inDclct = NA,inAclct = NA)
++ PREBASout <- prebas(nYears=99,pCROBAS = pCROB, pPRELES = pPREL,siteInfo = c(1,1,1),thinning = NA,PAR=PAR,TAir=TAir,VPD=VPD,Precip=Precip,CO2=CO2,P0=NA,initVar = as.matrix(initVar),defaultThin = 1.,ClCut = 1.,inDclct = NA,inAclct = NA)
 +     for (i in results) {
 +         for (j in trees) {
 + 	    for(k in PREBASout$output[ ,i,j,1]){
@@ -64,4 +64,4 @@ Package 'sm', version 2.2-5.6: type help(sm) for summary information
 > 
 > proc.time()
    user  system elapsed 
-   0.64    0.43    1.09 
+   0.60    0.29    0.85 

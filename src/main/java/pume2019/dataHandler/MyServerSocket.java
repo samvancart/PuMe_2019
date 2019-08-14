@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.ServerSocket;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -31,8 +32,8 @@ public class MyServerSocket {
         } catch (IOException e) {
             System.out.println("ServerSocket-Error" + e.getMessage());
             System.out.println("Closing connection");
-            bindError=true;
-            bindErrorMsg=e.getMessage();
+            bindError = true;
+            bindErrorMsg = e.getMessage();
         }
         fileHandler = new RFileHandler();
         functions = new RFunctions();
@@ -49,8 +50,8 @@ public class MyServerSocket {
     public String getBindErrorMsg() {
         return bindErrorMsg;
     }
-    
-    public void start() {
+
+    public void start() throws InterruptedException, URISyntaxException {
         try {
             System.out.println("Server started");
 
@@ -71,7 +72,7 @@ public class MyServerSocket {
                 resultData.add(line);
             }
         } catch (IOException e) {
-            System.out.println("Exception_1: " + e);
+            System.out.println("Exception_1: " + e.getMessage());
         }
     }
 

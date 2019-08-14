@@ -1,4 +1,3 @@
-
 package pume2019.domain;
 
 import javafx.scene.chart.Axis;
@@ -7,7 +6,8 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.StackedBarChart;
 
 public class PumeStackedBarChart {
-        private StackedBarChart<String, Double> stackedBarChart;
+
+    private StackedBarChart<String, Double> stackedBarChart;
 
     public PumeStackedBarChart() {
 
@@ -17,7 +17,7 @@ public class PumeStackedBarChart {
         return stackedBarChart;
     }
 
-        public void setCombinedStackedBarChart() {
+    public void setCombinedStackedBarChart() {
         stackedBarChart.setLegendVisible(false);
         stackedBarChart.setAnimated(false);
         stackedBarChart.setAlternativeRowFillVisible(false);
@@ -28,12 +28,12 @@ public class PumeStackedBarChart {
         stackedBarChart.getYAxis().setVisible(false);
     }
 
-
     public StackedBarChart<String, Double> createStackedBarChart(String var, String name, String unit) {
         Axis xAxis = new CategoryAxis();
         Axis yAxis = new NumberAxis();
         xAxis.setLabel("Year");
         yAxis.setLabel(unit);
+        yAxis.setStyle("-fx-font-size: 20");
         stackedBarChart = new StackedBarChart(xAxis, yAxis);
         stackedBarChart.setTitle(name);
         stackedBarChart.setId(var);
