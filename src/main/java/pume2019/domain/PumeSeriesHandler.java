@@ -11,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Series;
+import javafx.scene.control.Label;
 
 public class PumeSeriesHandler {
 
@@ -42,7 +43,7 @@ public class PumeSeriesHandler {
     public PumeStackedBarChart getStackedBarChart() {
         return stackedBarChart;
     }
-    
+
     public Map<Integer, XYChart.Series> getSeriesMap() {
         return seriesMap;
     }
@@ -144,7 +145,7 @@ public class PumeSeriesHandler {
                 (int) (color.getRed() * 1),
                 (int) (color.getGreen() * 1),
                 (int) (color.getBlue() * 1));
-        System.out.println("RGB: "+rgb);
+        System.out.println("RGB: " + rgb);
 
         for (int index = 0; index < series.getData().size(); index++) {
             // we're looping for each data point, changing the color of line symbol

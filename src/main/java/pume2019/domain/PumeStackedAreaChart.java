@@ -18,6 +18,7 @@ public class PumeStackedAreaChart {
         xAxis.setLabel("Year");
         yAxis.setLabel(unit);
         yAxis.setStyle("-fx-font-size: 20");
+        xAxis.setStyle("-fx-font-size: 20");
         stackedAreaChart = new StackedAreaChart(xAxis, yAxis);
         stackedAreaChart.setTitle(name);
         stackedAreaChart.setId(var);

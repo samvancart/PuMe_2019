@@ -34,6 +34,7 @@ public class PumeStackedBarChart {
         xAxis.setLabel("Year");
         yAxis.setLabel(unit);
         yAxis.setStyle("-fx-font-size: 20");
+        xAxis.setStyle("-fx-font-size: 20");
         stackedBarChart = new StackedBarChart(xAxis, yAxis);
         stackedBarChart.setTitle(name);
         stackedBarChart.setId(var);

@@ -39,6 +39,16 @@ public class MyServerSocket {
         functions = new RFunctions();
     }
 
+    public Socket getClientSocket() {
+        return clientSocket;
+    }
+
+    public ServerSocket getServerSocket() {
+        return serverSocket;
+    }
+    
+    
+
     public List<String> getResultData() {
         return resultData;
     }

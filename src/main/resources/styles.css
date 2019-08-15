@@ -1,0 +1,179 @@
+
+.button { 
+    /*-fx-background-color: whitesmoke;*/
+    -fx-background-color:
+        linear-gradient(#F6EBC7, #EFB364);
+    /*            linear-gradient(#7ebcea, #2f4b8f),
+                linear-gradient(#426ab7, #263e75),
+                linear-gradient(#395cab, #223768);*/
+    -fx-border-style: solid inside;
+    -fx-border-width:1;
+    /*-fx-border-radius:1;*/
+    /*-fx-border-insets: 1;*/
+    -fx-border-color: black;
+    -fx-background-insets: 0,1,2,3;
+    -fx-background-radius: 3,2,2,2;
+    /*-fx-padding: 12 30 12 30;*/
+    -fx-padding: 12 6 12 6;
+    -fx-text-fill: black;
+    -fx-font-size: 1.3em;
+}
+
+.button:pressed{
+    /*-fx-background-color: burlywood;*/
+    -fx-border-color: black;
+    -fx-border-width:2 2 2 2;
+}
+.button:focused{
+    /*-fx-border-color: burlywood;*/
+    -fx-border-color: burlywood;
+    -fx-border-width:1;
+}
+.button:hover{
+    /*-fx-border-color: burlywood;*/
+    -fx-border-color: burlywood;
+    -fx-border-width:1;
+}
+.combo-box{
+    /*-fx-background-color:whitesmoke;*/
+    -fx-background-color:
+        linear-gradient(#F6EBC7, #EFB364);
+    -fx-border-style: solid inside;
+    -fx-border-color: black;
+    -fx-background-insets: 0,1,2,3;
+    -fx-background-radius: 3,2,2,2;
+    -fx-padding: 12 6 12 6;
+    -fx-text-fill: black;
+    -fx-font-size: 1.3em;
+}
+.combo-box:hover{
+    -fx-border-color: burlywood;
+    -fx-border-width:1;
+}
+.combo-box:focused{
+    -fx-border-color: burlywood;
+    -fx-border-width:1;
+}
+.combo-box .list-cell{
+    -fx-cell-size: 4em; 
+}
+
+.check-box{
+    -fx-font-size: 1.3em;
+}
+.check-box .box {
+    -fx-background-color: whitesmoke;
+    -fx-border-color:black;
+    -fx-border-radius:3px;
+}
+
+.check-box:selected .mark {
+    /*-fx-background-color: whitesmoke;*/
+    -fx-background-color: black;
+}
+
+.check-box:selected .box {
+    /*-fx-background-color: #28a3f4;*/
+    /*-fx-background-color: #68DC45;*/
+    -fx-background-color:
+        linear-gradient(#F6EBC7, #EFB364);
+}
+
+.check-box:active .box {
+    /*-fx-border-color: #28a3f4;*/
+    /*-fx-border-color: #68DC45;*/
+    -fx-border-color: linear-gradient(#F6EBC7, #EFB364);
+    -fx-border-width: 1px;
+}
+.check-box:hover .box {
+    /*-fx-border-color: #28a3f4;*/
+    /*-fx-border-color: #68DC45;*/
+    -fx-border-color: linear-gradient(#F6EBC7, #EFB364);
+    -fx-border-width: 1px;
+}
+
+
+.radio-button{
+    -fx-font-size: 1.3em;
+}
+.radio-button .radio {
+    -fx-border-width: 1px;
+    -fx-border-color: black;
+    -fx-background-color: white;
+    -fx-border-radius: 15px;
+    /*    -fx-padding: 4px;*/
+}
+.radio-button:selected .mark {
+    -fx-background-color: black;
+}
+.radio-button:selected .radio {
+    /*-fx-background-color: #28a3f4;*/
+    -fx-background-color: #4075CB;
+}
+.radio-button .dot{
+    -fx-background-color: whitesmoke;
+}
+.radio-button .radio:hover{
+    /*-fx-border-color: #28a3f4;*/
+    -fx-border-color: #4075CB;
+    -fx-border-width: 1px;
+}
+.radio-button .radio:focused{
+    /*-fx-border-color: #28a3f4;*/
+    -fx-border-color: #4075CB;
+    -fx-border-width: 1px;
+}
+
+.spinner .text-field{
+    -fx-background-color:whitesmoke;
+    -fx-border-style: solid inside;
+    -fx-border-color: black;
+    -fx-background-insets: 0,1,2,3;
+    -fx-background-radius: 3,2,2,2;
+    -fx-padding: 12 6 12 6;
+    -fx-text-fill: black;
+    -fx-font-size: 1.3em;
+}
+
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+    /*-fx-background-color: whitesmoke;*/
+    -fx-background-color:
+        linear-gradient(#F6EBC7, #EFB364);
+    -fx-border-style: solid inside;
+    -fx-border-width:1;
+}
+.spinner .increment-arrow-button:hover,
+.spinner .decrement-arrow-button:hover {
+    -fx-border-color: burlywood;
+}
+.spinner .increment-arrow-button:hover:pressed,
+.spinner .decrement-arrow-button:hover:pressed,
+.spinner .increment-arrow-button:pressed,
+.spinner .decrement-arrow-button:pressed {
+    -fx-background-color: burlywood;
+}
+
+.spinner .text-field:hover{
+    -fx-border-color: burlywood;
+    -fx-border-width: 1 1 1 1;
+}
+.spinner .text-field:focused{
+    -fx-border-color: burlywood;
+    -fx-border-width: 1 1 1 1;
+}
+
+.chart-legend 
+{
+    -fx-background-color:  linear-gradient(#F4F4F4,#C3C3C2);
+}
+
+.chart-legend-item 
+{
+    /*-fx-font-size: 15px;*/
+    -fx-font-size: 1.3em;
+}
+
+.axis{
+    -fx-tick-label-font-size: 1.3em;
+}

@@ -5,7 +5,9 @@ import java.util.List;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.Tooltip;
 import static javafx.scene.input.KeyEvent.KEY_RELEASED;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -25,6 +27,9 @@ public class ButtonController {
         for (int i = 0; i < btns.size(); i++) {
             Button btn = btns.get(i);
             btn.prefWidthProperty().bind(gp.widthProperty().divide(btns.size()));
+            Tooltip t = new Tooltip(btn.getText());
+            t.setStyle("-fx-font-size: 15");
+            btn.setTooltip(t);
             gp.add(btn, i, 0);
         }
     }
@@ -90,7 +95,8 @@ public class ButtonController {
             handler.createStackedAreaChartOfBiomass(nestedBp, totalBioMassBtns);
         }
     }
-        public void areNoneSelectedRemovals(ObservableList<Object> buttons, PumeChartHandler handler, BorderPane nestedBp) {
+
+    public void areNoneSelectedRemovals(ObservableList<Object> buttons, PumeChartHandler handler, BorderPane nestedBp) {
         boolean noneSelected = true;
         for (int i = 0; i < buttons.size(); i++) {
             CheckBox c = (CheckBox) buttons.get(i);
@@ -100,6 +106,13 @@ public class ButtonController {
         }
         if (noneSelected) {
             handler.createStackedBarChart(nestedBp);
+        }
+    }
+
+    public void setFontToLabels(ObservableList<Object> labels) {
+        for (int i = 0; i < labels.size(); i++) {
+            Label label = (Label) labels.get(i);
+            label.setStyle("-fx-font-size: 1.3em");
         }
     }
 }
