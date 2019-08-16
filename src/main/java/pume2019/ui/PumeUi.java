@@ -1,7 +1,6 @@
 package pume2019.ui;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -32,10 +31,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
@@ -50,8 +47,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.stage.FileChooser;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import pume2019.controllers.ButtonController;
@@ -67,13 +62,14 @@ import pume2019.domain.Heath;
 import pume2019.domain.Info;
 import pume2019.domain.InitStand;
 import pume2019.domain.Management;
-import pume2019.domain.Notification;
 import pume2019.domain.Notifications;
 import pume2019.domain.PumeButton;
 import pume2019.domain.PumeId;
 import pume2019.domain.Thinning;
 import pume2019.domain.SiteInfo;
 import pume2019.domain.Tree;
+import pume2019.domain.Weather;
+import pume2019.domain.WeatherFile;
 
 public class PumeUi extends Application {
 
@@ -82,6 +78,7 @@ public class PumeUi extends Application {
     private InitStand initStand;
     private SiteInfo siteInfo;
     private Management manag;
+    private Weather weather;
     private String defPath;
     private ButtonController bc;
     private Button clickedBtn;
@@ -95,13 +92,8 @@ public class PumeUi extends Application {
     private PumeChartHandler pumeChartHandler;
     private PumeButton pumeBtn;
     private List<Button> totalBioMassBtns;
-//    private String id;
     private PumeId id = new PumeId();
     private PumeErrorHandler errorHandler = new PumeErrorHandler();
-    private List<ObservableList<Object>> checkBoxesList;
-    private File initBtnFile;
-    private File weatherBtnFile;
-    private File managBtnFile;
     private FileChooserButton fcb = new FileChooserButton();
     private Notifications notifications = new Notifications();
     private int oldYears;
@@ -116,22 +108,31 @@ public class PumeUi extends Application {
         InputStream is = getClass().getClassLoader().getResourceAsStream("config.properties");
         properties.load(is);
 
+//        boolean is64bit = false;
+//        if (System.getProperty("os.name").contains("Windows")) {
+//            is64bit = (System.getenv("ProgramFiles(x86)") != null);
+//        } else {
+//            is64bit = (System.getProperty("os.arch").contains("64"));
+//        }
+//        System.out.println("Is 64-bit "+is64bit);
+        String arch = System.getenv("PROCESSOR_ARCHITECTURE");
+        String wow64Arch = System.getenv("PROCESSOR_ARCHITEW6432");
+
+        String realArch = arch != null && arch.endsWith("64")
+                || wow64Arch != null && wow64Arch.endsWith("64")
+                ? "64" : "32";
+        System.out.println("OS bitness "+realArch);
+
         String inputFile = properties.getProperty("inputFile");
         String pathCsv = properties.getProperty("pathCsv");
         styles = properties.getProperty("styles");
 
         fileHandler = new RFileHandler(inputFile);
         bc = new ButtonController(new ButtonHandler());
-//        String currentDirectory = System.getProperty("user.dir");
-//        System.out.println("Current U I" + currentDirectory);
-//        File jarDir = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath());
-//        System.out.println("jarDir " + jarDir);
         String jarDir = new File(RFunctions.class.getProtectionDomain().getCodeSource().getLocation()
                 .toURI()).getPath();
-        System.out.println("jarDir getCurrent " + jarDir);
 
         defPath = pathCsv;
-        System.out.println("defPath " + defPath);
         info = new Info();
         info.setWeatherPath(defPath + "\\weather.csv");
         info.setManagPath(defPath + "\\thinning.csv");
@@ -149,14 +150,7 @@ public class PumeUi extends Application {
                 + "-fx-border-insets: 1;"
                 + "-fx-border-radius: 1;"
                 + "-fx-border-color: black;"
-                //                + "-fx-background-color: #E2E8EA;";
-                //                + "-fx-background-color: linear-gradient(#7ebcea, #2f4b8f);"
-                //                + "-fx-background-color:linear-gradient(#426ab7, #263e75);"
-                //                + "-fx-background-color:linear-gradient(#395cab, #223768);";
-                //                + "-fx-background-color:linear-gradient(#E4E5E4, #D9F9C9);";
-                //                + "-fx-background-color:linear-gradient(#EDEDED,#C3C3C2);";
                 + "-fx-background-color:linear-gradient(#F4F4F4,#C3C3C2);";
-//                + "-fx-background-color: #E1E2E1;";
 
         clickedBtnStyle = "-fx-border-width: 2;"
                 + "-fx-border-color:black;";
@@ -185,34 +179,16 @@ public class PumeUi extends Application {
         AnchorPane ap = new AnchorPane();
         ap.setStyle("-fx-background-color:whitesmoke;");
         VBox infoVb = new VBox();
-//        infoVb.setStyle("-fx-padding: 10;"
-//                + "-fx-border-style: solid inside;"
-//                + "-fx-border-width: 1;"
-//                + "-fx-border-insets: 1;"
-//                + "-fx-border-radius: 1;"
-//                + "-fx-border-color: black;"
-//                + "-fx-background-color: #E1E2E1;");
         infoVb.setStyle(greyFillStyle);
         infoVb.prefHeightProperty().bind(ap.heightProperty());
 
         GridPane gp = new GridPane();
-//        gp.setHgap(20);
-//        gp.setVgap(30);
-//        gp.setPadding(new Insets(10, 10, 10, 10));
         gp.setHgap(20d);
         gp.setVgap(80d);
         gp.setPadding(new Insets(10d, 10d, 10d, 10d));
 
         BorderPane bp = new BorderPane();
-//        bp.setStyle(greyFillStyle);
-//        bp.setStyle("-fx-padding: 10;");
-//        bp.setStyle("-fx-padding: 10;"
-//                + "-fx-border-style: solid inside;"
-//                + "-fx-border-width: 1;"
-//                + "-fx-border-insets: 1;"
-//                + "-fx-border-radius: 1;"
-//                + "-fx-border-color: black;");
-//        bp.setPrefSize(1100,800);
+
         bp.prefHeightProperty().bind(ap.heightProperty());
         bp.prefWidthProperty().bind(ap.widthProperty().subtract(infoVb.widthProperty().add(20)));
 
@@ -220,25 +196,18 @@ public class PumeUi extends Application {
         rightBp.prefHeightProperty().bind(ap.heightProperty());
         rightBp.prefWidthProperty().bind(ap.widthProperty().subtract(infoVb.widthProperty().add(20)));
         rightBp.setStyle(greyFillStyle);
-        Label startLbl = new Label("PuMe 2019");
+        Label startLbl = new Label("Prebas App");
         startLbl.setStyle("-fx-font-size:86;");
         startLbl.setOpacity(0.2);
         rightBp.setCenter(startLbl);
 
         VBox bpLeftVb = new VBox();
-//        bpLeftVb.setStyle("-fx-padding: 10;");
-//        bpLeftVb.setStyle("-fx-padding: 10;"
-//                + "-fx-border-style: solid inside;"
-//                + "-fx-border-width: 1;"
-//                + "-fx-border-insets: 1;"
-//                + "-fx-border-radius: 1;"
-//                + "-fx-border-color: black;"
-//                + "-fx-background-color: #E1E2E1;");
+
         bpLeftVb.setStyle(greyFillStyle);
         bp.setLeft(bpLeftVb);
         bpLeftVb.setPadding(new Insets(5, 5, 5, 5));
         bpLeftVb.setSpacing(20);
-//        bpLeftVb.setPrefWidth(150);
+
         Button tscBtn = new Button("Traditional \n"
                 + "stand \n"
                 + "characteristics");
@@ -257,27 +226,14 @@ public class PumeUi extends Application {
         bpLeftVb.getChildren().addAll(tscBtn, bioBtn, cwgBtn);
 
         BorderPane nestedBp = new BorderPane();
-//        nestedBp.setStyle("-fx-padding: 10;");
-//        nestedBp.setStyle("-fx-padding: 10;"
-//                + "-fx-border-style: solid inside;"
-//                + "-fx-border-width: 2;"
-//                + "-fx-border-insets: 5;"
-//                + "-fx-border-radius: 5;"
-//                + "-fx-border-color: red;");
+
         nestedBp.setStyle(greyFillStyle);
         bp.setCenter(nestedBp);
 
         GridPane tscGp = new GridPane();
         tscGp.setHgap(10);
         tscGp.setVgap(10);
-//        tscGp.setStyle("-fx-padding: 10;");
-//        tscGp.setStyle("-fx-padding: 10;"
-//                + "-fx-border-style: solid inside;"
-//                + "-fx-border-width: 1;"
-//                + "-fx-border-insets: 1;"
-//                + "-fx-border-radius: 1;"
-//                + "-fx-border-color: black;"
-//                + "-fx-background-color: #E1E2E1;");
+
         tscGp.setStyle(greyFillStyle);
 
         //Buttons 1
@@ -322,7 +278,6 @@ public class PumeUi extends Application {
         // Tree ActionEvent handlers
 //        Pine
         pineChb.setOnAction(e -> {
-            System.out.println(id.getId());
             int intId = Integer.parseInt(id.getId());
             if (pineChb.isSelected()) {
                 if (intId == 37) {
@@ -341,7 +296,6 @@ public class PumeUi extends Application {
         });
 //      Spruce
         spruceChb.setOnAction(e -> {
-            System.out.println(id);
             int intId = Integer.parseInt(id.getId());
             if (spruceChb.isSelected()) {
                 if (intId == 37) {
@@ -359,7 +313,6 @@ public class PumeUi extends Application {
         });
 //      Birch
         birchChb.setOnAction(e -> {
-            System.out.println(id);
             int intId = Integer.parseInt(id.getId());
             if (birchChb.isSelected()) {
                 if (intId == 37) {
@@ -399,18 +352,10 @@ public class PumeUi extends Application {
         bioGp.setVisible(false);
         bioGp.setHgap(10);
         bioGp.setVgap(10);
-//        bioGp.setStyle("-fx-padding: 10;");
-//        bioGp.setStyle("-fx-padding: 10;"
-//                + "-fx-border-style: solid inside;"
-//                + "-fx-border-width: 1;"
-//                + "-fx-border-insets: 1;"
-//                + "-fx-border-radius: 1;"
-//                + "-fx-border-color: black;"
-//                + "-fx-background-color: #E1E2E1;");
         bioGp.setStyle(greyFillStyle);
 
         //Buttons 2
-        Button totalBioBtn = new Button("Total biomass"); // Ei Id:tä, koska lasketaan kaikkien summasta -> id=47
+        Button totalBioBtn = new Button("Total biomass");
         totalBioBtn.setId("47");
         rh.addIdToMap(totalBioBtn.getId(), 3);
         Button foliageBtn = new Button("Foliage mass");
@@ -463,7 +408,6 @@ public class PumeUi extends Application {
         totalBioBtn.setOnAction(e -> {
             bc.removeRbtns(bioObtns, bioGp);
             bc.addOBtns(bioObs, bioGp, 1);
-//            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
@@ -477,7 +421,6 @@ public class PumeUi extends Application {
         foliageBtn.setOnAction(e -> {
             bc.removeRbtns(bioObtns, bioGp);
             bc.addOBtns(treeObs, bioGp, 0);
-//            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
@@ -490,7 +433,6 @@ public class PumeUi extends Application {
         branchesBtn.setOnAction(e -> {
             bc.removeRbtns(bioObtns, bioGp);
             bc.addOBtns(treeObs, bioGp, 0);
-//            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
@@ -516,7 +458,6 @@ public class PumeUi extends Application {
         fineBtn.setOnAction(e -> {
             bc.removeRbtns(bioObtns, bioGp);
             bc.addOBtns(treeObs, bioGp, 0);
-//            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
@@ -529,7 +470,6 @@ public class PumeUi extends Application {
         coarseBtn.setOnAction(e -> {
             bc.removeRbtns(bioObtns, bioGp);
             bc.addOBtns(treeObs, bioGp, 0);
-//            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
@@ -543,7 +483,6 @@ public class PumeUi extends Application {
         // Total biomass Checkboxes
 //      Foliage        
         foliageChb.setOnAction(e -> {
-            System.out.println(id);
             if (foliageChb.isSelected()) {
                 int intId = 33;
                 pumeChartHandler.removeMassFromBioChart(0);
@@ -556,7 +495,6 @@ public class PumeUi extends Application {
         });
 //      Branches
         branchesChb.setOnAction(e -> {
-            System.out.println(id);
             if (branchesChb.isSelected()) {
                 int intId = 24;
                 pumeChartHandler.removeMassFromBioChart(0);
@@ -569,7 +507,6 @@ public class PumeUi extends Application {
         });
 //      Stem      
         stemChb.setOnAction(e -> {
-            System.out.println(id);
             if (stemChb.isSelected()) {
                 int intId = 31;
                 pumeChartHandler.removeMassFromBioChart(0);
@@ -582,7 +519,6 @@ public class PumeUi extends Application {
         });
 //      Fine roots             
         fineChb.setOnAction(e -> {
-            System.out.println(id);
             if (fineChb.isSelected()) {
                 int intId = 25;
                 pumeChartHandler.removeMassFromBioChart(0);
@@ -595,7 +531,6 @@ public class PumeUi extends Application {
         });
 //      Coarse roots            
         coarseChb.setOnAction(e -> {
-            System.out.println(id);
             if (coarseChb.isSelected()) {
                 int intId = 32;
                 pumeChartHandler.removeMassFromBioChart(0);
@@ -611,9 +546,7 @@ public class PumeUi extends Application {
         treeCrownBtn.setOnAction(e -> {
             bc.removeRbtns(tscObtns, tscGp);
             bc.addOBtns(treeObs, tscGp, 0);
-//            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
-//            bc.resetChbs(tscObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
@@ -625,9 +558,7 @@ public class PumeUi extends Application {
         diaBtn.setOnAction(e -> {
             bc.removeRbtns(tscObtns, tscGp);
             bc.addOBtns(treeObs, tscGp, 0);
-//            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
-//            bc.resetChbs(tscObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
@@ -640,9 +571,7 @@ public class PumeUi extends Application {
         volBtn.setOnAction(e -> {
             bc.removeRbtns(tscObtns, tscGp);
             bc.addOBtns(treeObs, tscGp, 0);
-//            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
-//            bc.resetChbs(tscObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
@@ -655,7 +584,6 @@ public class PumeUi extends Application {
         basBtn.setOnAction(e -> {
             bc.removeRbtns(tscObtns, tscGp);
             bc.addOBtns(treeObs, tscGp, 0);
-//            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
@@ -668,9 +596,7 @@ public class PumeUi extends Application {
         stockBtn.setOnAction(e -> {
             bc.removeRbtns(tscObtns, tscGp);
             bc.addOBtns(treeObs, tscGp, 0);
-//            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
-//            bc.resetChbs(tscObtns);
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
@@ -682,23 +608,9 @@ public class PumeUi extends Application {
         remBtn.setOnAction(e -> {
             bc.removeRbtns(tscObtns, tscGp);
             bc.addOBtns(remObs, tscGp, 0);
-//            bc.addOBtns(treeObs, tscGp, 0);
-
             bc.resetChbs(bioObtns);
             bc.resetChbs(tscObtns);
-
-//          graph
-//            Button button = (Button) ((Control) e.getSource());
-//            pumeBtn = new PumeButton(button);
-//            pumeBtn.setUnit("m³/ha/yr");
-//            pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
-//            pumeChartHandler.removeGraph(nestedBp);
-//            pumeChartHandler.createStackedBarChart(nestedBp);
-//            cuttingsRb.arm();
             cuttingsRb.fire();
-//            pumeChartHandler.removeFromStackedBarChart(0);
-
-//            pumeChartHandler.createRemovalsCharts(nestedBp);
         });
 
         //Toggle removals radiobuttons Listener 
@@ -709,11 +621,7 @@ public class PumeUi extends Application {
                     bc.removeRbtns(tscObtns, tscGp);
                     bc.addOBtns(remObs, tscGp, 0);
                     bc.resetChbs(bioObtns);
-//                    bc.resetChbs(tscObtns);
                     //graph
-                    RadioButton selectedRadioButton = (RadioButton) remTg.getSelectedToggle();
-                    String toggleGroupId = selectedRadioButton.getId();
-                    System.out.println("toggleGroupValue:" + toggleGroupId);
                     id.setId("37");
                     Button button = new Button("Cuttings");
                     button.setId(id.getId());
@@ -727,7 +635,6 @@ public class PumeUi extends Application {
                     bc.removeRbtns(tscObtns, tscGp);
                     bc.addOBtns(remObs, tscGp, 0);
                     bc.resetChbs(bioObtns);
-//                    bc.resetChbs(tscObtns);
                     //graph
                     id.setId("42");
                     Button button = new Button("Mortality");
@@ -745,19 +652,9 @@ public class PumeUi extends Application {
         cwgGp.setVisible(false);
         cwgGp.setHgap(10);
         cwgGp.setVgap(10);
-//        cwgGp.setStyle("-fx-padding: 10;");
-
-//        cwgGp.setStyle("-fx-padding: 10;"
-//                + "-fx-border-style: solid inside;"
-//                + "-fx-border-width: 1;"
-//                + "-fx-border-insets: 1;"
-//                + "-fx-border-radius: 1;"
-//                + "-fx-border-color: black;");
         cwgGp.setStyle(greyFillStyle);
         //Buttons 3
         Button cbBtn = new Button("Carbon Balance");
-        // id?
-        // sama resultHandler case kuin wuBtn koska 0
         cbBtn.setId("48");
         rh.addIdToMap(cbBtn.getId(), 4);
         Button gppBtn = new Button("GPP");
@@ -810,7 +707,6 @@ public class PumeUi extends Application {
 
         // Water use checkbox ActionEvent handlers
         evapChb.setOnAction(e -> {
-            System.out.println(id);
             if (evapChb.isSelected()) {
                 int intId = Integer.parseInt("22");
                 pumeChartHandler.addTreeToChart(spruceMap, intId, "Evapotranspiration", 1);
@@ -823,7 +719,6 @@ public class PumeUi extends Application {
         });
 
         summerSoilChb.setOnAction(e -> {
-            System.out.println(id);
             if (summerSoilChb.isSelected()) {
                 int intId = Integer.parseInt("41");
                 pumeChartHandler.addTreeToChart(spruceMap, intId, "Summer soil water", 2);
@@ -836,7 +731,6 @@ public class PumeUi extends Application {
         });
         // Carbon balance checkbox ActionEvent handlers
         ppChb.setOnAction(e -> {
-            System.out.println(id);
             if (ppChb.isSelected()) {
                 int intId = Integer.parseInt("6");
                 pumeChartHandler.addTreeToChart(spruceMap, intId, "Potential photosynthesis", 1);
@@ -849,7 +743,6 @@ public class PumeUi extends Application {
         });
 
         gppChb.setOnAction(e -> {
-            System.out.println(id);
             if (gppChb.isSelected()) {
                 int intId = Integer.parseInt("10");
                 pumeChartHandler.addTreeToChart(spruceMap, intId, "GPP", 2);
@@ -881,7 +774,6 @@ public class PumeUi extends Application {
         cbBtn.setOnAction(e -> {
             bc.removeRbtns(cwgObtns, cwgGp);
             bc.addOBtns(cbObs, cwgGp, 0);
-//            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
             bc.resetChbs(cwgObtns);
 //          graph
@@ -898,7 +790,6 @@ public class PumeUi extends Application {
         gppBtn.setOnAction(e -> {
             bc.removeRbtns(cwgObtns, cwgGp);
             bc.addOBtns(treeObs, cwgGp, 0);
-//            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
             bc.resetChbs(cwgObtns);
 //          graph
@@ -912,7 +803,6 @@ public class PumeUi extends Application {
         wuBtn.setOnAction(e -> {
             bc.removeRbtns(cwgObtns, cwgGp);
             bc.addOBtns(wuObs, cwgGp, 0);
-//            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
             bc.resetChbs(cwgObtns);
 //          graph
@@ -929,7 +819,6 @@ public class PumeUi extends Application {
         vgBtn.setOnAction(e -> {
             bc.removeRbtns(cwgObtns, cwgGp);
             bc.addOBtns(treeObs, cwgGp, 0);
-//            bc.resetChbs(treeObs);
             bc.resetChbs(bioObtns);
             bc.resetChbs(cwgObtns);
 //          graph
@@ -957,7 +846,6 @@ public class PumeUi extends Application {
             nestedBp.setTop(tscGp);
             bioBtn.setStyle("");
             cwgBtn.setStyle("");
-//            tscBtn.setStyle("-fx-background-color: burlywood");
             tscBtn.setStyle(clickedBtnStyle);
         });
 
@@ -975,7 +863,6 @@ public class PumeUi extends Application {
             nestedBp.setTop(bioGp);
             tscBtn.setStyle("");
             cwgBtn.setStyle("");
-//            bioBtn.setStyle("-fx-background-color: burlywood");
             bioBtn.setStyle(clickedBtnStyle);
         });
         cwgBtn.setOnAction(e -> {
@@ -992,7 +879,6 @@ public class PumeUi extends Application {
             nestedBp.setTop(cwgGp);
             tscBtn.setStyle("");
             bioBtn.setStyle("");
-//            cwgBtn.setStyle("-fx-background-color: burlywood");
             cwgBtn.setStyle(clickedBtnStyle);
 
         });
@@ -1016,12 +902,10 @@ public class PumeUi extends Application {
         ComboBox siteCb = new ComboBox(siteInfo.getHeaths());
         siteCb.getSelectionModel().selectFirst();
 
-        ToggleGroup weatherTg = new ToggleGroup();
-        RadioButton weatherRbDef = new RadioButton("Default .csv");
-        weatherRbDef.setToggleGroup(weatherTg);
-        weatherRbDef.setSelected(true);
-        RadioButton weatherRbCus = new RadioButton("Custom .csv");
-        weatherRbCus.setToggleGroup(weatherTg);
+        weather = new Weather();
+        ComboBox weatherCb = new ComboBox(weather.getWeather());
+        weatherCb.getSelectionModel().selectFirst();
+
         Button weatherBtn = new Button("Choose file");
         Tooltip weatherTool = new Tooltip("Choose file");
         weatherTool.setStyle("-fx-font-size: 15");
@@ -1049,8 +933,6 @@ public class PumeUi extends Application {
 
         final Spinner yearsSpin = new Spinner();
         String INITIAL_VALUE = "100";
-//        yearsSpin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 200,
-//                Integer.parseInt(INITIAL_VALUE)));
         IntegerSpinnerValueFactory yearsSpinFactory = new IntegerSpinnerValueFactory(1, 200, Integer.parseInt(INITIAL_VALUE));
         yearsSpin.setValueFactory(yearsSpinFactory);
         yearsSpin.setEditable(true);
@@ -1060,8 +942,6 @@ public class PumeUi extends Application {
         infoAlert.setTitle("Information Dialog");
         infoAlert.setHeaderText("An Information Dialog");
         infoAlert.setContentText("Information Message");
-//        infoAlert.showAndWait();
-//        infoAlert.hide();
         Label yearsSpinLbl = new Label();
         ImageView infoIcon = new ImageView(this.getClass().getResource("/com/sun/javafx/scene/control/skin/modena/dialog-information.png").toString());
         infoIcon.setFitHeight(40);
@@ -1079,13 +959,12 @@ public class PumeUi extends Application {
         gp.add(siteLbl, 0, 1);
         gp.add(siteCb, 1, 1);
         gp.add(weatherLbl, 0, 2);
-        gp.add(weatherRbDef, 1, 2);
-        gp.add(weatherRbCus, 2, 2);
-        gp.add(weatherBtn, 3, 2);
+//        gp.add(weatherRbDef, 1, 2);
+//        gp.add(weatherRbCus, 2, 2);
+        gp.add(weatherCb, 1, 2);
+        gp.add(weatherBtn, 2, 2);
         gp.add(managLbl, 0, 3);
-//        gp.add(managRbDef, 1, 3);
         gp.add(thinningsCb, 1, 3);
-//        gp.add(managRbCus, 2, 3);
         gp.add(managBtn, 2, 3);
         gp.add(yearsLbl, 0, 4);
         gp.add(yearsSpin, 1, 4);
@@ -1094,8 +973,7 @@ public class PumeUi extends Application {
 
         GridPane.setHgrow(gp, Priority.ALWAYS);
         GridPane.setVgrow(gp, Priority.ALWAYS);
-
-//        gp.prefHeightProperty().bind(infoVb.heightProperty());
+        ;
         infoVb.getChildren().add(gp);
         ap.getChildren().add(infoVb);
         ap.getChildren().add(rightBp);
@@ -1113,8 +991,6 @@ public class PumeUi extends Application {
                 info.setTree((Tree) initStandCb.getValue());
                 info.setSpinnerValue(yearsSpinFactory, yearsSpin);
 
-                System.out.println("years: " + info.getYears());
-
                 info.setThinning((Thinning) thinningsCb.getValue());
                 String weatherPath = info.getWeatherPath();
                 errorHandler.checkForFileErrors("Weather", weatherPath, notifications);
@@ -1125,13 +1001,6 @@ public class PumeUi extends Application {
                 Alert errorAlert = errorHandler.getErrorAlert(notifications);
 
                 if (errorAlert == null) {
-
-                    System.out.println("init stand: " + info.getTree());
-                    System.out.println("initPath: " + info.getInitPath());
-                    System.out.println("site type: " + info.getHeath());
-                    System.out.println("weather path: " + info.getWeatherPath());
-                    System.out.println("manag path: " + info.getManagPath());
-                    System.out.println("years: " + info.getYears());
                     rh.resetConversionDone();
 
                     //Run model
@@ -1161,7 +1030,6 @@ public class PumeUi extends Application {
 
                             if (pumeChartHandler != null) {
                                 pumeChartHandler.removeGraph(nestedBp);
-//                    bc.resetChbs(treeObs);
                                 bc.resetChbs(bioObtns);
                             }
 
@@ -1170,11 +1038,6 @@ public class PumeUi extends Application {
                             pineMap = (HashMap<Integer, List<String>>) rh.getPineMap();
                             spruceMap = (HashMap<Integer, List<String>>) rh.getSpruceMap();
                             birchMap = (HashMap<Integer, List<String>>) rh.getBirchMap();
-                            System.out.println("hello");
-                            System.out.println("conversionDone: " + rh.isConversionDone());
-                            System.out.println("initBtnFile: " + initBtnFile);
-                            System.out.println("weatherBtnFile: " + weatherBtnFile);
-                            System.out.println("managBtnFile: " + managBtnFile);
                             ap.getChildren().remove(rightBp);
                             ap.getChildren().remove(bp);
                             ap.getChildren().add(bp);
@@ -1270,6 +1133,28 @@ public class PumeUi extends Application {
             }
         });
 
+        // weatherCb listener
+        weatherCb.valueProperty().addListener(new ChangeListener<WeatherFile>() {
+            @Override
+            public void changed(ObservableValue ov, WeatherFile oldVal, WeatherFile newVal) {
+                switch (newVal.getId()) {
+                    case 0:
+                        weatherBtn.setDisable(true);
+                        weatherBtn.setText("Choose file");
+                        weatherTool.setText(weatherBtn.getText());
+                        weatherBtn.setTooltip(weatherTool);
+                        info.setWeatherPath(defPath + "\\weather.csv");
+                        break;
+                    case 1:
+                        weatherBtn.setDisable(false);
+                        fcb.setNoFileChosen(primaryStage, info, weatherBtn);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+
         //Weather file chooser ActionEvent
         weatherBtn.setOnAction(
                 new EventHandler<ActionEvent>() {
@@ -1316,23 +1201,6 @@ public class PumeUi extends Application {
                     initBtn.setTooltip(initTool);
                 }
 
-            }
-        });
-
-        //Toggle Weather Listener    
-        weatherTg.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-            @Override
-            public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
-                if (weatherRbCus.isSelected()) {
-                    weatherBtn.setDisable(false);
-                    fcb.setNoFileChosen(primaryStage, info, weatherBtn);
-                } else {
-                    weatherBtn.setDisable(true);
-                    weatherBtn.setText("Choose file");
-                    weatherTool.setText("Choose file");
-                    weatherBtn.setTooltip(weatherTool);
-                    info.setWeatherPath(defPath + "\\weather.csv");
-                }
             }
         });
 
@@ -1393,11 +1261,12 @@ public class PumeUi extends Application {
         primaryStage.setMinHeight(scene.getHeight() + 35d);
         primaryStage.setMaxWidth(primaryScreenBounds.getWidth());
         primaryStage.setMaxHeight(primaryScreenBounds.getHeight());
-
-        String currentDirectory = System.getProperty("user.dir");
-        System.out.println("CURRENT " + currentDirectory);
+        
+         primaryStage.setX((primaryScreenBounds.getWidth() -  primaryStage.getWidth()) / 2); 
+         primaryStage.setY((primaryScreenBounds.getHeight() -  primaryStage.getHeight()) / 4);  
+  
         scene.getStylesheets().add(styles);
-        primaryStage.setTitle("PuMe 2019");
+        primaryStage.setTitle("Prebas App");
         primaryStage.setScene(scene);
         primaryStage.show();
 
@@ -1409,14 +1278,12 @@ public class PumeUi extends Application {
         @Override
         public void handle(Event evt) {
             id.setId(((Control) evt.getSource()).getId());
-            System.out.println("rh map: " + rh.getIdMap().get(id.getId()));
             Button button = (Button) ((Control) evt.getSource());
 
             if (clickedBtn != null) {
                 clickedBtn.setStyle("");
             }
             clickedBtn = button;
-//            clickedBtn.setStyle("-fx-background-color: burlywood");
             clickedBtn.setStyle(clickedBtnStyle);
             button.fire();
         }

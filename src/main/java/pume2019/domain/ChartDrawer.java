@@ -33,7 +33,6 @@ public class ChartDrawer {
 
         for (Map.Entry<Integer, Series> entry : seriesMap.entrySet()) {
             XYChart.Series series = seriesMap.get(entry.getKey());
-            System.out.println(seriesMap.get(entry.getKey()));
             if (seriesMap.get(entry.getKey()) != null) {
                 if (null == entry.getKey()) {
                     handler.colourSeries(handlerLineChart, series, "default");
@@ -114,7 +113,6 @@ public class ChartDrawer {
 
     public StackedAreaChart<Integer, Double> drawStackedAreaChart(PumeSeriesHandler handler) {
         handlerStackedAreaChart = handler.getStackedAreaChart().getStackedAreaChart();
-//        this.handleColourSeries(handler);
         return handlerStackedAreaChart;
     }
 

@@ -1,9 +1,6 @@
 package pume2019.domain;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import javafx.collections.ObservableList;
 import javafx.scene.chart.XYChart;
 
 public class PumeSeries {

@@ -31,10 +31,6 @@ public class PumeLineChart {
         lineChart.getXAxis().setVisible(false);
         lineChart.getYAxis().setVisible(false);
         lineChart.getYAxis().setSide(Side.RIGHT);
-
-//        lineChart.getXAxis().setTickMarkVisible(false);
-//        lineChart.getXAxis().setTickLabelsVisible(false);
-//        lineChart.getXAxis().setSide(Side.TOP);
     }
 
     public LineChart<Integer, Double> createLineChart(String var, String name, String unit) {
@@ -47,10 +43,6 @@ public class PumeLineChart {
         lineChart = new LineChart(xAxis, yAxis);
         lineChart.setTitle(name);
         lineChart.setId(var);
-//        lineChart.lookup(".chart-plot-background").setStyle("-fx-background-color: #D6FDD5;");
-//        lineChart.lookup(".chart-plot-background").setStyle("-fx-background-color: #FDE3CF;");
-//        lineChart.lookup(".chart-plot-background").setStyle("-fx-background-color: #FEFEFE;");
-//        lineChart.lookup(".chart-plot-background").setStyle("-fx-background-color: whitesmoke;");
         return lineChart;
     }
 

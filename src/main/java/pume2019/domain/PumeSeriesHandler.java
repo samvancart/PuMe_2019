@@ -2,7 +2,6 @@ package pume2019.domain;
 
 import com.sun.javafx.charts.Legend;
 import java.awt.Color;
-import static java.awt.Color.RGBtoHSB;
 import java.util.List;
 import java.util.Map;
 import javafx.collections.FXCollections;
@@ -11,7 +10,6 @@ import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Series;
-import javafx.scene.control.Label;
 
 public class PumeSeriesHandler {
 
@@ -69,7 +67,6 @@ public class PumeSeriesHandler {
     }
 
     public void addSeriesToLineChart(Integer key, XYChart.Series series) {
-//        seriesMap.clear();
         seriesMap.putIfAbsent(key, series);
         lineChart.getLineChart().getData().add(series);
     }
@@ -85,9 +82,6 @@ public class PumeSeriesHandler {
     }
 
     public void removeSeriesFromLineChart(Integer key) {
-//        seriesMap.clear();
-//        seriesMap.remove(key);
-//        seriesMap.put(key, null);
         ObservableList<Series<Integer, Double>> newSeriesList = FXCollections.observableArrayList();
         seriesMap.replace(key, null);
         for (Map.Entry<Integer, Series> entry : seriesMap.entrySet()) {
@@ -145,7 +139,6 @@ public class PumeSeriesHandler {
                 (int) (color.getRed() * 1),
                 (int) (color.getGreen() * 1),
                 (int) (color.getBlue() * 1));
-        System.out.println("RGB: " + rgb);
 
         for (int index = 0; index < series.getData().size(); index++) {
             // we're looping for each data point, changing the color of line symbol

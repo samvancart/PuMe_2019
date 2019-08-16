@@ -4,10 +4,6 @@ import java.io.File;
 import java.util.List;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import pume2019.domain.Notification;
 import pume2019.domain.Notifications;
 

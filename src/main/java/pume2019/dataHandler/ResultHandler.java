@@ -42,9 +42,6 @@ public class ResultHandler {
     // Find from map
     public void calculate(PumeButton button) {
         String id = button.getButton().getId();
-//        pineMap=maps.get(0);
-//        spruceMap=maps.get(1);
-//        birchMap=maps.get(2);
         if (idMap.get(id) != null) {
             if (null != idMap.get(id)) {
                 switch (idMap.get(id)) {
@@ -128,7 +125,6 @@ public class ResultHandler {
             String sum = String.valueOf((pineD + spruceD + birchD));
             results.add(sum);
         }
-        System.out.println("sum Results: " + results);
         return results;
     }
 
@@ -142,7 +138,6 @@ public class ResultHandler {
             String sum = String.valueOf(sumD * (-1));
             results.add(sum);
         }
-        System.out.println("minus sum Results: " + results);
         return results;
     }
 
@@ -156,30 +151,15 @@ public class ResultHandler {
             dataLists.add(pumeBtn.getDataList(0));
         }
         for (int i = 0; i < dataLists.get(0).size(); i++) {
-            int dataListsFirstSize = dataLists.get(0).size();
             Double sum = 0.0;
             for (int j = 0; j < dataLists.size(); j++) {
-                int dataListsSize = dataLists.size();
                 sum += Double.parseDouble(dataLists.get(j).get(i));
             }
             results.add(String.valueOf(sum));
         }
         pumeButton.addToList(results);
-        System.out.println("Summed up: " + results);
         return results;
     }
-
-//        public List<String> convertToGrams(List<String> pine, List<String> spruce, List<String> birch) {
-//        List<String> results = new ArrayList<>();
-//        for (int i = 0; i < pine.size(); i++) {
-//            Double pineD = Double.parseDouble(pine.get(i));
-//            Double spruceD = Double.parseDouble(spruce.get(i));
-//            Double birchD = Double.parseDouble(birch.get(i));
-//            String sum = String.valueOf((pineD + spruceD + birchD));
-//            results.add(sum);
-//        }
-//        return results;
-//    }
     public Map<String, Integer> getIdMap() {
         return idMap;
     }

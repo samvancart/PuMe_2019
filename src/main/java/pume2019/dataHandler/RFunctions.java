@@ -23,8 +23,6 @@ public class RFunctions {
         lines.add("     write_resp <- writeLines(data,con)");
         lines.add("     return(NA)");
         lines.add("close(con)");
-        // close Catch
-//        lines.add("},");
         return lines;
     }
 
@@ -107,34 +105,12 @@ public class RFunctions {
         return text;
     }
 
-//    public List<String> createRClientSocketLines(int years, int site, String thinning, int defaultThin, int ClCut) {
-//        List<String> lines = new ArrayList<>();
-//        lines.add("client <- function(){");
-//        //open tryCatch
-//        lines.add(tryCatchOpen());
-//        // prebasOut
-//        lines.add(prebasOut(years, site, thinning, defaultThin, ClCut));
-//        lines.add("    con <- socketConnection(host=\"localhost\", port = 6011, blocking=TRUE,\n"
-//                + "  server=FALSE, open=\"r+\")");
-//        lines.addAll(responseLoop());
-//        //catchError
-//        lines.addAll(catchSocketError());
-////        Close tryCatch
-//        lines.addAll(tryCatchClose());
-//        lines.add("close(con)");
-//        lines.add("}");
-//        lines.add("client()");
-//
-//        return lines;
-//    }
     public List<String> createRClientSocketLines(int years, int site, String thinning, int defaultThin, int ClCut) {
         List<String> lines = new ArrayList<>();
         lines.add("client <- function(){");
 
         // prebasOut
         lines.add(prebasOut(years, site, thinning, defaultThin, ClCut));
-//        lines.add("    con <- socketConnection(host=\"localhost\", port = 6011, blocking=TRUE,\n"
-//                + "  server=FALSE, open=\"r+\")");
         lines.addAll(responseLoop());
         lines.add("close(con)");
         lines.add("}");
@@ -163,16 +139,11 @@ public class RFunctions {
     }
 
     public String getCurrentDirectory() throws IOException, URISyntaxException {
-//        String currentDirectory = System.getProperty("user.dir");
         String cur = System.getProperty("user.dir");
-        System.out.println("CUR "+ cur);
         Properties properties = new Properties();
         InputStream is = getClass().getClassLoader().getResourceAsStream("config.properties");
         properties.load(is);
         String rPath = properties.getProperty("rPath");
-//        String jarDir = new File(RFunctions.class.getProtectionDomain().getCodeSource().getLocation()
-//                .toURI()).getPath();
-//        System.out.println("jarDir getCurrent " + jarDir);
         String currentDirectory = cur+"\\"+rPath;
 
         return currentDirectory;
@@ -180,21 +151,18 @@ public class RFunctions {
 
     public String getHomePath() throws IOException, URISyntaxException {
         String currentDirectory = getCurrentDirectory();
-//        String homePath = "\"" + currentDirectory + "\\src\\main\\resources\\R-Portable\"";
         String homePath = "\"" + currentDirectory + "\"";
         return homePath;
     }
 
     public String getExePath() throws IOException, URISyntaxException {
         String currentDirectory = getCurrentDirectory();
-//        String exePath = "\"" + currentDirectory + "\\src\\main\\resources\\R-Portable\\App\\R-Portable\\bin\\R.exe" + "\"";
         String exePath = "\"" + currentDirectory + "\\App\\R-Portable\\bin\\R.exe" + "\"";
         return exePath;
     }
 
     public String getInputPath() throws IOException, URISyntaxException {
         String currentDirectory = getCurrentDirectory();
-//        String inputPath = "\"" + currentDirectory + "\\src\\main\\resources\\R-Portable\\input.R" + "\"";
         String inputPath = "\"" + currentDirectory + "\\input.R" + "\"";
         return inputPath;
     }

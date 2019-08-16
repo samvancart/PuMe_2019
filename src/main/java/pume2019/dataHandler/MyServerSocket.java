@@ -30,8 +30,6 @@ public class MyServerSocket {
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException e) {
-            System.out.println("ServerSocket-Error" + e.getMessage());
-            System.out.println("Closing connection");
             bindError = true;
             bindErrorMsg = e.getMessage();
         }
@@ -63,15 +61,11 @@ public class MyServerSocket {
 
     public void start() throws InterruptedException, URISyntaxException {
         try {
-            System.out.println("Server started");
-
-            System.out.println("Waiting for a client ...");
 
 //            RUN BATCH JOB HERE
             fileHandler.runBat(functions.getCurrentDirectory(), functions.getHomePath(), functions.getExePath(), functions.getInputPath());
 
             clientSocket = serverSocket.accept();
-            System.out.println("Client accepted");
 
 // PRINTWRITER            
             out = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -88,7 +82,6 @@ public class MyServerSocket {
 
     public void close() throws IOException {
         try {
-            System.out.println("Closing connection");
             in.close();
             out.close();
             clientSocket.close();
