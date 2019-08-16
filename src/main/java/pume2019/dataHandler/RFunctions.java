@@ -30,7 +30,8 @@ public class RFunctions {
         List<String> lines = new ArrayList<>();
         lines.add("},");
         lines.add("error=function(cond) {");
-        lines.add("     write_resp <- writeLines(cond)");
+        lines.add("data<-toString(cond)");
+        lines.add("     write_resp <- writeLines(data,con)");
         lines.add("     return(NA)");
         return lines;
     }

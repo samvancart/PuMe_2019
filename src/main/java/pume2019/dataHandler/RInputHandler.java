@@ -10,6 +10,8 @@ public class RInputHandler {
 
     public void getRInputs(RFileHandler fileHandler, RFunctions functions, Info info) throws IOException {
         fileHandler.clear();
+        //tryCatch open
+        fileHandler.write(functions.tryCatchOpen());
         fileHandler.write(functions.libraryRprebas());
         fileHandler.write(functions.libraryRpreles());
         fileHandler.write(functions.varResults());
@@ -26,6 +28,10 @@ public class RInputHandler {
         fileHandler.write(functions.weatherValues("VPD"));
         fileHandler.write(functions.weatherValues("CO2"));
         fileHandler.write(functions.weatherValues("DOY"));
+        // handle error
+        fileHandler.writeMany(functions.catchError());
+        // close tryCatch
+        fileHandler.writeMany(functions.tryCatchClose());
         fileHandler.writeMany(functions.createRClientSocketLines(Integer.parseInt(info.getYears()),
                 info.getHeath().getId(), info.getThinning().getRparam(), info.getThinning().getDefaultThin(), info.getThinning().getClCut()));
     }

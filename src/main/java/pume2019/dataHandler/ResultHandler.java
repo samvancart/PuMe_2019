@@ -101,8 +101,6 @@ public class ResultHandler {
         birchMap.replace(id, newBirch);
         conversionDone = true;
     }
-    
-   
 
     public List<String> getAvg(List<String> pine, List<String> spruce, List<String> birch) {
         List<String> results = new ArrayList<>();
@@ -160,6 +158,7 @@ public class ResultHandler {
         pumeButton.addToList(results);
         return results;
     }
+
     public Map<String, Integer> getIdMap() {
         return idMap;
     }

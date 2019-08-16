@@ -230,7 +230,7 @@ public class PumeChartHandler {
             lineGraph = drawer.drawLineChart(pumeSeriesHandler);
         } else if (pumeBtn.getButton().getId().equals("37")) {
             pumeSeriesHandler.removeSeriesFromStackedBarChart(treeId);
-        } else {
+        } else{
             pumeSeriesHandler.removeSeriesFromLineChart(treeId);
             lineGraph = drawer.drawLineChart(pumeSeriesHandler);
         }

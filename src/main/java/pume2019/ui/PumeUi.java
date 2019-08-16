@@ -121,7 +121,7 @@ public class PumeUi extends Application {
         String realArch = arch != null && arch.endsWith("64")
                 || wow64Arch != null && wow64Arch.endsWith("64")
                 ? "64" : "32";
-        System.out.println("OS bitness "+realArch);
+        System.out.println("OS bitness " + realArch);
 
         String inputFile = properties.getProperty("inputFile");
         String pathCsv = properties.getProperty("pathCsv");
@@ -758,16 +758,17 @@ public class PumeUi extends Application {
         cbTg.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
             @Override
             public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
-                if (nppRb.isSelected()) {
-                    pumeChartHandler.removeTreeFromChart(4);
-                    int intId = Integer.parseInt("18");
-                    pumeChartHandler.addTreeToChart(spruceMap, intId, "NPP", 3);
-                } else {
-                    pumeChartHandler.removeTreeFromChart(3);
-                    int intId = Integer.parseInt("9");
-                    pumeChartHandler.addTreeToChart(spruceMap, intId, "Autotrophic respiration", 4);
+                    if (nppRb.isSelected()) {
+                        pumeChartHandler.removeTreeFromChart(4);
+                        int intId = Integer.parseInt("18");
+                        pumeChartHandler.addTreeToChart(spruceMap, intId, "NPP", 3);
+                    } else {
+                        pumeChartHandler.removeTreeFromChart(3);
+                        int intId = Integer.parseInt("9");
+                        pumeChartHandler.addTreeToChart(spruceMap, intId, "Autotrophic respiration", 4);
+                    }
                 }
-            }
+            
         });
 
         //ActionEvent handlers 3
@@ -1256,15 +1257,16 @@ public class PumeUi extends Application {
 
         //Set Scene
         scene = new Scene(ap, 1600, 800);
-        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+        Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+        ap.setPrefSize(bounds.getWidth() / 2, bounds.getHeight() / 2);
         primaryStage.setMinWidth(scene.getWidth() + 35d);
         primaryStage.setMinHeight(scene.getHeight() + 35d);
-        primaryStage.setMaxWidth(primaryScreenBounds.getWidth());
-        primaryStage.setMaxHeight(primaryScreenBounds.getHeight());
-        
-         primaryStage.setX((primaryScreenBounds.getWidth() -  primaryStage.getWidth()) / 2); 
-         primaryStage.setY((primaryScreenBounds.getHeight() -  primaryStage.getHeight()) / 4);  
-  
+        primaryStage.setMaxWidth(bounds.getWidth());
+        primaryStage.setMaxHeight(bounds.getHeight());
+
+        primaryStage.setX((bounds.getWidth() - primaryStage.getWidth()) / 2);
+        primaryStage.setY((bounds.getHeight() - primaryStage.getHeight()) / 4);
+
         scene.getStylesheets().add(styles);
         primaryStage.setTitle("Prebas App");
         primaryStage.setScene(scene);

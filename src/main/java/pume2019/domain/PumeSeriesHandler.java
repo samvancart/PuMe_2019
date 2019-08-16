@@ -89,7 +89,9 @@ public class PumeSeriesHandler {
                 newSeriesList.add(entry.getValue());
             }
         }
+        
         lineChart.getLineChart().setData(newSeriesList);
+
     }
 
     public void removeSeriesFromStackedAreaChart(Integer key) {
@@ -128,11 +130,14 @@ public class PumeSeriesHandler {
         } else if (name.equals("48")) {
             color = Color.RED;
         } else if (name.equals("pine2")) {
-            color = Color.lightGray;
+//            color = Color.lightGray;
+            color = Color.CYAN;
         } else if (name.equals("spruce2")) {
-            color = Color.MAGENTA;
+//            color = Color.MAGENTA;
+            color = Color.BLUE;
         } else if (name.equals("birch2")) {
-            color = Color.YELLOW;
+//            color = Color.YELLOW;
+            color = Color.GREEN;
         }
 
         String rgb = String.format("%d, %d, %d",
