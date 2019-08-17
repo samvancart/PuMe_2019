@@ -89,9 +89,9 @@ public class PumeSeriesHandler {
                 newSeriesList.add(entry.getValue());
             }
         }
-        
-        lineChart.getLineChart().setData(newSeriesList);
-
+        if (lineChart!=null) {
+              lineChart.getLineChart().setData(newSeriesList);
+        }
     }
 
     public void removeSeriesFromStackedAreaChart(Integer key) {

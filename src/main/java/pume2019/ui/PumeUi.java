@@ -758,17 +758,17 @@ public class PumeUi extends Application {
         cbTg.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
             @Override
             public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
-                    if (nppRb.isSelected()) {
-                        pumeChartHandler.removeTreeFromChart(4);
-                        int intId = Integer.parseInt("18");
-                        pumeChartHandler.addTreeToChart(spruceMap, intId, "NPP", 3);
-                    } else {
-                        pumeChartHandler.removeTreeFromChart(3);
-                        int intId = Integer.parseInt("9");
-                        pumeChartHandler.addTreeToChart(spruceMap, intId, "Autotrophic respiration", 4);
-                    }
+
+                if (nppRb.isSelected()) {
+                    pumeChartHandler.removeTreeFromChart(4);
+                    int intId = Integer.parseInt("18");
+                    pumeChartHandler.addTreeToChart(spruceMap, intId, "NPP", 3);
+                } else if (arRb.isSelected()) {
+                    pumeChartHandler.removeTreeFromChart(3);
+                    int intId = Integer.parseInt("9");
+                    pumeChartHandler.addTreeToChart(spruceMap, intId, "Autotrophic respiration", 4);
                 }
-            
+            }
         });
 
         //ActionEvent handlers 3
@@ -785,6 +785,7 @@ public class PumeUi extends Application {
             pumeChartHandler.removeGraph(nestedBp);
             pumeChartHandler.createLineChart(nestedBp);
             ppChb.fire();
+
             pumeChartHandler.removeFromLineChart(0);
 
         });
@@ -881,7 +882,6 @@ public class PumeUi extends Application {
             tscBtn.setStyle("");
             bioBtn.setStyle("");
             cwgBtn.setStyle(clickedBtnStyle);
-
         });
 
         //Basic information
@@ -960,8 +960,6 @@ public class PumeUi extends Application {
         gp.add(siteLbl, 0, 1);
         gp.add(siteCb, 1, 1);
         gp.add(weatherLbl, 0, 2);
-//        gp.add(weatherRbDef, 1, 2);
-//        gp.add(weatherRbCus, 2, 2);
         gp.add(weatherCb, 1, 2);
         gp.add(weatherBtn, 2, 2);
         gp.add(managLbl, 0, 3);
@@ -1249,7 +1247,9 @@ public class PumeUi extends Application {
                     yearsSpin.getEditor().textProperty().set(INITIAL_VALUE);
                 }
                 Platform.runLater(() -> {
-                    yearsSpin.getEditor().textProperty().set("100");
+//                    yearsSpin.getEditor().textProperty().set("100");
+                    info.setYears(String.valueOf(oldYears));
+                    yearsSpin.getEditor().setText(info.getYears());
                 });
                 infoVb.requestFocus();
             }
