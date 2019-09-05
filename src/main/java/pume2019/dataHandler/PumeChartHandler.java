@@ -12,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import pume2019.domain.ChartDrawer;
+import pume2019.domain.Info;
 import pume2019.domain.PumeButton;
 import pume2019.domain.PumeLineChart;
 import pume2019.domain.PumeSeries;
@@ -172,13 +173,21 @@ public class PumeChartHandler {
         lineGraph = drawer.drawLineChart(pumeSeriesHandler);
     }
 
-    public void addTreeToChart(Map<Integer, List<String>> treeMap, int id, String name, int treeId) {
+    public void addTreeToChart(PumeButton pumeBtn, List<Map<Integer, List<String>>> maps, Map<Integer, List<String>> treeMap, int id, String name, int treeId) {
         if (id == 14 || id == 11) {
             this.addTreeToTHCBChart(treeMap, id, name, treeId);
         } else if (id == 37) {
             this.addTreeToStackedBarChart(treeMap, id, name, treeId);
-        } else if (id == 10 || id == 18 || id == 9) {
+        } else if (id == 18 || id == 9) {
+//        } else if (id == 10 || id == 18 || id == 9) {
+            //CREATE BOOLEAN FLAG 
+//            if (info.getTree().getId() != 0) {
+//                List<String> sum;
+//                sum = rh.getSum(maps.get(0).get(id), maps.get(1).get(id), maps.get(2).get(id));
+//                treeMap.put(id, sum);
+//            }
             this.addTreeToChartAndConvertToGrams(treeMap, id, name, treeId);
+
         } else {
             List<String> data = new ArrayList<>();
             data = treeMap.get(id);
@@ -230,7 +239,7 @@ public class PumeChartHandler {
             lineGraph = drawer.drawLineChart(pumeSeriesHandler);
         } else if (pumeBtn.getButton().getId().equals("37")) {
             pumeSeriesHandler.removeSeriesFromStackedBarChart(treeId);
-        } else{
+        } else {
             pumeSeriesHandler.removeSeriesFromLineChart(treeId);
             lineGraph = drawer.drawLineChart(pumeSeriesHandler);
         }

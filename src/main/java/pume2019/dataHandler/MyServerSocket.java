@@ -44,8 +44,6 @@ public class MyServerSocket {
     public ServerSocket getServerSocket() {
         return serverSocket;
     }
-    
-    
 
     public List<String> getResultData() {
         return resultData;
@@ -64,7 +62,6 @@ public class MyServerSocket {
 
 //            RUN BATCH JOB HERE
             fileHandler.runBat(functions.getCurrentDirectory(), functions.getHomePath(), functions.getExePath(), functions.getInputPath());
-
             clientSocket = serverSocket.accept();
 
 // PRINTWRITER            

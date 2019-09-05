@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import pume2019.domain.OsBitness;
 
 public class RFunctions {
 
@@ -145,7 +146,7 @@ public class RFunctions {
         InputStream is = getClass().getClassLoader().getResourceAsStream("config.properties");
         properties.load(is);
         String rPath = properties.getProperty("rPath");
-        String currentDirectory = cur+"\\"+rPath;
+        String currentDirectory = cur + "\\" + rPath;
 
         return currentDirectory;
     }
@@ -158,7 +159,18 @@ public class RFunctions {
 
     public String getExePath() throws IOException, URISyntaxException {
         String currentDirectory = getCurrentDirectory();
-        String exePath = "\"" + currentDirectory + "\\App\\R-Portable\\bin\\R.exe" + "\"";
+        String bits = new OsBitness().getOsBitness();
+        String exePath = "";
+        if (bits != null) {
+            if (bits.equals("64")) {
+                exePath = "\"" + currentDirectory + "\\App\\R-Portable\\bin\\R.exe" + "\"";
+            } else {
+                exePath = "\"" + currentDirectory + "\\App\\R-Portable\\bin\\i386\\R.exe" + "\"";
+            }
+        } else {
+            exePath = "\"" + currentDirectory + "\\App\\R-Portable\\bin\\R.exe" + "\"";
+        }
+
         return exePath;
     }
 

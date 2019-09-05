@@ -108,24 +108,17 @@ public class PumeUi extends Application {
         InputStream is = getClass().getClassLoader().getResourceAsStream("config.properties");
         properties.load(is);
 
-//        boolean is64bit = false;
-//        if (System.getProperty("os.name").contains("Windows")) {
-//            is64bit = (System.getenv("ProgramFiles(x86)") != null);
-//        } else {
-//            is64bit = (System.getProperty("os.arch").contains("64"));
-//        }
-//        System.out.println("Is 64-bit "+is64bit);
-        String arch = System.getenv("PROCESSOR_ARCHITECTURE");
-        String wow64Arch = System.getenv("PROCESSOR_ARCHITEW6432");
-
-        String realArch = arch != null && arch.endsWith("64")
-                || wow64Arch != null && wow64Arch.endsWith("64")
-                ? "64" : "32";
-        System.out.println("OS bitness " + realArch);
-
+//        String arch = System.getenv("PROCESSOR_ARCHITECTURE");
+//        String wow64Arch = System.getenv("PROCESSOR_ARCHITEW6432");
+//
+//        String realArch = arch != null && arch.endsWith("64")
+//                || wow64Arch != null && wow64Arch.endsWith("64")
+//                ? "64" : "32";
+//        System.out.println("OS bitness " + realArch);
         String inputFile = properties.getProperty("inputFile");
         String pathCsv = properties.getProperty("pathCsv");
         styles = properties.getProperty("styles");
+        System.out.println("pathCsv " + pathCsv);
 
         fileHandler = new RFileHandler(inputFile);
         bc = new ButtonController(new ButtonHandler());
@@ -133,6 +126,8 @@ public class PumeUi extends Application {
                 .toURI()).getPath();
 
         defPath = pathCsv;
+//        defPath = System.getProperty("user.dir");
+//        defPath = defPath + "\\R-Portable\\" + pathCsv;
         info = new Info();
         info.setWeatherPath(defPath + "\\weather.csv");
         info.setManagPath(defPath + "\\thinning.csv");
@@ -190,11 +185,11 @@ public class PumeUi extends Application {
         BorderPane bp = new BorderPane();
 
         bp.prefHeightProperty().bind(ap.heightProperty());
-        bp.prefWidthProperty().bind(ap.widthProperty().subtract(infoVb.widthProperty().add(20)));
+        bp.prefWidthProperty().bind(ap.widthProperty().subtract(infoVb.widthProperty().add(20d)));
 
         BorderPane rightBp = new BorderPane();
         rightBp.prefHeightProperty().bind(ap.heightProperty());
-        rightBp.prefWidthProperty().bind(ap.widthProperty().subtract(infoVb.widthProperty().add(20)));
+        rightBp.prefWidthProperty().bind(ap.widthProperty().subtract(infoVb.widthProperty().add(20d)));
         rightBp.setStyle(greyFillStyle);
         Label startLbl = new Label("Prebas App");
         startLbl.setStyle("-fx-font-size:86;");
@@ -283,7 +278,7 @@ public class PumeUi extends Application {
                 if (intId == 37) {
                     pumeChartHandler.removeFromStackedBarChart(0);
                 }
-                pumeChartHandler.addTreeToChart(pineMap, intId, "Pine", 1);
+                pumeChartHandler.addTreeToChart(pumeBtn, maps, pineMap, intId, "Pine", 1);
             }
             if (!pineChb.isSelected()) {
                 if (intId == 37) {
@@ -301,7 +296,7 @@ public class PumeUi extends Application {
                 if (intId == 37) {
                     pumeChartHandler.removeFromStackedBarChart(0);
                 }
-                pumeChartHandler.addTreeToChart(spruceMap, intId, "Spruce", 2);
+                pumeChartHandler.addTreeToChart(pumeBtn, maps, spruceMap, intId, "Spruce", 2);
             }
             if (!spruceChb.isSelected()) {
                 if (intId == 37) {
@@ -318,7 +313,7 @@ public class PumeUi extends Application {
                 if (intId == 37) {
                     pumeChartHandler.removeFromStackedBarChart(0);
                 }
-                pumeChartHandler.addTreeToChart(birchMap, intId, "Birch", 3);
+                pumeChartHandler.addTreeToChart(pumeBtn, maps, birchMap, intId, "Birch", 3);
             }
             if (!birchChb.isSelected()) {
                 if (intId == 37) {
@@ -709,7 +704,7 @@ public class PumeUi extends Application {
         evapChb.setOnAction(e -> {
             if (evapChb.isSelected()) {
                 int intId = Integer.parseInt("22");
-                pumeChartHandler.addTreeToChart(spruceMap, intId, "Evapotranspiration", 1);
+                pumeChartHandler.addTreeToChart(pumeBtn, maps, info.getInitMap(), intId, "Evapotranspiration", 1);
             }
             if (!evapChb.isSelected() && summerSoilChb.isSelected()) {
                 pumeChartHandler.removeTreeFromChart(1);
@@ -721,7 +716,7 @@ public class PumeUi extends Application {
         summerSoilChb.setOnAction(e -> {
             if (summerSoilChb.isSelected()) {
                 int intId = Integer.parseInt("41");
-                pumeChartHandler.addTreeToChart(spruceMap, intId, "Summer soil water", 2);
+                pumeChartHandler.addTreeToChart(pumeBtn, maps, info.getInitMap(), intId, "Summer soil water", 2);
             }
             if (!summerSoilChb.isSelected() && evapChb.isSelected()) {
                 pumeChartHandler.removeTreeFromChart(2);
@@ -733,7 +728,7 @@ public class PumeUi extends Application {
         ppChb.setOnAction(e -> {
             if (ppChb.isSelected()) {
                 int intId = Integer.parseInt("6");
-                pumeChartHandler.addTreeToChart(spruceMap, intId, "Potential photosynthesis", 1);
+                pumeChartHandler.addTreeToChart(pumeBtn, maps, info.getInitMap(), intId, "Potential photosynthesis", 1);
             }
             if (!ppChb.isSelected() && gppChb.isSelected()) {
                 pumeChartHandler.removeTreeFromChart(1);
@@ -741,11 +736,11 @@ public class PumeUi extends Application {
                 ppChb.setSelected(true);
             }
         });
-
+// KORJAA MAP OIKEAKSI MYÖS NPP
         gppChb.setOnAction(e -> {
             if (gppChb.isSelected()) {
                 int intId = Integer.parseInt("10");
-                pumeChartHandler.addTreeToChart(spruceMap, intId, "GPP", 2);
+                pumeChartHandler.addTreeToChart(pumeBtn, maps, info.getInitMap(), intId, "GPP", 2);
             }
             if (!gppChb.isSelected() && ppChb.isSelected()) {
                 pumeChartHandler.removeTreeFromChart(2);
@@ -762,11 +757,11 @@ public class PumeUi extends Application {
                 if (nppRb.isSelected()) {
                     pumeChartHandler.removeTreeFromChart(4);
                     int intId = Integer.parseInt("18");
-                    pumeChartHandler.addTreeToChart(spruceMap, intId, "NPP", 3);
+                    pumeChartHandler.addTreeToChart(pumeBtn, maps, info.getInitMap(), intId, "NPP", 3);
                 } else if (arRb.isSelected()) {
                     pumeChartHandler.removeTreeFromChart(3);
                     int intId = Integer.parseInt("9");
-                    pumeChartHandler.addTreeToChart(spruceMap, intId, "Autotrophic respiration", 4);
+                    pumeChartHandler.addTreeToChart(pumeBtn, maps, info.getInitMap(), intId, "Autotrophic respiration", 4);
                 }
             }
         });
@@ -972,7 +967,7 @@ public class PumeUi extends Application {
 
         GridPane.setHgrow(gp, Priority.ALWAYS);
         GridPane.setVgrow(gp, Priority.ALWAYS);
-        ;
+
         infoVb.getChildren().add(gp);
         ap.getChildren().add(infoVb);
         ap.getChildren().add(rightBp);
@@ -996,7 +991,7 @@ public class PumeUi extends Application {
                 String managPath = info.getManagPath();
                 errorHandler.checkForFileErrors("Management", managPath, notifications);
                 String initPath = info.getInitPath();
-                errorHandler.checkForFileErrors("Initial stand", initPath, notifications);
+                errorHandler.checkForFileErrors("Initial situation", initPath, notifications);
                 Alert errorAlert = errorHandler.getErrorAlert(notifications);
 
                 if (errorAlert == null) {
@@ -1034,9 +1029,15 @@ public class PumeUi extends Application {
 
                             maps = server.getResultDataList(Integer.parseInt(info.getYears()));
                             rh.setMaps(maps);
+                            rh.convertToGrams(maps.get(0).get(44), maps.get(1).get(44), maps.get(2).get(44), 44);
+                            rh.setConvertedVals(maps,44,10);
+                            rh.setConvertedVals(maps,9,9);
+                            rh.setConvertedVals(maps,18,18);
                             pineMap = (HashMap<Integer, List<String>>) rh.getPineMap();
                             spruceMap = (HashMap<Integer, List<String>>) rh.getSpruceMap();
                             birchMap = (HashMap<Integer, List<String>>) rh.getBirchMap();
+                            // EI TOIMI VIELÄ!!
+                            info.setInitMap(maps, info.getTree().getId());
                             ap.getChildren().remove(rightBp);
                             ap.getChildren().remove(bp);
                             ap.getChildren().add(bp);

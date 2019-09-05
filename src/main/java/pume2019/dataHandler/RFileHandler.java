@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class RFileHandler {
 
@@ -59,7 +60,8 @@ public class RFileHandler {
         String bat = "cmd.exe /c cd " + homePath + " && " + exePath + " CMD BATCH " + inputPath + "";
         try {
             Process p = Runtime.getRuntime().exec(bat);
-            p.waitFor();
+//            p.waitFor();
+        p.waitFor(0, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
             System.out.println("BAT EXCEPTION: " + e.getMessage());
         }

@@ -10,15 +10,22 @@ public class RInputHandler {
 
     public void getRInputs(RFileHandler fileHandler, RFunctions functions, Info info) throws IOException {
         fileHandler.clear();
-        //tryCatch open
-        fileHandler.write(functions.tryCatchOpen());
         fileHandler.write(functions.libraryRprebas());
         fileHandler.write(functions.libraryRpreles());
         fileHandler.write(functions.varResults());
         fileHandler.write(functions.varTrees());
+        //tryCatch open
+        fileHandler.write(functions.tryCatchOpen());
         //create con object
+        //tryCatch open
+        fileHandler.write(functions.tryCatchOpen());
         fileHandler.write(functions.varCon());
-        fileHandler.write(functions.initCsv("siteInfo", "Rprebas_examples-master/inputs/siteInfo.csv", -1));
+        // handle error
+        fileHandler.writeMany(functions.catchError());
+        // close tryCatch
+        fileHandler.writeMany(functions.tryCatchClose());
+//        fileHandler.write(functions.initCsv("siteInfo", "Rprebas_examples-master/inputs/siteInfo.csv", -1));
+        fileHandler.write(functions.initCsv("siteInfo", "C:/Users/Sam/Documents/PuMe2019_dev/PuMe_2019/R-Portable/Rprebas_examples-master/inputs/siteInfo.csv", -1));
         fileHandler.write(functions.initCsv("thinning", info.getManagPath(), -1));
         fileHandler.write(functions.initCsv("initVar", info.getInitPath(), 1));
         fileHandler.write(functions.initCsv("weather", info.getWeatherPath(), -1));

@@ -65,7 +65,7 @@ public class PumeErrorHandler {
     }
 
     public void serverSocketBindError(String msg,Notifications notifications) {
-        String msg2 = ": Select free port to continue.";
+        String msg2 = ": Prebas App may already be running.";
         notifications.addNotification(new Notification(msg+msg2));
     }
 

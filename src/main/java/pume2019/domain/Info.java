@@ -1,5 +1,8 @@
 package pume2019.domain;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 
@@ -12,8 +15,10 @@ public class Info {
     private String managPath;
     private String years;
     private String initPath;
+    HashMap<Integer, List<String>> initMap;
 
     public Info() {
+        initMap = new HashMap<>();
     }
 
     public void setThinning(Thinning thinning) {
@@ -66,6 +71,22 @@ public class Info {
 
     public void setInitPath(String initPath) {
         this.initPath = toFwdSlashes(initPath);
+    }
+
+    public void setInitMap(List<Map<Integer, List<String>>> maps, int id) {
+        if (id == 0) {
+            initMap = (HashMap<Integer, List<String>>) maps.get(0);
+        } else if (id == 1) {
+            initMap = (HashMap<Integer, List<String>>) maps.get(0);
+        } else if (id == 2) {
+            initMap = (HashMap<Integer, List<String>>) maps.get(1);
+        } else {
+            initMap = (HashMap<Integer, List<String>>) maps.get(0);
+        }
+    }
+
+    public HashMap<Integer, List<String>> getInitMap() {
+        return initMap;
     }
 
     public void setYears(String years) {

@@ -14,9 +14,10 @@
     -fx-background-insets: 0,1,2,3;
     -fx-background-radius: 3,2,2,2;
     /*-fx-padding: 12 30 12 30;*/
-    -fx-padding: 12 6 12 6;
+    /*-fx-padding: 12 6 12 6;*/
     -fx-text-fill: black;
-    -fx-font-size: 1.3em;
+    /*-fx-font-size: 1.3em;*/
+    -fx-font-size: 100%;
 }
 
 .button:pressed{
@@ -42,9 +43,10 @@
     -fx-border-color: black;
     -fx-background-insets: 0,1,2,3;
     -fx-background-radius: 3,2,2,2;
-    -fx-padding: 12 6 12 6;
+    /*-fx-padding: 12 6 12 6;*/
     -fx-text-fill: black;
-    -fx-font-size: 1.3em;
+    /*-fx-font-size: 1.3em;*/
+    -fx-font-size: 100%;
 }
 .combo-box:hover{
     -fx-border-color: burlywood;
@@ -55,11 +57,12 @@
     -fx-border-width:1;
 }
 .combo-box .list-cell{
-    -fx-cell-size: 4em; 
+    -fx-cell-size: 4em;
+    /*-fx-cell-size: 200%;*/
 }
 
 .check-box{
-    -fx-font-size: 1.3em;
+    -fx-font-size: 100%;
 }
 .check-box .box {
     -fx-background-color: whitesmoke;
@@ -94,7 +97,8 @@
 
 
 .radio-button{
-    -fx-font-size: 1.3em;
+    /*-fx-font-size: 1.3em;*/
+    -fx-font-size: 100%;
 }
 .radio-button .radio {
     -fx-border-width: 1px;
@@ -132,7 +136,8 @@
     -fx-background-radius: 3,2,2,2;
     -fx-padding: 12 6 12 6;
     -fx-text-fill: black;
-    -fx-font-size: 1.3em;
+    /*    -fx-font-size: 1.3em;*/
+    -fx-font-size: 100%;
 }
 
 .spinner .increment-arrow-button,
@@ -171,9 +176,11 @@
 .chart-legend-item 
 {
     /*-fx-font-size: 15px;*/
-    -fx-font-size: 1.3em;
+    /*-fx-font-size: 1.3em;*/
+    -fx-font-size: 100%;
 }
 
 .axis{
-    -fx-tick-label-font-size: 1.3em;
+    /*-fx-tick-label-font-size: 1.3em;*/
+    -fx-tick-label-font-size: 100%;
 }

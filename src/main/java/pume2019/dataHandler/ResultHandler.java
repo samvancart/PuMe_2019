@@ -51,9 +51,9 @@ public class ResultHandler {
                         button.addToList(avg);
                         break;
                     case 2:
-                        if (id.equals("44") && !conversionDone) {
-                            convertToGrams(pineMap.get(Integer.parseInt(id)), spruceMap.get(Integer.parseInt(id)), birchMap.get(Integer.parseInt(id)), Integer.parseInt(id));
-                        }
+//                        if (id.equals("44") && !conversionDone) {
+//                            convertToGrams(pineMap.get(Integer.parseInt(id)), spruceMap.get(Integer.parseInt(id)), birchMap.get(Integer.parseInt(id)), Integer.parseInt(id));
+//                        }
                         List<String> sum;
                         sum = getSum(pineMap.get(Integer.parseInt(id)), spruceMap.get(Integer.parseInt(id)), birchMap.get(Integer.parseInt(id)));
                         button.addToList(sum);
@@ -80,6 +80,27 @@ public class ResultHandler {
         return results;
     }
 
+    public void setConvertedVals(List<Map<Integer, List<String>>> maps, int oldId,int newId) {
+        System.out.println("setGppVals: " + maps.get(0).get(44));
+        List<String> newPine = new ArrayList<>();
+        List<String> newSpruce = new ArrayList<>();
+        List<String> newBirch = new ArrayList<>();
+        List<String> pine = maps.get(0).get(oldId);
+        List<String> spruce = maps.get(1).get(oldId);
+        List<String> birch = maps.get(2).get(oldId);
+        for (int i = 0; i < pine.size(); i++) {
+            Double pineD = Double.parseDouble(pine.get(i));
+            newPine.add(String.valueOf(pineD));
+            Double spruceD = Double.parseDouble(spruce.get(i));
+            newSpruce.add(String.valueOf(spruceD));
+            Double birchD = Double.parseDouble(birch.get(i));
+            newBirch.add(String.valueOf(birchD));
+        }
+        pineMap.replace(newId, this.getSum(newPine, newSpruce, newBirch));
+        spruceMap.replace(newId, this.getSum(newPine, newSpruce, newBirch));
+        birchMap.replace(newId, this.getSum(newPine, newSpruce, newBirch));
+    }
+
     //Convert to grams
     public void convertToGrams(List<String> pine, List<String> spruce, List<String> birch, int id) {
         List<String> newPine = new ArrayList<>();
@@ -96,6 +117,7 @@ public class ResultHandler {
             birchD *= 1000;
             newBirch.add(String.valueOf(birchD));
         }
+        
         pineMap.replace(id, newPine);
         spruceMap.replace(id, newSpruce);
         birchMap.replace(id, newBirch);
@@ -192,4 +214,5 @@ public class ResultHandler {
         setSpruceMap(maps.get(1));
         setBirchMap(maps.get(2));
     }
+
 }
