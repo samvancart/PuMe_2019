@@ -108,17 +108,9 @@ public class PumeUi extends Application {
         InputStream is = getClass().getClassLoader().getResourceAsStream("config.properties");
         properties.load(is);
 
-//        String arch = System.getenv("PROCESSOR_ARCHITECTURE");
-//        String wow64Arch = System.getenv("PROCESSOR_ARCHITEW6432");
-//
-//        String realArch = arch != null && arch.endsWith("64")
-//                || wow64Arch != null && wow64Arch.endsWith("64")
-//                ? "64" : "32";
-//        System.out.println("OS bitness " + realArch);
         String inputFile = properties.getProperty("inputFile");
         String pathCsv = properties.getProperty("pathCsv");
         styles = properties.getProperty("styles");
-        System.out.println("pathCsv " + pathCsv);
 
         fileHandler = new RFileHandler(inputFile);
         bc = new ButtonController(new ButtonHandler());
@@ -126,8 +118,6 @@ public class PumeUi extends Application {
                 .toURI()).getPath();
 
         defPath = pathCsv;
-//        defPath = System.getProperty("user.dir");
-//        defPath = defPath + "\\R-Portable\\" + pathCsv;
         info = new Info();
         info.setWeatherPath(defPath + "\\weather.csv");
         info.setManagPath(defPath + "\\thinning.csv");
@@ -234,11 +224,12 @@ public class PumeUi extends Application {
         //Buttons 1
         Button treeCrownBtn = new Button("Tree Height, Crown base");
         treeCrownBtn.setId("11");
-        rh.addIdToMap("11", 1);
-        rh.addIdToMap("14", 1);
+// 5=weighted average
+        rh.addIdToMap("11", 5);
+        rh.addIdToMap("14", 5);
         Button diaBtn = new Button("Diameter");
         diaBtn.setId("12");
-        rh.addIdToMap(diaBtn.getId(), 1);
+        rh.addIdToMap(diaBtn.getId(), 5);
         Button volBtn = new Button("Volume");
         volBtn.setId("30");
         rh.addIdToMap(volBtn.getId(), 2);
@@ -736,7 +727,7 @@ public class PumeUi extends Application {
                 ppChb.setSelected(true);
             }
         });
-// KORJAA MAP OIKEAKSI MYÖS NPP
+
         gppChb.setOnAction(e -> {
             if (gppChb.isSelected()) {
                 int intId = Integer.parseInt("10");
@@ -1000,9 +991,11 @@ public class PumeUi extends Application {
                     //Run model
                     try {
                         inputHandler.getRInputs(fileHandler, functions, info);
+
                     } catch (IOException e) {
                         System.out.println("getInputs " + e);
                     }
+
                     if (server == null) {
                         try {
                             server = new MyServerSocket(6011);
@@ -1011,17 +1004,18 @@ public class PumeUi extends Application {
                         }
                     }
                     if (!server.isBindError()) {
+
                         try {
                             server.start();
-                        } catch (InterruptedException ex) {
+
+                        } catch (InterruptedException | URISyntaxException | IOException ex) {
                             Logger.getLogger(PumeUi.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (URISyntaxException ex) {
-                            Logger.getLogger(PumeUi.class.getName()).log(Level.SEVERE, null, ex);
+
                         }
+                                                                                      
                         errorHandler.checkForRErrors(server.getResultData(), notifications);
                         errorAlert = errorHandler.getErrorAlert(notifications);
                         if (errorAlert == null) {
-
                             if (pumeChartHandler != null) {
                                 pumeChartHandler.removeGraph(nestedBp);
                                 bc.resetChbs(bioObtns);
@@ -1030,13 +1024,12 @@ public class PumeUi extends Application {
                             maps = server.getResultDataList(Integer.parseInt(info.getYears()));
                             rh.setMaps(maps);
                             rh.convertToGrams(maps.get(0).get(44), maps.get(1).get(44), maps.get(2).get(44), 44);
-                            rh.setConvertedVals(maps,44,10);
-                            rh.setConvertedVals(maps,9,9);
-                            rh.setConvertedVals(maps,18,18);
+                            rh.setConvertedVals(maps, 44, 10);
+                            rh.setConvertedVals(maps, 9, 9);
+                            rh.setConvertedVals(maps, 18, 18);
                             pineMap = (HashMap<Integer, List<String>>) rh.getPineMap();
                             spruceMap = (HashMap<Integer, List<String>>) rh.getSpruceMap();
                             birchMap = (HashMap<Integer, List<String>>) rh.getBirchMap();
-                            // EI TOIMI VIELÄ!!
                             info.setInitMap(maps, info.getTree().getId());
                             ap.getChildren().remove(rightBp);
                             ap.getChildren().remove(bp);
@@ -1108,6 +1101,7 @@ public class PumeUi extends Application {
                         initTool.setText("Choose file");
                         initBtn.setTooltip(initTool);
                         info.setInitPath(defPath + "\\initVar.csv");
+//                        runBtn.fire();
                         break;
                     case 1:
                         initBtn.setDisable(true);
@@ -1115,6 +1109,7 @@ public class PumeUi extends Application {
                         initTool.setText("Choose file");
                         initBtn.setTooltip(initTool);
                         info.setInitPath(defPath + "\\initVarYoungPine.csv");
+//                        runBtn.fire();
                         break;
                     case 2:
                         initBtn.setDisable(true);
@@ -1122,6 +1117,7 @@ public class PumeUi extends Application {
                         initTool.setText("Choose file");
                         initBtn.setTooltip(initTool);
                         info.setInitPath(defPath + "\\initVarYoungSpruce.csv");
+//                        runBtn.fire();
                         break;
                     case 3:
                         initBtn.setDisable(false);
@@ -1130,6 +1126,9 @@ public class PumeUi extends Application {
                     default:
                         break;
                 }
+//                System.out.println("init: " + info.getInitPath());
+//                runBtn.fire();
+
             }
         });
 
@@ -1167,6 +1166,7 @@ public class PumeUi extends Application {
                 } else {
                     weatherTool.setText(info.getWeatherPath());
                     weatherBtn.setTooltip(weatherTool);
+                    runBtn.fire();
                 }
 
             }
@@ -1184,6 +1184,7 @@ public class PumeUi extends Application {
                 } else {
                     managTool.setText(info.getManagPath());
                     managBtn.setTooltip(managTool);
+                    runBtn.fire();
                 }
             }
         });
@@ -1199,6 +1200,7 @@ public class PumeUi extends Application {
                 } else {
                     initTool.setText(info.getInitPath());
                     initBtn.setTooltip(initTool);
+                    runBtn.fire();
                 }
 
             }

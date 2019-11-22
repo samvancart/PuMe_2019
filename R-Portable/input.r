@@ -14,9 +14,9 @@ data<-toString(cond)
      return(NA)
 }
 )
-siteInfo <- read.csv("C:/Users/Sam/Documents/PuMe2019_dev/PuMe_2019/R-Portable/Rprebas_examples-master/inputs/siteInfo.csv",header = T)
+siteInfo <- read.csv("Rprebas_examples-master/inputs/siteInfo.csv",header = T)
 thinning <- read.csv("Rprebas_examples-master/inputs/thinning.csv",header = T)
-initVar <- read.csv("Rprebas_examples-master/inputs/initVarYoungPine.csv",header = T, row.names = 1)
+initVar <- read.csv("Rprebas_examples-master/inputs/initVar.csv",header = T, row.names = 1)
 weather <- read.csv("Rprebas_examples-master/inputs/weather.csv",header = T)
 PAR = c(weather$PAR,weather$PAR,weather$PAR)
 TAir = c(weather$TAir,weather$TAir,weather$TAir)
@@ -32,7 +32,7 @@ data<-toString(cond)
 }
 )
 client <- function(){
-PREBASout <- prebas(nYears=25,pCROBAS = pCROB, pPRELES = pPREL,siteInfo = c(1,1,1),thinning = NA,PAR=PAR,TAir=TAir,VPD=VPD,Precip=Precip,CO2=CO2,P0=NA,initVar = as.matrix(initVar),defaultThin = 1.,ClCut = 1.,inDclct = NA,inAclct = NA)
+PREBASout <- prebas(nYears=100,pCROBAS = pCROB, pPRELES = pPREL,siteInfo = c(1,1,1),thinning = NA,PAR=PAR,TAir=TAir,VPD=VPD,Precip=Precip,CO2=CO2,P0=NA,initVar = as.matrix(initVar),defaultThin = 1.,ClCut = 1.,inDclct = NA,inAclct = NA)
     for (i in results) {
         for (j in trees) {
 	    for(k in PREBASout$output[ ,i,j,1]){

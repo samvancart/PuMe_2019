@@ -57,23 +57,30 @@ public class MyServerSocket {
         return bindErrorMsg;
     }
 
-    public void start() throws InterruptedException, URISyntaxException {
+    public void start() throws InterruptedException, URISyntaxException, IOException {
         try {
 
 //            RUN BATCH JOB HERE
             fileHandler.runBat(functions.getCurrentDirectory(), functions.getHomePath(), functions.getExePath(), functions.getInputPath());
+
+            Thread.sleep(1500);
             clientSocket = serverSocket.accept();
 
-// PRINTWRITER            
-            out = new PrintWriter(clientSocket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            resultData = new ArrayList<>();
-            String line = "";
-            while ((line = in.readLine()) != null) {
-                resultData.add(line);
-            }
+            this.addInputStreamToResultData(clientSocket);
+
         } catch (IOException e) {
             System.out.println("Exception_1: " + e.getMessage());
+
+        }
+    }
+
+    public void addInputStreamToResultData(Socket clientSocket) throws IOException {
+        out = new PrintWriter(clientSocket.getOutputStream(), true);
+        in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        resultData = new ArrayList<>();
+        String line = "";
+        while ((line = in.readLine()) != null) {
+            resultData.add(line);
         }
     }
 

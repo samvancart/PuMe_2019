@@ -12,7 +12,6 @@ public class OsBitness {
         String realArch = arch != null && arch.endsWith("64")
                 || wow64Arch != null && wow64Arch.endsWith("64")
                 ? "64" : "32";
-        System.out.println("OS bitness " + realArch);
         return realArch;
     }
 

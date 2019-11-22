@@ -1,7 +1,7 @@
 
 R version 3.5.3 (2019-03-11) -- "Great Truth"
 Copyright (C) 2019 The R Foundation for Statistical Computing
-Platform: i386-w64-mingw32/i386 (32-bit)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -38,9 +38,9 @@ Package 'sm', version 2.2-5.6: type help(sm) for summary information
 +      return(NA)
 + }
 + )
-+ siteInfo <- read.csv("C:/Users/Sam/Documents/PuMe2019_dev/PuMe_2019/R-Portable/Rprebas_examples-master/inputs/siteInfo.csv",header = T)
++ siteInfo <- read.csv("Rprebas_examples-master/inputs/siteInfo.csv",header = T)
 + thinning <- read.csv("Rprebas_examples-master/inputs/thinning.csv",header = T)
-+ initVar <- read.csv("Rprebas_examples-master/inputs/initVarYoungPine.csv",header = T, row.names = 1)
++ initVar <- read.csv("Rprebas_examples-master/inputs/initVar.csv",header = T, row.names = 1)
 + weather <- read.csv("Rprebas_examples-master/inputs/weather.csv",header = T)
 + PAR = c(weather$PAR,weather$PAR,weather$PAR)
 + TAir = c(weather$TAir,weather$TAir,weather$TAir)
@@ -56,7 +56,7 @@ Package 'sm', version 2.2-5.6: type help(sm) for summary information
 + }
 + )
 > client <- function(){
-+ PREBASout <- prebas(nYears=25,pCROBAS = pCROB, pPRELES = pPREL,siteInfo = c(1,1,1),thinning = NA,PAR=PAR,TAir=TAir,VPD=VPD,Precip=Precip,CO2=CO2,P0=NA,initVar = as.matrix(initVar),defaultThin = 1.,ClCut = 1.,inDclct = NA,inAclct = NA)
++ PREBASout <- prebas(nYears=100,pCROBAS = pCROB, pPRELES = pPREL,siteInfo = c(1,1,1),thinning = NA,PAR=PAR,TAir=TAir,VPD=VPD,Precip=Precip,CO2=CO2,P0=NA,initVar = as.matrix(initVar),defaultThin = 1.,ClCut = 1.,inDclct = NA,inAclct = NA)
 +     for (i in results) {
 +         for (j in trees) {
 + 	    for(k in PREBASout$output[ ,i,j,1]){
@@ -80,4 +80,4 @@ Package 'sm', version 2.2-5.6: type help(sm) for summary information
 > 
 > proc.time()
    user  system elapsed 
-   1.21    0.48    1.63 
+   0.60    0.26    0.85 
