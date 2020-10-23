@@ -66,7 +66,14 @@ public class MyServerSocket {
             Thread.sleep(1500);
             clientSocket = serverSocket.accept();
 
-            this.addInputStreamToResultData(clientSocket);
+//            this.addInputStreamToResultData(clientSocket);
+        out = new PrintWriter(clientSocket.getOutputStream(), true);
+        in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        resultData = new ArrayList<>();
+        String line = "";
+        while ((line = in.readLine()) != null) {
+            resultData.add(line);
+        }
 
         } catch (IOException e) {
             System.out.println("Exception_1: " + e.getMessage());

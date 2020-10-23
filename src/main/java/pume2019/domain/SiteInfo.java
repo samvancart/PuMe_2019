@@ -9,11 +9,12 @@ public class SiteInfo {
 
     public SiteInfo() {
         heaths = FXCollections.observableArrayList();
-        heaths.add(new Heath("Herb-rich Heath", 1));
-        heaths.add(new Heath("Mesic Heath", 2));
-        heaths.add(new Heath("Sub-xeric Heath", 3));
-        heaths.add(new Heath("Xeric Heath", 4));
-        heaths.add(new Heath("Barren Heath", 5));
+        heaths.add(new Heath("Grove", 1));
+        heaths.add(new Heath("Herb-rich Heath", 2));
+        heaths.add(new Heath("Mesic Heath", 3));
+        heaths.add(new Heath("Sub-xeric Heath", 4));
+        heaths.add(new Heath("Xeric Heath", 5));
+//        heaths.add(new Heath("Barren Heath", 5));
     }
 
     public ObservableList<Heath> getHeaths() {

@@ -812,7 +812,7 @@ public class PumeUi extends Application {
 //          graph
             Button button = (Button) ((Control) e.getSource());
             pumeBtn = new PumeButton(button);
-            pumeBtn.setUnit("gC/m²/yr");
+            pumeBtn.setUnit("m³/yr");
             pumeChartHandler = new PumeChartHandler(pumeBtn, rh);
             pumeChartHandler.removeGraph(nestedBp);
             pumeChartHandler.createLineChart(nestedBp);
