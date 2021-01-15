@@ -50,6 +50,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import pume2019.controllers.ButtonController;
+import pume2019.dataHandler.InfoDataHandler;
 import pume2019.dataHandler.MyServerSocket;
 import pume2019.dataHandler.PumeChartHandler;
 import pume2019.dataHandler.PumeErrorHandler;
@@ -85,6 +86,8 @@ public class PumeUi extends Application {
     private RFileHandler fileHandler;
     private RFunctions functions;
     private RInputHandler inputHandler;
+    private InfoDataHandler infoDataHandler = new InfoDataHandler();
+    private List<Tree> infoDataTrees = new ArrayList<>();
     private MyServerSocket server;
     private HashMap<Integer, List<String>> pineMap, spruceMap, birchMap;
     private List<Map<Integer, List<String>>> maps;
@@ -100,6 +103,15 @@ public class PumeUi extends Application {
     private String styles;
     private String greyFillStyle;
     private String clickedBtnStyle;
+
+    private ObservableList<Object> treeObs;
+    private ObservableList<Object> remObs;
+
+    private CheckBox pineChb = new CheckBox("Pine");
+
+    private CheckBox spruceChb = new CheckBox("Spruce");
+
+    private CheckBox birchChb = new CheckBox("Birch");
 
     @Override
     public void init() throws IOException, URISyntaxException {
@@ -128,6 +140,16 @@ public class PumeUi extends Application {
         functions = new RFunctions();
         inputHandler = new RInputHandler();
         rh = new ResultHandler();
+
+        remObs = FXCollections.observableArrayList();
+        treeObs = FXCollections.observableArrayList();
+        pineChb.setId("1");
+        spruceChb.setId("2");
+        birchChb.setId("3");
+
+        for (int i = 0; i < 3; i++) {
+            infoDataTrees.add(new Tree("", 0));
+        }
 
         greyFillStyle = "-fx-padding: 10;"
                 + "-fx-border-style: solid inside;"
@@ -249,76 +271,76 @@ public class PumeUi extends Application {
         bc.addBtns(tscBtns, tscGp);
         bc.defineBtnHandler(tscBtns);
 
-        //Tree checkboxes    
-        ObservableList<Object> treeObs;
-        treeObs = FXCollections.observableArrayList();
-        CheckBox pineChb = new CheckBox("Pine");
-        pineChb.setId("1");
-        CheckBox spruceChb = new CheckBox("Spruce");
-        spruceChb.setId("2");
-        CheckBox birchChb = new CheckBox("Birch");
-        birchChb.setId("3");
-        treeObs.addAll(pineChb, spruceChb, birchChb);
-        bc.addOBtns(treeObs, tscGp, 0);
+
+        treeObs.addAll(treeObs);
 
         // Tree ActionEvent handlers
 //        Pine
         pineChb.setOnAction(e -> {
-            int intId = Integer.parseInt(id.getId());
-            if (pineChb.isSelected()) {
-                if (intId == 37) {
-                    pumeChartHandler.removeFromStackedBarChart(0);
+            if (infoDataTrees.get(0).getId() != 0) {
+                int intId = Integer.parseInt(id.getId());
+                if (pineChb.isSelected()) {
+                    if (intId == 37) {
+                        pumeChartHandler.removeFromStackedBarChart(0);
+                    }
+                    String treeName = infoDataTrees.get(0).getName();
+                    pumeChartHandler.addTreeToChart(pumeBtn, maps, pineMap, intId, treeName,1);
                 }
-                pumeChartHandler.addTreeToChart(pumeBtn, maps, pineMap, intId, "Pine", 1);
-            }
-            if (!pineChb.isSelected()) {
-                if (intId == 37) {
-                    pumeChartHandler.removeFromStackedBarChart(1);
-                    bc.areNoneSelectedRemovals(treeObs, pumeChartHandler, nestedBp);
-                }
-                pumeChartHandler.removeTreeFromChart(1);
+                if (!pineChb.isSelected()) {
+                    if (intId == 37) {
+                        pumeChartHandler.removeFromStackedBarChart(1);
+                        bc.areNoneSelectedRemovals(treeObs, pumeChartHandler, nestedBp);
+                    }
+                    pumeChartHandler.removeTreeFromChart(1);
 
+                }
             }
         });
 //      Spruce
         spruceChb.setOnAction(e -> {
-            int intId = Integer.parseInt(id.getId());
-            if (spruceChb.isSelected()) {
-                if (intId == 37) {
-                    pumeChartHandler.removeFromStackedBarChart(0);
+            if (infoDataTrees.get(1).getId() != 0) {
+                int intId = Integer.parseInt(id.getId());
+                if (spruceChb.isSelected()) {
+                    if (intId == 37) {
+                        pumeChartHandler.removeFromStackedBarChart(0);
+                    }
+                    String treeName = infoDataTrees.get(1).getName();
+                    pumeChartHandler.addTreeToChart(pumeBtn, maps, spruceMap, intId, treeName,2);
                 }
-                pumeChartHandler.addTreeToChart(pumeBtn, maps, spruceMap, intId, "Spruce", 2);
-            }
-            if (!spruceChb.isSelected()) {
-                if (intId == 37) {
-                    pumeChartHandler.removeFromStackedBarChart(2);
-                    bc.areNoneSelectedRemovals(treeObs, pumeChartHandler, nestedBp);
+                if (!spruceChb.isSelected()) {
+                    if (intId == 37) {
+                        pumeChartHandler.removeFromStackedBarChart(2);
+                        bc.areNoneSelectedRemovals(treeObs, pumeChartHandler, nestedBp);
+                    }
+                    pumeChartHandler.removeTreeFromChart(2);
                 }
-                pumeChartHandler.removeTreeFromChart(2);
             }
         });
 //      Birch
         birchChb.setOnAction(e -> {
-            int intId = Integer.parseInt(id.getId());
-            if (birchChb.isSelected()) {
-                if (intId == 37) {
-                    pumeChartHandler.removeFromStackedBarChart(0);
+            if (infoDataTrees.get(2).getId() != 0) {
+                int intId = Integer.parseInt(id.getId());
+                if (birchChb.isSelected()) {
+                    if (intId == 37) {
+                        pumeChartHandler.removeFromStackedBarChart(0);
+                    }
+                    String treeName = infoDataTrees.get(2).getName();
+                    pumeChartHandler.addTreeToChart(pumeBtn, maps, birchMap, intId, treeName,3);
                 }
-                pumeChartHandler.addTreeToChart(pumeBtn, maps, birchMap, intId, "Birch", 3);
-            }
-            if (!birchChb.isSelected()) {
-                if (intId == 37) {
-                    pumeChartHandler.removeFromStackedBarChart(3);
-                    bc.areNoneSelectedRemovals(treeObs, pumeChartHandler, nestedBp);
+                if (!birchChb.isSelected()) {
+                    if (intId == 37) {
+                        pumeChartHandler.removeFromStackedBarChart(3);
+                        bc.areNoneSelectedRemovals(treeObs, pumeChartHandler, nestedBp);
+                    }
+                    pumeChartHandler.removeTreeFromChart(3);
                 }
-                pumeChartHandler.removeTreeFromChart(3);
             }
         });
 
         //RadioButtons    
         ToggleGroup remTg = new ToggleGroup();
-        ObservableList<Object> remObs;
-        remObs = FXCollections.observableArrayList();
+//        ObservableList<Object> remObs;
+//        remObs = FXCollections.observableArrayList();
         RadioButton cuttingsRb = new RadioButton("Cuttings");
         cuttingsRb.setId("37");
         rh.addIdToMap(cuttingsRb.getId(), 2);
@@ -327,8 +349,10 @@ public class PumeUi extends Application {
         mortalityRb.setId("42");
         rh.addIdToMap(mortalityRb.getId(), 2);
         mortalityRb.setToggleGroup(remTg);
-        remObs.addAll(pineChb, spruceChb, birchChb, cuttingsRb, mortalityRb);
+//        remObs.addAll(pineChb, spruceChb, birchChb, cuttingsRb, mortalityRb);
+        remObs.addAll();
 
+//        remObs.addAll(treeObs, cuttingsRb, mortalityRb);
         ArrayList<ObservableList> tscObtns;
         tscObtns = new ArrayList<>();
         tscObtns.add(remObs);
@@ -530,6 +554,8 @@ public class PumeUi extends Application {
 
         //ActionEvent handlers 1
         treeCrownBtn.setOnAction(e -> {
+//            bc.removeOBtns(treeObs, tscGp);
+
             bc.removeRbtns(tscObtns, tscGp);
             bc.addOBtns(treeObs, tscGp, 0);
             bc.resetChbs(bioObtns);
@@ -596,6 +622,7 @@ public class PumeUi extends Application {
             bc.addOBtns(remObs, tscGp, 0);
             bc.resetChbs(bioObtns);
             bc.resetChbs(tscObtns);
+
             cuttingsRb.fire();
         });
 
@@ -982,6 +1009,37 @@ public class PumeUi extends Application {
                 String managPath = info.getManagPath();
                 errorHandler.checkForFileErrors("Management", managPath, notifications);
                 String initPath = info.getInitPath();
+
+                // read initVar
+                try {
+                    infoDataTrees = infoDataHandler.getInfoData(info);
+                    treeObs.removeAll(treeObs);
+                    remObs.removeAll(remObs);
+                    bc.removeRbtns(tscObtns, tscGp);
+
+                    pineChb.setText(infoDataTrees.get(0).getName());
+//                    if (infoDataTrees.get(0).getId() != 0) {
+                    treeObs.add(pineChb);
+//                    }
+                    spruceChb.setText(infoDataTrees.get(1).getName());
+//                    if (infoDataTrees.get(1).getId() != 0) {
+                    treeObs.add(spruceChb);
+//                    }
+                    birchChb.setText(infoDataTrees.get(2).getName());
+//                    if (infoDataTrees.get(2).getId() != 0) {
+                    treeObs.add(birchChb);
+//                    }
+
+
+                    for (Object tree : treeObs) {
+                        remObs.add(tree);
+                    }
+                    remObs.add(cuttingsRb);
+                    remObs.add(mortalityRb);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
                 errorHandler.checkForFileErrors("Initial situation", initPath, notifications);
                 Alert errorAlert = errorHandler.getErrorAlert(notifications);
 
@@ -1012,7 +1070,7 @@ public class PumeUi extends Application {
                             Logger.getLogger(PumeUi.class.getName()).log(Level.SEVERE, null, ex);
 
                         }
-                                                                                      
+
                         errorHandler.checkForRErrors(server.getResultData(), notifications);
                         errorAlert = errorHandler.getErrorAlert(notifications);
                         if (errorAlert == null) {

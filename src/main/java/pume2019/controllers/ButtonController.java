@@ -1,7 +1,9 @@
 package pume2019.controllers;
 
+import com.sun.javafx.collections.ObservableListWrapper;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -33,6 +35,8 @@ public class ButtonController {
             gp.add(btn, i, 0);
         }
     }
+    
+
 
     public void addOBtns(ObservableList<Object> oBtns, GridPane gp, int startIndex) {
         for (int i = 0; i < oBtns.size(); i++) {
@@ -49,6 +53,14 @@ public class ButtonController {
             }
         }
     }
+
+    public void removeOBtns(ObservableList<Object> oBtns, GridPane gp) {
+        for (int i = 0; i < oBtns.size(); i++) {
+            CheckBox chB = (CheckBox) oBtns.get(i);
+            gp.getChildren().remove(chB);
+        }
+    }
+    
 
     public void removeRbtns(ArrayList<ObservableList> rBtns, GridPane gp) {
         for (int i = 0; i < rBtns.size(); i++) {
